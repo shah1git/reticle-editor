@@ -1,0 +1,69 @@
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-main: #0c0f18;
+  --bg-panel: #0e1120;
+  --bg-canvas: #080b14;
+  --accent: #00ff88;
+  --accent-orange: #ff6600;
+  --warning: #ff9900;
+  --danger: #ff4466;
+  --text-primary: #e0e4ec;
+  --text-secondary: #6b7394;
+  --border: #1a1f2e;
+  --border-input: #2a3142;
+  --font: 'JetBrains Mono', monospace;
+  --topbar-height: 44px;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg-main);
+  color: var(--text-primary);
+  font-size: 12px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.app-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+input, select, button {
+  font-family: var(--font);
+  font-size: 12px;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-panel);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-input);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}

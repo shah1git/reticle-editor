@@ -1,0 +1,10 @@
+.canvas {
+  flex: 1;
+  background: var(--bg-canvas);
+  overflow: hidden;
+  position: relative;
+}
+
+.canvas svg {
+  display: block;
+}

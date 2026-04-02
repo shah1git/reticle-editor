@@ -1,0 +1,65 @@
+.topbar {
+  height: var(--topbar-height);
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  flex-shrink: 0;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  font-size: 20px;
+  color: var(--accent);
+}
+
+.title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--text-primary);
+  text-transform: uppercase;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn {
+  background: transparent;
+  border: 1px solid var(--border-input);
+  color: var(--text-secondary);
+  padding: 5px 12px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.15s;
+}
+
+.btn:hover {
+  border-color: var(--text-secondary);
+  color: var(--text-primary);
+}
+
+.btnAccent {
+  composes: btn;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btnAccent:hover {
+  background: var(--accent);
+  color: var(--bg-main);
+}
