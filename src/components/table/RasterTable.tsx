@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { ScopeProfile } from '../../types/scope'
 import type { Reticle } from '../../types/reticle'
-import type { RasterMark } from '../../types/rasterization'
 import { calcPixelsPerMrad } from '../../math/optics'
 import { rasterize } from '../../math/rasterization'
 import styles from './RasterTable.module.css'

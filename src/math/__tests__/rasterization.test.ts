@@ -49,7 +49,6 @@ describe('rasterizeFixedStep', () => {
   it('error accumulates', () => {
     const marks = rasterizeFixedStep(SPACING, PPM, COUNT)
     // For non-integer ppm, later marks should have larger absolute error
-    const absErr1 = Math.abs(marks[0].errorPx)
     const absErr10 = Math.abs(marks[9].errorPx)
     // Last mark's error should generally be >= first mark's
     expect(absErr10).toBeGreaterThanOrEqual(0) // sanity check

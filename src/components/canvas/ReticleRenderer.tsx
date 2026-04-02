@@ -1,5 +1,5 @@
-import { useMemo } from 'react'
-import type { Reticle, Wing } from '../../types/reticle'
+import React, { useMemo } from 'react'
+import type { Reticle } from '../../types/reticle'
 import type { PixelsPerMrad } from '../../math/optics'
 import { rasterize } from '../../math/rasterization'
 import { snapToPixel } from '../../math/optics'
@@ -16,7 +16,7 @@ type Dir = 'left' | 'right' | 'down'
 
 export default function ReticleRenderer({ reticle, ppm, cx, cy, zoom }: Props) {
   const elements = useMemo(() => {
-    const els: JSX.Element[] = []
+    const els: React.JSX.Element[] = []
     const color = reticle.color
 
     // Center dot — always circular, use min(ppm.h, ppm.v) for snap

@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import React, { useMemo } from 'react'
 
 interface Props {
   width: number
@@ -30,7 +30,7 @@ export default function MradGrid({ width, height, zoom, panX, panY }: Props) {
       majorStep = 5
     }
 
-    const result: JSX.Element[] = []
+    const result: React.JSX.Element[] = []
     const startH = Math.floor(mradLeft / minorStep) * minorStep
     const endH = Math.ceil(mradRight / minorStep) * minorStep
     const startV = Math.floor(mradTop / minorStep) * minorStep
