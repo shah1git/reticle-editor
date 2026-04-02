@@ -5,6 +5,28 @@
   position: relative;
 }
 
-.canvas svg {
+.svg {
   display: block;
+  cursor: crosshair;
+}
+
+.hint {
+  position: absolute;
+  bottom: 8px;
+  left: 12px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.zoomLabel {
+  font-size: 10px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.hintText {
+  font-size: 9px;
+  color: var(--text-secondary);
+  opacity: 0.6;
 }
