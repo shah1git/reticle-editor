@@ -5,19 +5,20 @@ import { calcPixelsPerMrad } from '../../math/optics'
 import { useCanvasInteraction } from '../../hooks/useCanvasInteraction'
 import MradGrid from '../canvas/MradGrid'
 import ReticleRenderer from '../canvas/ReticleRenderer'
+import { useTestObject, TestObjectControls, TestObjectSvg } from '../canvas/TestObjectOverlay'
 import styles from './Canvas.module.css'
 
 interface Props {
   scope: ScopeProfile
   reticle: Reticle
-  testObjectOverlay?: JSX.Element | null
 }
 
-export default function Canvas({ scope, reticle, testObjectOverlay }: Props) {
+export default function Canvas({ scope, reticle }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [size, setSize] = useState({ width: 800, height: 600 })
   const { transform, handlers } = useCanvasInteraction()
   const ppm = useMemo(() => calcPixelsPerMrad(scope), [scope])
+  const testObj = useTestObject()
 
   useEffect(() => {
     const el = containerRef.current
@@ -48,6 +49,12 @@ export default function Canvas({ scope, reticle, testObjectOverlay }: Props) {
           panX={transform.panX}
           panY={transform.panY}
         />
+        <TestObjectSvg
+          state={testObj.state}
+          zoom={transform.zoom}
+          cx={cx}
+          cy={cy}
+        />
         <ReticleRenderer
           reticle={reticle}
           ppm={ppm}
@@ -56,7 +63,7 @@ export default function Canvas({ scope, reticle, testObjectOverlay }: Props) {
           zoom={transform.zoom}
         />
       </svg>
-      {testObjectOverlay}
+      <TestObjectControls state={testObj.state} setState={testObj.setState} />
       <div className={styles.hint}>
         <span className={styles.zoomLabel}>Zoom: {transform.zoom.toFixed(1)} px/MRAD</span>
         <span className={styles.hintText}>Scroll to zoom · Alt+Drag or Middle-click to pan</span>
