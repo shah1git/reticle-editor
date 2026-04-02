@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import type { ScopeProfile } from './types/scope'
 import type { Reticle } from './types/reticle'
 import { defaultScope, defaultReticle } from './defaults'
+import { saveToJson } from './utils/fileIO'
+import { useKeyboard } from './hooks/useKeyboard'
 import TopBar from './components/layout/TopBar'
 import LeftPanel from './components/layout/LeftPanel'
 import Canvas from './components/layout/Canvas'
@@ -11,6 +13,12 @@ import './global.css'
 export default function App() {
   const [scope, setScope] = useState<ScopeProfile>(defaultScope)
   const [reticle, setReticle] = useState<Reticle>(defaultReticle)
+
+  const handleSave = useCallback(() => {
+    saveToJson(scope, reticle)
+  }, [scope, reticle])
+
+  useKeyboard({ onSave: handleSave })
 
   return (
     <div className="app">

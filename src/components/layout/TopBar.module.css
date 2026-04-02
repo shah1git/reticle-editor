@@ -16,8 +16,8 @@
 }
 
 .logo {
-  font-size: 20px;
-  color: var(--accent);
+  height: 28px;
+  width: auto;
 }
 
 .title {
