@@ -1,0 +1,39 @@
+.section {
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  user-select: none;
+}
+
+.title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-primary);
+}
+
+.chevron {
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+.summary {
+  font-size: 9px;
+  color: var(--text-secondary);
+  margin-left: auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.body {
+  /* content */
+}
