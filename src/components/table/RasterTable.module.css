@@ -1,7 +1,7 @@
-.container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+.section {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+  margin-top: 4px;
 }
 
 .titleRow {
@@ -26,7 +26,7 @@
 
 .tab {
   flex: 1;
-  background: #252a3e;
+  background: var(--bg-input);
   border: 1px solid var(--border-input);
   color: var(--text-secondary);
   padding: 5px 0;
@@ -45,15 +45,32 @@
 .tabActive {
   border-color: var(--accent);
   color: var(--accent);
-  background: rgba(0, 255, 136, 0.05);
 }
 
 .tabOff {
   opacity: 0.4;
 }
 
+/* Side-by-side: table + how-to-read */
+.content {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.tableArea {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 1100px) {
+  .content {
+    flex-direction: column;
+  }
+}
+
 .summary {
-  font-size: 9px;
+  font-size: 10px;
   color: var(--text-secondary);
   margin-bottom: 6px;
   line-height: 1.4;
@@ -62,7 +79,7 @@
 .totals {
   padding: 8px 0;
   border-top: 1px solid var(--border);
-  font-size: 9px;
+  font-size: 10px;
   color: var(--text-secondary);
   line-height: 1.6;
 }
@@ -75,7 +92,7 @@
 }
 
 .tableWrap {
-  flex: 1;
+  max-height: 400px;
   overflow-y: auto;
 }
 
@@ -135,8 +152,8 @@
 }
 
 .legend {
-  margin-top: auto;
-  padding-top: 10px;
+  margin-top: 8px;
+  padding-top: 8px;
   border-top: 1px solid var(--border);
   font-size: 9px;
   color: var(--text-secondary);
@@ -181,13 +198,15 @@
 }
 
 .howToRead {
-  margin-top: 12px;
-  background: #252a3e;
+  width: 320px;
+  min-width: 280px;
+  flex-shrink: 0;
+  background: var(--bg-input);
   border-radius: 8px;
   padding: 16px;
   font-size: 12px;
   font-family: var(--font);
-  color: #a1adc4;
+  color: var(--text-hint);
   line-height: 1.6;
 }
 
@@ -210,4 +229,11 @@
   letter-spacing: 0.06em;
   color: var(--text-secondary);
   margin-bottom: 10px;
+}
+
+@media (max-width: 1100px) {
+  .howToRead {
+    width: 100%;
+    min-width: 0;
+  }
 }

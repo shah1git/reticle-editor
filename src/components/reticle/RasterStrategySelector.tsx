@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { Reticle } from '../../types/reticle'
 import type { RasterStrategy } from '../../types/rasterization'
 import Section from '../ui/Section'
@@ -8,10 +9,11 @@ interface Props {
   setReticle: (r: Reticle) => void
 }
 
-const strategies: { value: RasterStrategy; label: string; desc: string }[] = [
+const strategies: { value: RasterStrategy; label: string; summary: string; desc: string }[] = [
   {
     value: 'independent',
     label: 'А: Независимое округление',
+    summary: 'ошибка ≤0.5 пикс, шаги неравномерны',
     desc: `Каждая метка размещается на ближайшем целом пикселе к своей идеальной позиции.
 Позиция i-й метки = round(start + i × ideal_step).
 
@@ -26,6 +28,7 @@ const strategies: { value: RasterStrategy; label: string; desc: string }[] = [
   {
     value: 'fixed_step',
     label: 'Б: Фиксированный шаг',
+    summary: 'все шаги равны, ошибка накапливается',
     desc: `Шаг определяется один раз: fixed_step = round(ideal_step). Все метки размещаются через одинаковый шаг.
 
 ✅ Все интервалы абсолютно идентичны — шкала геометрически безупречна
@@ -40,6 +43,7 @@ const strategies: { value: RasterStrategy; label: string; desc: string }[] = [
   {
     value: 'bresenham',
     label: 'В: Алгоритм Брезенхема',
+    summary: 'идентично А, альтернативная реализация',
     desc: `Инкрементальная реализация метода А. Результат математически идентичен — те же позиции, те же интервалы, тот же паттерн чередования.
 
 Отличие от А: вычисляет не абсолютную позицию каждой метки, а последовательно решает «короткий или длинный шаг» через аккумулятор ошибки.
@@ -53,10 +57,13 @@ const strategies: { value: RasterStrategy; label: string; desc: string }[] = [
 ]
 
 export default function RasterStrategySelector({ reticle, setReticle }: Props) {
+  const [descOpen, setDescOpen] = useState(false)
+  const current = strategies.find(s => s.value === reticle.rasterization)!
+
   return (
     <Section
       title="⚙ РАСТЕРИЗАЦИЯ"
-      tooltip="Как размещать точки, если интервал в MRAD не равен целому числу пикселей. Проблема: 1 MRAD почти никогда не равен ровно N пикселей (например, может быть 7.78). Три стратегии решают эту проблему по-разному"
+      tooltip="Как размещать точки, если интервал в MRAD не равен целому числу пикселей. Три стратегии решают эту проблему по-разному"
     >
       <div className={styles.options}>
         {strategies.map(s => (
@@ -68,15 +75,46 @@ export default function RasterStrategySelector({ reticle, setReticle }: Props) {
               onChange={() => setReticle({ ...reticle, rasterization: s.value })}
               className={styles.radio}
             />
-            <div>
-              <div className={styles.label}>{s.label}</div>
-              {reticle.rasterization === s.value && (
-                <div className={styles.desc}>{s.desc}</div>
-              )}
-            </div>
+            <div className={styles.label}>{s.label}</div>
           </label>
         ))}
       </div>
+
+      <button
+        className={styles.descToggle}
+        onClick={() => setDescOpen(!descOpen)}
+      >
+        <span className={styles.descSummary}>
+          {current.label} — {current.summary}
+        </span>
+        <span className={styles.chevron}>{descOpen ? '▾' : '▸'}</span>
+      </button>
+
+      {descOpen && (
+        <div className={styles.descBlock}>
+          <div className={styles.desc}>{current.desc}</div>
+
+          <div className={styles.compTable}>
+            <table>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>А: Независимое</th>
+                  <th>Б: Фиксированный</th>
+                  <th>В: Брезенхем</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Точность метки</td><td>✅ ≤0.5 пикс</td><td>❌ Растёт линейно</td><td>✅ ≤0.5 пикс</td></tr>
+                <tr><td>Точность интервала</td><td>⚠ До 1 пикс</td><td>✅ Идеальная</td><td>⚠ До 1 пикс</td></tr>
+                <tr><td>Накопление ошибки</td><td>✅ Нет</td><td>❌ Линейное</td><td>✅ Нет</td></tr>
+                <tr><td>Визуальная равномерность</td><td>⚠ Зависит от шага</td><td>✅ Абсолютная</td><td>⚠ Идентично А</td></tr>
+                <tr><td>Длина шкалы</td><td>✅ Точна</td><td>❌ Растянута/сжата</td><td>✅ Точна</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </Section>
   )
 }

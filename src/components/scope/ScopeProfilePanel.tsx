@@ -18,10 +18,10 @@ export default function ScopeProfilePanel({ scope, setScope }: Props) {
 
   const update = (patch: Partial<ScopeProfile>) => setScope({ ...scope, ...patch })
 
-  const summary = `1 MRAD = ${ppm.h.toFixed(2)} пикс`
+  const summary = `${scope.name} • 1 MRAD = ${ppm.h.toFixed(2)} пикс • ${scope.displayResX}×${scope.displayResY}`
 
   return (
-    <Section title="ПРОФИЛЬ ПРИЦЕЛА" summary={summary}>
+    <Section title="ПРОФИЛЬ ПРИЦЕЛА" summary={summary} defaultOpen={false}>
       <div className={styles.field}>
         <label className={styles.label}>Название</label>
         <input

@@ -1,12 +1,14 @@
 import { useMemo } from 'react'
 import type { ScopeProfile } from '../../types/scope'
 import type { Reticle } from '../../types/reticle'
+import type { WingKey } from '../../App'
 import { calcPixelsPerMrad } from '../../math/optics'
 import ScopeProfilePanel from '../scope/ScopeProfilePanel'
 import CenterDotConfig from '../reticle/CenterDotConfig'
 import ColorInput from '../ui/ColorInput'
-import WingConfig from '../reticle/WingConfig'
+import WingEditor from '../reticle/WingEditor'
 import RasterStrategySelector from '../reticle/RasterStrategySelector'
+import RasterTable from '../table/RasterTable'
 import Section from '../ui/Section'
 import styles from './LeftPanel.module.css'
 
@@ -15,30 +17,51 @@ interface Props {
   setScope: (s: ScopeProfile) => void
   reticle: Reticle
   setReticle: (r: Reticle) => void
+  activeWing: WingKey
+  setActiveWing: (w: WingKey) => void
 }
 
-export default function LeftPanel({ scope, setScope, reticle, setReticle }: Props) {
+export default function LeftPanel({ scope, setScope, reticle, setReticle, activeWing, setActiveWing }: Props) {
   const ppm = useMemo(() => calcPixelsPerMrad(scope), [scope])
 
   return (
-    <aside className={styles.panel}>
+    <main className={styles.panel}>
       <ScopeProfilePanel scope={scope} setScope={setScope} />
-      <CenterDotConfig reticle={reticle} setReticle={setReticle} ppm={ppm} />
-      <Section title="ЦВЕТ СЕТКИ" collapsible={false}>
-        <ColorInput
-          label="Цвет"
-          value={reticle.color}
-          onChange={v => setReticle({ ...reticle, color: v })}
-        />
-        <div style={{ fontSize: 12, color: '#a1adc4', marginTop: 2, lineHeight: 1.6 }}>
-          Должен быть контрастным на тепловых палитрах (White Hot, Black Hot). Рекомендуется: зелёный #4ade80, красный #ff0000, белый #ffffff
+
+      <div className={styles.row2}>
+        <div className={styles.rowItem}>
+          <CenterDotConfig reticle={reticle} setReticle={setReticle} ppm={ppm} />
         </div>
-      </Section>
-      <WingConfig reticle={reticle} setReticle={setReticle} ppm={ppm} wingKey="up" title="↑ ВЕРХНЕЕ КРЫЛО" />
-      <WingConfig reticle={reticle} setReticle={setReticle} ppm={ppm} wingKey="down" title="↓ НИЖНЕЕ КРЫЛО" />
-      <WingConfig reticle={reticle} setReticle={setReticle} ppm={ppm} wingKey="left" title="← ЛЕВОЕ КРЫЛО" />
-      <WingConfig reticle={reticle} setReticle={setReticle} ppm={ppm} wingKey="right" title="→ ПРАВОЕ КРЫЛО" />
+        <div className={styles.rowItem}>
+          <Section title="ЦВЕТ СЕТКИ" collapsible={false}>
+            <ColorInput
+              label="Цвет"
+              value={reticle.color}
+              onChange={v => setReticle({ ...reticle, color: v })}
+            />
+            <div className={styles.colorHint}>
+              Контрастный на тепловых палитрах. Рекомендуется: #4ade80, #ff0000, #ffffff
+            </div>
+          </Section>
+        </div>
+      </div>
+
+      <WingEditor
+        reticle={reticle}
+        setReticle={setReticle}
+        ppm={ppm}
+        activeWing={activeWing}
+        setActiveWing={setActiveWing}
+      />
+
       <RasterStrategySelector reticle={reticle} setReticle={setReticle} />
-    </aside>
+
+      <RasterTable
+        scope={scope}
+        reticle={reticle}
+        activeWing={activeWing}
+        setActiveWing={setActiveWing}
+      />
+    </main>
   )
 }
