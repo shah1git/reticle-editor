@@ -2,6 +2,7 @@ import type { ScopeProfile } from '../types/scope'
 import type { Reticle } from '../types/reticle'
 import { calcPixelsPerMrad, snapToPixel } from '../math/optics'
 import { rasterize } from '../math/rasterization'
+import { errorToColor } from '../math/errorColor'
 
 export function exportPng(scope: ScopeProfile, reticle: Reticle): void {
   const ppm = calcPixelsPerMrad(scope)
@@ -72,6 +73,7 @@ export function exportPng(scope: ScopeProfile, reticle: Reticle): void {
           const dotY = cyPx + posPx * dy
           ctx.beginPath()
           ctx.arc(dotX, dotY, wingDotRadiusPx, 0, Math.PI * 2)
+          ctx.fillStyle = errorToColor(mark.errorPx)
           ctx.fill()
         }
       }

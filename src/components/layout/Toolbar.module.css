@@ -32,21 +32,21 @@
   color: var(--accent);
 }
 
-.link {
-  font-size: 10px;
-  color: var(--text-hint);
+.scopeBtn {
+  border: 1px solid var(--border-input);
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 11px;
+  color: var(--text-secondary);
   background: none;
-  border: none;
-  border-bottom: 1px dashed var(--text-hint);
-  cursor: pointer;
   font-family: var(--font);
-  padding: 0;
-  transition: color 0.15s;
+  cursor: pointer;
+  transition: all 0.15s;
 }
 
-.link:hover {
-  color: var(--text-secondary);
+.scopeBtn:hover {
   border-color: var(--text-secondary);
+  color: var(--text-primary);
 }
 
 .sep {
@@ -117,46 +117,15 @@
   background: rgba(0, 255, 136, 0.15);
 }
 
-/* Scope warning */
-.scopeWarning {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(255, 140, 66, 0.1);
-  color: var(--accent-orange);
-  border: 1px solid rgba(255, 140, 66, 0.3);
-  border-radius: 6px;
-  padding: 4px 12px;
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.scopeWarningBtn {
-  background: rgba(255, 140, 66, 0.15);
-  border: 1px solid rgba(255, 140, 66, 0.4);
-  color: var(--accent-orange);
-  padding: 2px 10px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 700;
-  font-family: var(--font);
-  cursor: pointer;
-  transition: background 0.15s;
-}
-
-.scopeWarningBtn:hover {
-  background: rgba(255, 140, 66, 0.25);
-}
-
 /* Strategy warning */
 @keyframes pulse {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  50% { opacity: 0.5; }
 }
 
 .strategyWarning {
   color: var(--accent-orange);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   animation: pulse 2s ease-in-out infinite;
 }

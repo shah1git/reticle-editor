@@ -4,9 +4,10 @@ import styles from './Tooltip.module.css'
 
 interface Props {
   text: string
+  align?: 'center' | 'left'
 }
 
-export default function Tooltip({ text }: Props) {
+export default function Tooltip({ text, align = 'center' }: Props) {
   const [open, setOpen] = useState(false)
   const btnRef = useRef<HTMLButtonElement>(null)
   const popupRef = useRef<HTMLDivElement>(null)
@@ -16,8 +17,13 @@ export default function Tooltip({ text }: Props) {
     if (!btnRef.current) return
     const rect = btnRef.current.getBoundingClientRect()
     const top = rect.bottom + 6
-    const centerX = rect.left + rect.width / 2
 
+    if (align === 'left') {
+      setPos({ top, right: window.innerWidth - rect.right, transform: 'none' })
+      return
+    }
+
+    const centerX = rect.left + rect.width / 2
     setPos({ top, left: centerX, transform: 'translateX(-50%)' })
 
     requestAnimationFrame(() => {
@@ -29,7 +35,7 @@ export default function Tooltip({ text }: Props) {
         setPos({ top, left: 'auto', right: 8, transform: 'none' })
       }
     })
-  }, [])
+  }, [align])
 
   useEffect(() => {
     if (!open) return

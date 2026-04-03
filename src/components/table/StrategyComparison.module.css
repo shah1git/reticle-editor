@@ -1,0 +1,110 @@
+.section {
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px 2px;
+  background: var(--bg-section);
+}
+
+.title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text-primary);
+}
+
+.subtitle {
+  font-size: 9px;
+  color: var(--text-secondary);
+  padding: 0 12px 6px;
+  background: var(--bg-section);
+}
+
+.tableWrap {
+  padding: 0 6px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9px;
+  font-family: var(--font-mono);
+}
+
+.table th {
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-secondary);
+  padding: 3px 2px;
+  text-align: right;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.table th:first-child {
+  text-align: left;
+}
+
+.thContent {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+}
+
+.table td {
+  padding: 4px 2px;
+  text-align: right;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.strategyName {
+  text-align: left !important;
+  color: var(--text-secondary) !important;
+  font-weight: 600;
+}
+
+.rowCurrent {
+  background: var(--accent-bg);
+}
+
+.rowCurrent td:first-child {
+  border-left: 2px solid var(--accent);
+}
+
+.checkCell {
+  width: 28px;
+  text-align: center !important;
+}
+
+.checkMark {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.recommend {
+  font-size: 7px;
+  color: var(--text-hint);
+  margin-left: 1px;
+}
+
+.driftWarn {
+  color: var(--accent-orange) !important;
+}
+
+.footer {
+  font-size: 9px;
+  color: var(--text-secondary);
+  padding: 4px 12px 8px;
+  text-align: center;
+  background: var(--bg-section);
+}

@@ -3,6 +3,7 @@ import type { Reticle } from '../../types/reticle'
 import type { PixelsPerMrad } from '../../math/optics'
 import { rasterize } from '../../math/rasterization'
 import { snapToPixel } from '../../math/optics'
+import { errorToColor } from '../../math/errorColor'
 
 interface Props {
   reticle: Reticle
@@ -108,7 +109,7 @@ export default function ReticleRenderer({ reticle, ppm, cx, cy, zoom }: Props) {
                 cx={dotCx}
                 cy={dotCy}
                 r={Math.max(dotRadiusScreen, 0.5)}
-                fill={color}
+                fill={errorToColor(mark.errorPx)}
               />
             )
           }

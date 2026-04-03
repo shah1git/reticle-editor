@@ -62,7 +62,7 @@ export default function App() {
           ppm={ppm}
           activeWing={activeWing} setActiveWing={setActiveWing}
         />
-        <Canvas scope={scope} reticle={reticle} bestStrategy={bestStrategy} />
+        <Canvas scope={scope} reticle={reticle} />
         <RightPanel
           scope={scope} reticle={reticle}
           activeWing={activeWing} setActiveWing={setActiveWing}

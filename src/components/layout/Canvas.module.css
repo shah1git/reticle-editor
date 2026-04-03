@@ -134,10 +134,22 @@
   color: var(--accent);
 }
 
-.strategyOk {
-  color: var(--accent);
+.legendRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
 }
 
-.strategyWarn {
-  color: var(--accent-orange);
+.gradient {
+  display: inline-block;
+  width: 40px;
+  height: 6px;
+  border-radius: 2px;
+  background: linear-gradient(to right, #00ff88, #ddcc00, #ff8c42, #ff3344);
+}
+
+.legendLabel {
+  font-size: 9px;
+  color: var(--text-hint);
 }

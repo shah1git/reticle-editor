@@ -1,8 +1,6 @@
 import { useRef, useState, useEffect, useMemo, useCallback } from 'react'
 import type { ScopeProfile } from '../../types/scope'
 import type { Reticle } from '../../types/reticle'
-import type { BestStrategyInfo } from '../../math/bestStrategy'
-import { strategyLabels } from '../../math/bestStrategy'
 import { calcPixelsPerMrad, getFovMrad } from '../../math/optics'
 import { useCanvasInteraction } from '../../hooks/useCanvasInteraction'
 import MradGrid from '../canvas/MradGrid'
@@ -12,10 +10,9 @@ import styles from './Canvas.module.css'
 interface Props {
   scope: ScopeProfile
   reticle: Reticle
-  bestStrategy: BestStrategyInfo
 }
 
-export default function Canvas({ scope, reticle, bestStrategy }: Props) {
+export default function Canvas({ scope, reticle }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [size, setSize] = useState({ width: 800, height: 600 })
   const [sizeReady, setSizeReady] = useState(false)
@@ -80,8 +77,6 @@ export default function Canvas({ scope, reticle, bestStrategy }: Props) {
     setTransform(prev => ({ ...prev, panX: 0, panY: 0 }))
   }, [setTransform])
 
-  const isOptimal = bestStrategy.best === reticle.rasterization
-
   return (
     <div className={styles.canvas} ref={containerRef}>
       <svg
@@ -115,14 +110,11 @@ export default function Canvas({ scope, reticle, bestStrategy }: Props) {
         )}
         <div>1 MRAD = <span className={styles.ppmValue}>{ppm.h.toFixed(1)}</span> пикс</div>
         <div>FOV: {fov.h.toFixed(0)} × {fov.v.toFixed(0)} MRAD</div>
-        {isOptimal ? (
-          <div className={styles.strategyOk}>Округление: {strategyLabels[reticle.rasterization]} ✓ (оптимальное)</div>
-        ) : (
-          <>
-            <div className={styles.strategyWarn}>Округление: {strategyLabels[reticle.rasterization]} ⚠</div>
-            <div className={styles.strategyWarn}>Оптимальное: {bestStrategy.bestLabel} (ошибка ±{bestStrategy.bestMaxError.toFixed(2)} пикс)</div>
-          </>
-        )}
+        <div className={styles.legendRow}>
+          <span className={styles.legendLabel}>0</span>
+          <span className={styles.gradient} />
+          <span className={styles.legendLabel}>±0.5px</span>
+        </div>
       </div>
 
       <div className={styles.hint}>

@@ -5,7 +5,6 @@ import type { Reticle } from '../../types/reticle'
 import type { PixelsPerMrad } from '../../math/optics'
 import type { RasterStrategy } from '../../types/rasterization'
 import type { BestStrategyInfo } from '../../math/bestStrategy'
-import { defaultScope } from '../../defaults'
 import ScopeProfilePanel from '../scope/ScopeProfilePanel'
 import styles from './Toolbar.module.css'
 
@@ -27,12 +26,6 @@ const strategyOptions: { value: RasterStrategy; label: string }[] = [
 export default function Toolbar({ scope, setScope, reticle, setReticle, ppm, bestStrategy }: Props) {
   const [scopeOpen, setScopeOpen] = useState(false)
 
-  const isDefaultScope = scope.name === 'По умолчанию' ||
-    (scope.name === defaultScope.name &&
-     scope.lensFL === defaultScope.lensFL &&
-     scope.sensorResX === defaultScope.sensorResX &&
-     scope.displayResX === defaultScope.displayResX)
-
   useEffect(() => {
     if (!scopeOpen) return
     const handler = (e: KeyboardEvent) => {
@@ -46,20 +39,12 @@ export default function Toolbar({ scope, setScope, reticle, setReticle, ppm, bes
 
   return (
     <div className={styles.toolbar}>
-      {isDefaultScope ? (
-        <div className={styles.scopeWarning}>
-          <span>⚠ ПРИЦЕЛ НЕ НАСТРОЕН —</span>
-          <button className={styles.scopeWarningBtn} onClick={() => setScopeOpen(true)}>настроить</button>
-          <span>чтобы ввести параметры вашего прицела</span>
-        </div>
-      ) : (
-        <div className={styles.group}>
-          <span className={styles.label}>ПРИЦЕЛ:</span>
-          <span className={styles.value}>{scope.name}</span>
-          <span className={styles.valueDim}>{ppm.h.toFixed(1)} пикс/MRAD</span>
-          <button className={styles.link} onClick={() => setScopeOpen(true)}>изменить</button>
-        </div>
-      )}
+      <div className={styles.group}>
+        <span className={styles.label}>ПРИЦЕЛ:</span>
+        <span className={styles.value}>{scope.name}</span>
+        <span className={styles.valueDim}>{ppm.h.toFixed(1)} пикс/MRAD</span>
+        <button className={styles.scopeBtn} onClick={() => setScopeOpen(true)}>настроить параметры прицела</button>
+      </div>
 
       <div className={styles.sep} />
 
