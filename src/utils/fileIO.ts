@@ -10,9 +10,10 @@ interface SaveData {
   scopeProfile: ScopeProfile
   reticle: Reticle
   rasterization: {
+    up: RasterMark[]
+    down: RasterMark[]
     left: RasterMark[]
     right: RasterMark[]
-    down: RasterMark[]
   }
 }
 
