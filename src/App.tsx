@@ -1,10 +1,12 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import type { ScopeProfile } from './types/scope'
 import type { Reticle } from './types/reticle'
 import { defaultScope, defaultReticle } from './defaults'
 import { saveToJson } from './utils/fileIO'
+import { calcPixelsPerMrad } from './math/optics'
 import { useKeyboard } from './hooks/useKeyboard'
 import TopBar from './components/layout/TopBar'
+import Toolbar from './components/layout/Toolbar'
 import LeftPanel from './components/layout/LeftPanel'
 import Canvas from './components/layout/Canvas'
 import RightPanel from './components/layout/RightPanel'
@@ -16,6 +18,8 @@ export default function App() {
   const [scope, setScope] = useState<ScopeProfile>(defaultScope)
   const [reticle, setReticle] = useState<Reticle>(defaultReticle)
   const [activeWing, setActiveWing] = useState<WingKey>('down')
+  const [tableOpen, setTableOpen] = useState(false)
+  const ppm = useMemo(() => calcPixelsPerMrad(scope), [scope])
 
   const handleSave = useCallback(() => {
     saveToJson(scope, reticle)
@@ -26,16 +30,18 @@ export default function App() {
   return (
     <div className="app">
       <TopBar scope={scope} reticle={reticle} setScope={setScope} setReticle={setReticle} />
+      <Toolbar scope={scope} setScope={setScope} reticle={reticle} setReticle={setReticle} ppm={ppm} />
       <div className="app-body">
         <LeftPanel
-          scope={scope} setScope={setScope}
           reticle={reticle} setReticle={setReticle}
+          ppm={ppm}
           activeWing={activeWing} setActiveWing={setActiveWing}
         />
         <Canvas scope={scope} reticle={reticle} />
         <RightPanel
           scope={scope} reticle={reticle}
           activeWing={activeWing} setActiveWing={setActiveWing}
+          tableOpen={tableOpen} setTableOpen={setTableOpen}
         />
       </div>
     </div>

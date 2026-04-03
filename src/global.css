@@ -44,6 +44,7 @@
 
   /* Layout */
   --topbar-height: 52px;
+  --toolbar-height: 36px;
 }
 
 html, #root {

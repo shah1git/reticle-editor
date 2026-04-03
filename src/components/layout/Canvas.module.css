@@ -1,7 +1,7 @@
 .canvas {
   flex: 1;
   min-width: 400px;
-  height: calc(100vh - var(--topbar-height));
+  height: calc(100vh - var(--topbar-height) - var(--toolbar-height));
   background: var(--bg-canvas);
   overflow: hidden;
   position: relative;

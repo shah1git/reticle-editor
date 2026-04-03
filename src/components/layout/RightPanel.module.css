@@ -1,10 +1,60 @@
 .panel {
-  width: 380px;
-  min-width: 380px;
-  height: calc(100vh - var(--topbar-height));
+  height: calc(100vh - var(--topbar-height) - var(--toolbar-height));
   border-left: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   background: var(--bg-panel);
   overflow: hidden;
+  transition: width 0.2s ease, min-width 0.2s ease;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.collapseBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: 1px solid var(--border-input);
+  color: var(--text-secondary);
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: var(--font);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  transition: all 0.15s;
+}
+
+.collapseBtn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.collapsedInner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.collapsedInner:hover {
+  background: var(--bg-hover);
+}
+
+.collapsedText {
+  writing-mode: vertical-lr;
+  transform: rotate(180deg);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  white-space: nowrap;
 }
