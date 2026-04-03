@@ -9,9 +9,9 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  border: 1px solid var(--text-hint);
+  border: 1px solid var(--text-hint, #6b7394);
   background: transparent;
-  color: var(--text-hint);
+  color: var(--text-hint, #6b7394);
   font-size: 9px;
   font-weight: 700;
   font-family: var(--font);
@@ -25,26 +25,22 @@
 }
 
 .icon:hover {
-  border-color: var(--text-secondary);
-  color: var(--text-secondary);
+  border-color: var(--text-secondary, #8b95b0);
+  color: var(--text-secondary, #8b95b0);
 }
 
 .popup {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-top: 6px;
-  background: var(--bg-input);
-  border: 1px solid var(--border-input);
+  background: var(--bg-input, #1e2230);
+  border: 1px solid var(--border-input, #2e3346);
   border-radius: 6px;
   padding: 10px 14px;
   max-width: 280px;
   min-width: 160px;
   font-size: 12px;
-  color: var(--text-secondary);
+  color: var(--text-secondary, #8b95b0);
   line-height: 1.6;
-  z-index: 100;
+  z-index: 10000;
   white-space: normal;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  font-family: var(--font);
 }
