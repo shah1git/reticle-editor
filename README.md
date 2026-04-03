@@ -4,11 +4,15 @@
 
 **Демо:** https://shah1git.github.io/reticle-editor/
 
+## Правила разработки
+
+1. **Каждое изменение должно быть задокументировано.** При добавлении, удалении или изменении компонентов, API, layout, моделей данных или поведения — обновить соответствующий раздел этого README. Коммит без обновления документации не считается завершённым.
+
 ## Стек
 
-- **Vite** + **React 18** + **TypeScript** (strict)
+- **Vite** + **React 19** + **TypeScript** (strict)
 - SVG-рендеринг на canvas с zoom/pan
-- CSS Modules, шрифты Inter + JetBrains Mono (Google Fonts)
+- CSS Modules, шрифт JetBrains Mono (Google Fonts)
 - Без внешних UI-библиотек, без runtime-зависимостей кроме React
 
 ## Быстрый старт
@@ -54,16 +58,16 @@ src/
 └── components/
     ├── layout/
     │   ├── TopBar.tsx          # Шапка: логотип, кнопки Открыть/Сохранить/Экспорт
-    │   ├── LeftPanel.tsx       # Левая колонка (flex:1, scroll): настройки + таблица
-    │   ├── RightPanel.tsx      # Правая колонка (350px, sticky): canvas + сводка
-    │   ├── Canvas.tsx          # SVG-canvas с zoom/pan, grid, reticle, test objects
-    │   └── SummaryCards.tsx    # 2×2 сводка под canvas: метки, ошибка, шаги, стратегия
+    │   ├── LeftPanel.tsx       # Левая колонка (300px, scroll): настройки сетки
+    │   ├── Canvas.tsx          # Центр (flex:1): SVG-canvas с zoom/pan, grid, reticle
+    │   ├── RightPanel.tsx      # Правая колонка (380px): таблица растеризации + сводка
+    │   └── SummaryCards.tsx    # 2×2 сводка: метки, ошибка, шаги, стратегия
     │
     ├── scope/
     │   └── ScopeProfilePanel.tsx  # Параметры прицела (тип, фокус, сенсор, дисплей)
     │
     ├── reticle/
-    │   ├── WingEditor.tsx      # Табы крыльев + горизонтальная сетка параметров
+    │   ├── WingEditor.tsx      # Табы крыльев + параметры (длина, толщина, точки)
     │   ├── CenterDotConfig.tsx # Радиус центральной точки (MRAD, snap к пикселям)
     │   └── RasterStrategySelector.tsx # Выбор А/Б/В + сворачиваемое описание
     │
@@ -73,7 +77,7 @@ src/
     ├── canvas/
     │   ├── ReticleRenderer.tsx # SVG-рендеринг сетки (центр. точка, крылья, метки)
     │   ├── MradGrid.tsx        # Фоновая MRAD-сетка с подписями
-    │   └── TestObjectOverlay.tsx # Тестовый объект (цель) с ползунком дистанции
+    │   └── TestObjectOverlay.tsx # Тестовый объект (цель), перетаскиваемый мышью
     │
     └── ui/
         ├── NumberInput.tsx     # Числовое поле с пиксельным эквивалентом и подсказкой
@@ -81,7 +85,7 @@ src/
         ├── CheckboxInput.tsx   # Чекбокс
         ├── SelectInput.tsx     # Выпадающий список
         ├── Section.tsx         # Сворачиваемая секция с заголовком и тултипом
-        └── Tooltip.tsx         # Тултип «?» с подсказкой при наведении/клике
+        └── Tooltip.tsx         # Тултип «?» — portal в body, position:fixed
 ```
 
 ## Модель данных
@@ -116,6 +120,20 @@ interface Reticle {
 
 Два типа: `digital` (тепловизор/ночник — фокус, сенсор, дисплей, pixel pitch) и `optical` (оптика — FOV, дисплей для экспорта). Из параметров вычисляется `pixelsPerMrad` — ключевой коэффициент пересчёта.
 
+### TestObjectState (тестовый объект)
+
+```typescript
+interface TestObjectState {
+  enabled: boolean
+  objectIdx: number    // Индекс в массиве TEST_OBJECTS
+  distance: number     // Дистанция в метрах (1–3000)
+  offsetX: number      // Смещение от центра по горизонтали (MRAD)
+  offsetY: number      // Смещение от центра по вертикали (MRAD)
+}
+```
+
+Тестовый объект перетаскивается мышью по canvas (левый клик + drag). Позиция хранится в MRAD, не в пикселях. Кнопка «В центр» сбрасывает offset в (0, 0).
+
 ## Стратегии растеризации
 
 Проблема: интервал между метками в MRAD × pixelsPerMrad почти никогда не равен целому числу пикселей. Три стратегии:
@@ -131,9 +149,23 @@ interface Reticle {
 
 ## Layout
 
-Две колонки:
-- **Левая** (flex:1, scroll): профиль прицела → центральная точка + цвет → крылья (табы) → стратегия растеризации → таблица растеризации
-- **Правая** (350px, sticky): SVG-canvas + сводка 2×2
+Три колонки:
+- **Левая** (300px, scroll): профиль прицела → центральная точка → цвет → крылья (табы) → стратегия растеризации
+- **Центр** (flex:1): SVG-canvas с MRAD-сеткой, рендеринг сетки, тестовый объект, zoom/pan
+- **Правая** (380px): таблица растеризации (табы крыльев, данные, итоги, легенда) + сводка 2×2
+
+## Цветовая палитра
+
+```css
+--bg-main: #12141c;        --accent: #00ff88;
+--bg-panel: #181b25;       --accent-orange: #ff8c42;
+--bg-canvas: #0e1017;      --text-primary: #e8ecf4;
+--bg-input: #1e2230;       --text-secondary: #8b95b0;
+--bg-section: #1a1d28;     --text-value: #ffffff;
+--border: #252938;         --border-focus: #00ff88;
+```
+
+Шрифт: `JetBrains Mono` — для всего интерфейса (моноширинный, инженерный стиль).
 
 ## Формат JSON
 
@@ -147,7 +179,7 @@ interface Reticle {
 
 ## Деплой
 
-GitHub Pages через GitHub Actions (`.github/workflows/`). Push в `main` → автоматическая сборка и деплой.
+GitHub Pages через GitHub Actions (`.github/workflows/deploy.yml`). Push в `main` → автоматическая сборка и деплой.
 
 ## Лицензия
 
