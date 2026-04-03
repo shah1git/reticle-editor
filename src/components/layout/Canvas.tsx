@@ -64,6 +64,22 @@ export default function Canvas({ scope, reticle, bestStrategy }: Props) {
     setTransform({ zoom: 30, panX: 0, panY: 0 })
   }, [setTransform])
 
+  const handleZoomIn = useCallback(() => {
+    setTransform(prev => ({ ...prev, zoom: Math.min(200, prev.zoom * 1.1) }))
+  }, [setTransform])
+
+  const handleZoomOut = useCallback(() => {
+    setTransform(prev => ({ ...prev, zoom: Math.max(2, prev.zoom / 1.1) }))
+  }, [setTransform])
+
+  const handlePan = useCallback((dx: number, dy: number) => {
+    setTransform(prev => ({ ...prev, panX: prev.panX + dx, panY: prev.panY + dy }))
+  }, [setTransform])
+
+  const handleCenter = useCallback(() => {
+    setTransform(prev => ({ ...prev, panX: 0, panY: 0 }))
+  }, [setTransform])
+
   const isOptimal = bestStrategy.best === reticle.rasterization
 
   return (
@@ -115,9 +131,24 @@ export default function Canvas({ scope, reticle, bestStrategy }: Props) {
         </span>
         <span className={styles.hintText}>Alt+Перемещение: сдвиг · Прокрутка: масштаб · Ctrl+S: сохранить</span>
       </div>
-      <div className={styles.btnGroup}>
-        <button className={styles.fitBtn} onClick={handleReset}>Сброс</button>
-        <button className={styles.fitBtn} onClick={handleFitFov}>Весь FOV</button>
+      <div className={styles.controls}>
+        <div className={styles.zoomControls}>
+          <button className={styles.ctrlBtn} onClick={handleZoomIn}>+</button>
+          <button className={styles.ctrlBtn} onClick={handleZoomOut}>−</button>
+        </div>
+        <div className={styles.panControls}>
+          <button className={styles.ctrlBtn} onClick={() => handlePan(0, 80)}>↑</button>
+          <div className={styles.panRow}>
+            <button className={styles.ctrlBtn} onClick={() => handlePan(80, 0)}>←</button>
+            <button className={styles.ctrlBtn} onClick={handleCenter}>⊙</button>
+            <button className={styles.ctrlBtn} onClick={() => handlePan(-80, 0)}>→</button>
+          </div>
+          <button className={styles.ctrlBtn} onClick={() => handlePan(0, -80)}>↓</button>
+        </div>
+        <div className={styles.actionBtns}>
+          <button className={styles.fitBtn} onClick={handleReset}>Сброс</button>
+          <button className={styles.fitBtn} onClick={handleFitFov}>Весь FOV</button>
+        </div>
       </div>
     </div>
   )

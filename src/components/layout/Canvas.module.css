@@ -16,7 +16,7 @@
   position: absolute;
   bottom: 8px;
   left: 10px;
-  right: 80px;
+  right: 110px;
   display: flex;
   flex-direction: column;
   gap: 3px;
@@ -38,10 +38,56 @@
   opacity: 0.8;
 }
 
-.btnGroup {
+.controls {
   position: absolute;
   bottom: 10px;
   right: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.zoomControls {
+  display: flex;
+  gap: 2px;
+}
+
+.panControls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.panRow {
+  display: flex;
+  gap: 2px;
+}
+
+.ctrlBtn {
+  width: 28px;
+  height: 28px;
+  background: rgba(14, 16, 23, 0.85);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: var(--font);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  padding: 0;
+}
+
+.ctrlBtn:hover {
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
+
+.actionBtns {
   display: flex;
   gap: 4px;
 }
