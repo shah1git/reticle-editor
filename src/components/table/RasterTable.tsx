@@ -17,14 +17,14 @@ interface Props {
 const tabLabels: Record<WingKey, string> = {
   up: '↑ Верхнее',
   down: '↓ Нижнее',
-  left: '← Л��вое',
+  left: '← Левое',
   right: '→ Правое',
 }
 
 const wingNames: Record<WingKey, string> = {
   up: 'ВЕРХНЕЕ',
-  down: 'НИЖН��Е',
-  left: 'ЛЕ��ОЕ',
+  down: 'НИЖНЕЕ',
+  left: 'ЛЕВОЕ',
   right: 'ПРАВОЕ',
 }
 
@@ -89,7 +89,7 @@ export default function RasterTable({ scope, reticle, activeWing, setActiveWing 
           ) : (
             <>
               <div className={styles.summary}>
-                {wingNames[activeWing]} • {marks.length} меток • макс. ошибка {maxError.toFixed(2)} пикс • шаги: {steps.allEqual ? `все = ${steps.min}` : `${steps.min}–${steps.max}`} пикс
+                {wingNames[activeWing]} &bull; {marks.length} меток &bull; макс. ошибка {maxError.toFixed(2)} пикс &bull; шаги: {steps.allEqual ? `все = ${steps.min}` : `${steps.min}–${steps.max}`} пикс
               </div>
 
               <div className={styles.tableWrap}>
@@ -121,16 +121,16 @@ export default function RasterTable({ scope, reticle, activeWing, setActiveWing 
 
               <div className={styles.totals}>
                 <div>Всего меток: {marks.length}</div>
-                <div>Макс. ошибка: {maxError.toFixed(2)} пи��с</div>
-                <div>Шаги: {steps.allEqual ? `все = ${steps.min} пикс` : `от ${steps.min} до ${steps.max} п��кс`}</div>
+                <div>Макс. ошибка: {maxError.toFixed(2)} пикс</div>
+                <div>Шаги: {steps.allEqual ? `все = ${steps.min} пикс` : `от ${steps.min} до ${steps.max} пикс`}</div>
                 <div>Ошибка последней метки: {lastError >= 0 ? '+' : ''}{lastError.toFixed(2)} пикс{reticle.rasterization === 'fixed_step' ? ' (накопленная — шкала растянута/сжата)' : ' (без накопления)'}</div>
               </div>
 
               <div className={styles.legend}>
                 <div className={styles.legendTitle}>Цвета:</div>
-                <div className={styles.legendRow}><span className={styles.dotGreen} /> ≤ 0.1 пикс — отлично</div>
-                <div className={styles.legendRow}><span className={styles.dotGray} /> ≤ 0.4 пикс — нормально</div>
-                <div className={styles.legendRow}><span className={styles.dotOrange} /> {'>'} 0.4 пикс — заметно</div>
+                <div className={styles.legendRow}><span className={styles.dotGreen} /> &le; 0.1 пикс — отлично</div>
+                <div className={styles.legendRow}><span className={styles.dotGray} /> &le; 0.4 пикс — нормально</div>
+                <div className={styles.legendRow}><span className={styles.dotOrange} /> &gt; 0.4 пикс — заметно</div>
                 <div className={styles.legendRow}><span className={styles.dotOrange} /> янтарный шаг — неравномерно</div>
               </div>
             </>
@@ -138,12 +138,12 @@ export default function RasterTable({ scope, reticle, activeWing, setActiveWing 
         </div>
 
         <div className={styles.howToRead}>
-          <div className={styles.howToReadTitle}>КАК ЧИТАТЬ ��АБЛИЦУ</div>
-          <p><b># (номер метки)</b><br />Порядковый номер точки от центра. Метка #1 стоит ближе всего к перекрестию, последняя — на краю крыла. Количество меток = длина крыла ÷ интервал.</p>
-          <p><b>MRAD (идеальная позиция)</b><br />Где метка ДОЛЖНА стоять по расчёту: номер × интервал. Это дробное число — точная математическая позиция, не зависящая от ограничений пикселей.</p>
+          <div className={styles.howToReadTitle}>КАК ЧИТАТЬ ТАБЛИЦУ</div>
+          <p><b># (номер метки)</b><br />Порядковый номер точки от центра. Метка #1 стоит ближе всего к перекрестию, последняя — на краю крыла. Количество меток = длина крыла &divide; интервал.</p>
+          <p><b>MRAD (идеальная позиция)</b><br />Где метка ДОЛЖНА стоять по расчёту: номер &times; интервал. Это дробное число — точная математическая позиция, не зависящая от ограничений пикселей.</p>
           <p><b>пикс (фактическая позиция)</b><br />Где метка РЕАЛЬНО встанет на дисплее — целое число пикселей. Результат работы стратегии растеризации. Именно эти числа используются при экспорте PNG и передаче спецификации на производство.</p>
-          <p><b>факт. MRAD (обратный пересчёт)</b><br />Как��й MRAD реально получился: пикс ÷ (пикселей на MRAD). Позволяет оценить реальную угловую позицию метки после округления. Сравните с колонкой MRAD — разница показывает угловую ошибку.</p>
-          <p><b>ошибка (отклонение в пикселях)</b><br />Насколько реальная позиция отличае��ся от идеальной. Знак «+» — метка сдвинута дальше от центра, «−» — ближе. Зелёный (≤0.1) — отлично, серый (≤0.4) ��� нормально, янтарный ({'>'}0.4) — замет��о на практике.</p>
+          <p><b>факт. MRAD (обратный пересчёт)</b><br />Какой MRAD реально получился: пикс &divide; (пикселей на MRAD). Позволяет оценить реальную угловую позицию метки после округления. Сравните с колонкой MRAD — разница показывает угловую ошибку.</p>
+          <p><b>ошибка (отклонение в пикселях)</b><br />Насколько реальная позиция отличается от идеальной. Знак &laquo;+&raquo; — метка сдвинута дальше от центра, &laquo;&minus;&raquo; — ближе. Зелёный (&le;0.1) — отлично, серый (&le;0.4) — нормально, янтарный (&gt;0.4) — заметно на практике.</p>
           <p><b>шаг (расстояние от предыдущей)</b><br />Сколько пикселей между этой меткой и предыдущей. Для стратегии Б все шаги одинаковые. Для А и В — чередуются два значения (floor и ceil). Янтарный цвет = шаг отличается от первого, что указывает на визуальную неравномерность.</p>
         </div>
       </div>
