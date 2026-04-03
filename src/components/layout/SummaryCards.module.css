@@ -1,8 +1,8 @@
 .container {
-  padding: 8px;
+  padding: 10px;
   border-top: 1px solid var(--border);
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  grid-template-columns: 1fr 1fr;
   gap: 6px;
   background: var(--bg-section);
   flex-shrink: 0;

@@ -9,7 +9,7 @@ import TopBar from './components/layout/TopBar'
 import Toolbar from './components/layout/Toolbar'
 import LeftPanel from './components/layout/LeftPanel'
 import Canvas from './components/layout/Canvas'
-import BottomPanel from './components/layout/BottomPanel'
+import RightPanel from './components/layout/RightPanel'
 import './global.css'
 
 export type WingKey = 'up' | 'down' | 'left' | 'right'
@@ -30,16 +30,14 @@ export default function App() {
     <div className="app">
       <TopBar scope={scope} reticle={reticle} setScope={setScope} setReticle={setReticle} />
       <Toolbar scope={scope} setScope={setScope} reticle={reticle} setReticle={setReticle} ppm={ppm} />
-      <div className="app-main">
-        <div className="app-top">
-          <LeftPanel
-            reticle={reticle} setReticle={setReticle}
-            ppm={ppm}
-            activeWing={activeWing} setActiveWing={setActiveWing}
-          />
-          <Canvas scope={scope} reticle={reticle} />
-        </div>
-        <BottomPanel
+      <div className="app-body">
+        <LeftPanel
+          reticle={reticle} setReticle={setReticle}
+          ppm={ppm}
+          activeWing={activeWing} setActiveWing={setActiveWing}
+        />
+        <Canvas scope={scope} reticle={reticle} />
+        <RightPanel
           scope={scope} reticle={reticle}
           activeWing={activeWing} setActiveWing={setActiveWing}
         />
