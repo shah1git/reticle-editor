@@ -133,6 +133,7 @@ export default function WingEditor({ reticle, setReticle, ppm, activeWing, setAc
                 step={0.1}
                 pxValue={wing.dots.spacing * axisPpm}
                 unit="MRAD"
+                hint={`Расстояние между соседними точками-метками на крыле в MRAD. Определяет, как часто расставлены деления шкалы.\n\nПри интервале 1.0 и длине ${wing.length.toFixed(1)} получится ${Math.floor(wing.length / wing.dots.spacing)} точек. Количество меток = длина \u00f7 интервал (дробные отбрасываются).\n\nИменно этот параметр порождает проблему растеризации: интервал \u00d7 пикселей на MRAD почти никогда не равен целому числу пикселей.`}
               />
             </>
           )}
