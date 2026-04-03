@@ -2,6 +2,7 @@ import { useRef, useState, useEffect, useMemo, useCallback } from 'react'
 import type { ScopeProfile } from '../../types/scope'
 import type { Reticle } from '../../types/reticle'
 import { calcPixelsPerMrad, getFovMrad } from '../../math/optics'
+import { findBestStrategy, strategyLabels } from '../../math/bestStrategy'
 import { useCanvasInteraction } from '../../hooks/useCanvasInteraction'
 import MradGrid from '../canvas/MradGrid'
 import ReticleRenderer from '../canvas/ReticleRenderer'
@@ -20,6 +21,8 @@ export default function Canvas({ scope, reticle }: Props) {
   const { transform, handlers, setTransform } = useCanvasInteraction()
   const ppm = useMemo(() => calcPixelsPerMrad(scope), [scope])
   const fov = useMemo(() => getFovMrad(scope), [scope])
+  const bestStrategy = useMemo(() => findBestStrategy(reticle, ppm), [reticle, ppm])
+  const isOptimal = bestStrategy.best === reticle.rasterization
 
   useEffect(() => {
     const el = containerRef.current
@@ -111,6 +114,14 @@ export default function Canvas({ scope, reticle }: Props) {
         )}
         <div>1 MRAD = <span className={styles.ppmValue}>{ppm.h.toFixed(1)}</span> пикс</div>
         <div>FOV: {fov.h.toFixed(0)} × {fov.v.toFixed(0)} MRAD</div>
+        {isOptimal ? (
+          <div className={styles.roundingLine}>Округление: {strategyLabels[reticle.rasterization]} <span className={styles.roundingCheck}>✓</span></div>
+        ) : (
+          <>
+            <div className={styles.roundingLine}>Округление: {strategyLabels[reticle.rasterization]}</div>
+            <div className={styles.roundingOptimal}>Оптимально: {bestStrategy.bestLabel} (±{bestStrategy.bestMaxError.toFixed(2)} пикс)</div>
+          </>
+        )}
         <div className={styles.legendRow}>
           <span className={styles.legendLabel}>0</span>
           <span className={styles.gradient} />

@@ -6,12 +6,12 @@
 
 :root {
   /* Backgrounds */
-  --bg-main: #12141c;
-  --bg-panel: #181b25;
-  --bg-canvas: #0e1017;
-  --bg-input: #1e2230;
-  --bg-section: #1a1d28;
-  --bg-hover: #222636;
+  --bg-main: #13151e;
+  --bg-panel: #1a1d28;
+  --bg-canvas: #0d0f16;
+  --bg-input: #222638;
+  --bg-section: #1e2130;
+  --bg-hover: #282d3e;
   --bg-active: #1a2a22;
 
   /* Accents */
@@ -28,14 +28,14 @@
   --danger: #ff5c6c;
 
   /* Text */
-  --text-primary: #e8ecf4;
-  --text-secondary: #8b95b0;
-  --text-hint: #6b7394;
+  --text-primary: #f0f2f8;
+  --text-secondary: #b0b8cc;
+  --text-hint: #8892ae;
   --text-value: #ffffff;
 
   /* Borders */
-  --border: #252938;
-  --border-input: #2e3346;
+  --border: #2e3348;
+  --border-input: #3a4058;
   --border-focus: #00ff88;
 
   /* Fonts */

@@ -120,19 +120,35 @@
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 8px 12px;
-  font-size: 10px;
-  color: var(--text-secondary);
+  font-size: 13px;
+  color: var(--text-primary);
   pointer-events: none;
   line-height: 1.6;
 }
 
 .scopeName {
   color: var(--text-primary);
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 15px;
 }
 
 .ppmValue {
   color: var(--accent);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.roundingLine {
+  font-size: 13px;
+}
+
+.roundingCheck {
+  color: var(--accent);
+}
+
+.roundingOptimal {
+  font-size: 12px;
+  color: var(--accent-orange);
 }
 
 .legendRow {
@@ -151,6 +167,6 @@
 }
 
 .legendLabel {
-  font-size: 9px;
+  font-size: 12px;
   color: var(--text-hint);
 }
