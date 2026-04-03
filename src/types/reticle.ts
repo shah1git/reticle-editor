@@ -14,9 +14,10 @@ export interface Reticle {
     radius: number  // MRAD, snapped to whole pixels via snapToPixel
   }
   wings: {
+    up: Wing
+    down: Wing
     left: Wing
     right: Wing
-    down: Wing
   }
   color: string          // hex color for entire reticle
   rasterization: 'independent' | 'fixed_step' | 'bresenham'

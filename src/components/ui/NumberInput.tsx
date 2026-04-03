@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import styles from './NumberInput.module.css'
 
 interface Props {
@@ -7,14 +8,41 @@ interface Props {
   min?: number
   max?: number
   step?: number
+  defaultValue?: number
   pxValue?: number | null
   unit?: string
   hint?: string
+  snapFn?: (v: number) => number
 }
 
 export default function NumberInput({
-  label, value, onChange, min = 0, max = 99999, step = 0.01, pxValue, unit = 'MRAD', hint,
+  label, value, onChange, min, max, step = 0.01, defaultValue, pxValue, unit = 'MRAD', hint, snapFn,
 }: Props) {
+  const [text, setText] = useState(String(value))
+  const [focused, setFocused] = useState(false)
+
+  useEffect(() => {
+    if (!focused) setText(String(value))
+  }, [value, focused])
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value
+    setText(raw)
+    const v = parseFloat(raw)
+    if (!isNaN(v)) onChange(v)
+  }
+
+  const handleBlur = () => {
+    setFocused(false)
+    let v = parseFloat(text)
+    if (isNaN(v) || text.trim() === '') v = defaultValue ?? min ?? 0
+    if (min != null && v < min) v = min
+    if (max != null && v > max) v = max
+    if (snapFn) v = snapFn(v)
+    onChange(v)
+    setText(String(v))
+  }
+
   const isWholePixel = pxValue != null && Math.abs(pxValue - Math.round(pxValue)) < 0.01
   const roundedPx = pxValue != null ? Math.round(pxValue) : null
 
@@ -32,13 +60,10 @@ export default function NumberInput({
         <input
           type="number"
           className={styles.input}
-          value={value}
-          onChange={e => {
-            const v = parseFloat(e.target.value)
-            if (!isNaN(v)) onChange(Math.min(max, Math.max(min, v)))
-          }}
-          min={min}
-          max={max}
+          value={text}
+          onChange={handleChange}
+          onFocus={() => setFocused(true)}
+          onBlur={handleBlur}
           step={step}
         />
         {unit && <span className={styles.unit}>{unit}</span>}

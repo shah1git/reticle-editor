@@ -34,9 +34,10 @@ export default function LeftPanel({ scope, setScope, reticle, setReticle }: Prop
           Должен быть контрастным на тепловых палитрах (White Hot, Black Hot). Рекомендуется зелёный или красный
         </div>
       </Section>
+      <WingConfig reticle={reticle} setReticle={setReticle} ppm={ppm} wingKey="up" title="↑ ВЕРХНЕЕ КРЫЛО" />
+      <WingConfig reticle={reticle} setReticle={setReticle} ppm={ppm} wingKey="down" title="↓ НИЖНЕЕ КРЫЛО" />
       <WingConfig reticle={reticle} setReticle={setReticle} ppm={ppm} wingKey="left" title="← ЛЕВОЕ КРЫЛО" />
       <WingConfig reticle={reticle} setReticle={setReticle} ppm={ppm} wingKey="right" title="→ ПРАВОЕ КРЫЛО" />
-      <WingConfig reticle={reticle} setReticle={setReticle} ppm={ppm} wingKey="down" title="↓ НИЖНЕЕ КРЫЛО" />
       <RasterStrategySelector reticle={reticle} setReticle={setReticle} />
     </aside>
   )

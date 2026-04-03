@@ -49,17 +49,31 @@ export function TestObjectControls({ state, setState }: ControlsProps) {
               <option key={i} value={i}>{o.name}</option>
             ))}
           </select>
+          <div className={styles.distRow}>
+            <span className={styles.distLabelText}>Дистанция</span>
+          </div>
           <div className={styles.sliderRow}>
             <input
               type="range"
-              min={10}
-              max={1500}
-              step={10}
+              min={1}
+              max={3000}
+              step={1}
               value={state.distance}
               onChange={e => setState({ ...state, distance: Number(e.target.value) })}
               className={styles.slider}
             />
-            <span className={styles.distLabel}>{state.distance} м</span>
+            <input
+              type="number"
+              className={styles.distInput}
+              value={state.distance}
+              min={1}
+              max={3000}
+              onChange={e => {
+                const v = Number(e.target.value)
+                if (!isNaN(v)) setState({ ...state, distance: Math.max(1, Math.min(3000, v)) })
+              }}
+            />
+            <span className={styles.distUnit}>м</span>
           </div>
           <div className={styles.info}>
             {heightMrad.toFixed(2)} × {widthMrad.toFixed(2)} MRAD

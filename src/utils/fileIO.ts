@@ -19,10 +19,10 @@ interface SaveData {
 export function saveToJson(scope: ScopeProfile, reticle: Reticle): void {
   const ppm = calcPixelsPerMrad(scope)
 
-  const buildMarks = (wingKey: 'left' | 'right' | 'down'): RasterMark[] => {
+  const buildMarks = (wingKey: 'up' | 'down' | 'left' | 'right'): RasterMark[] => {
     const wing = reticle.wings[wingKey]
-    if (!wing.enabled || !wing.dots.enabled || wing.dots.spacing <= 0) return []
-    const axisPpm = wingKey === 'down' ? ppm.v : ppm.h
+    if (!wing.enabled || wing.length <= 0 || !wing.dots.enabled || wing.dots.spacing <= 0) return []
+    const axisPpm = (wingKey === 'down' || wingKey === 'up') ? ppm.v : ppm.h
     const count = Math.floor(wing.length / wing.dots.spacing)
     return rasterize(reticle.rasterization, wing.dots.spacing, axisPpm, count)
   }
@@ -33,9 +33,10 @@ export function saveToJson(scope: ScopeProfile, reticle: Reticle): void {
     scopeProfile: scope,
     reticle,
     rasterization: {
+      up: buildMarks('up'),
+      down: buildMarks('down'),
       left: buildMarks('left'),
       right: buildMarks('right'),
-      down: buildMarks('down'),
     },
   }
 

@@ -55,12 +55,40 @@
   height: 3px;
 }
 
-.distLabel {
-  font-size: 10px;
+.distRow {
+  display: flex;
+  align-items: center;
+}
+
+.distLabelText {
+  font-size: 9px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.distInput {
+  width: 52px;
+  background: var(--bg-main);
+  border: 1px solid var(--border-input);
   color: var(--accent-orange);
-  font-weight: 600;
-  min-width: 42px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-family: var(--font);
+  outline: none;
   text-align: right;
+  -moz-appearance: textfield;
+}
+
+.distInput::-webkit-inner-spin-button,
+.distInput::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+.distUnit {
+  font-size: 10px;
+  color: var(--text-secondary);
 }
 
 .info {

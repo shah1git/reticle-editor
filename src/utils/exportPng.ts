@@ -30,13 +30,13 @@ export function exportPng(scope: ScopeProfile, reticle: Reticle): void {
   }
 
   // Wings
-  const dirs = ['left', 'right', 'down'] as const
+  const dirs = ['up', 'down', 'left', 'right'] as const
   for (const dir of dirs) {
     const wing = reticle.wings[dir]
-    if (!wing.enabled) continue
+    if (!wing.enabled || wing.length <= 0) continue
 
     const dx = dir === 'left' ? -1 : dir === 'right' ? 1 : 0
-    const dy = dir === 'down' ? 1 : 0
+    const dy = dir === 'down' ? 1 : dir === 'up' ? -1 : 0
     const axisPpm = dy !== 0 ? ppm.v : ppm.h
     const gapPx = dotRadiusPx
 

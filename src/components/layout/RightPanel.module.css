@@ -1,6 +1,6 @@
 .panel {
-  width: 340px;
-  min-width: 340px;
+  width: 360px;
+  min-width: 360px;
   background: var(--bg-panel);
   border-left: 1px solid var(--border);
   overflow-y: auto;

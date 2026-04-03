@@ -8,13 +8,13 @@ interface Props {
   reticle: Reticle
   setReticle: (r: Reticle) => void
   ppm: PixelsPerMrad
-  wingKey: 'left' | 'right' | 'down'
+  wingKey: 'up' | 'down' | 'left' | 'right'
   title: string
 }
 
 export default function WingConfig({ reticle, setReticle, ppm, wingKey, title }: Props) {
   const wing = reticle.wings[wingKey]
-  const axisPpm = wingKey === 'down' ? ppm.v : ppm.h
+  const axisPpm = (wingKey === 'down' || wingKey === 'up') ? ppm.v : ppm.h
   const ppmMin = Math.min(ppm.h, ppm.v)
 
   const updateWing = (patch: Partial<Wing>) => {

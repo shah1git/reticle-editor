@@ -12,7 +12,7 @@ interface Props {
   zoom: number // screen px per MRAD
 }
 
-type Dir = 'left' | 'right' | 'down'
+type Dir = 'up' | 'down' | 'left' | 'right'
 
 export default function ReticleRenderer({ reticle, ppm, cx, cy, zoom }: Props) {
   const elements = useMemo(() => {
@@ -37,15 +37,14 @@ export default function ReticleRenderer({ reticle, ppm, cx, cy, zoom }: Props) {
     }
 
     // Wings
-    const dirs: Dir[] = ['left', 'right', 'down']
+    const dirs: Dir[] = ['up', 'down', 'left', 'right']
     for (const dir of dirs) {
       const wing = reticle.wings[dir]
-      if (!wing.enabled) continue
+      if (!wing.enabled || wing.length <= 0) continue
 
-      // Wing direction vector (in MRAD space, then scaled to screen)
+      // Wing direction vector
       const dx = dir === 'left' ? -1 : dir === 'right' ? 1 : 0
-      const dy = dir === 'down' ? 1 : 0
-      // ppm along wing axis
+      const dy = dir === 'down' ? 1 : dir === 'up' ? -1 : 0
       const axisPpm = dy !== 0 ? ppm.v : ppm.h
       const thicknessMrad = wing.lineThickness
 
@@ -74,16 +73,18 @@ export default function ReticleRenderer({ reticle, ppm, cx, cy, zoom }: Props) {
           />
         )
       } else {
-        // Vertical wing (down)
-        const y1 = cy + startMrad * zoom
-        const y2 = cy + endMrad * zoom
+        // Vertical wing (up or down)
+        const y1 = cy + startMrad * dy * zoom
+        const y2 = cy + endMrad * dy * zoom
+        const yMin = Math.min(y1, y2)
+        const h = Math.abs(y2 - y1)
         els.push(
           <rect
             key={`wing-${dir}-line`}
             x={cx - halfThickScreen}
-            y={y1}
+            y={yMin}
             width={halfThickScreen * 2}
-            height={y2 - y1}
+            height={h}
             fill={color}
           />
         )
