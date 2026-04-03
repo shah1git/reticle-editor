@@ -18,7 +18,7 @@ interface Props {
 const strategyOptions: { value: RasterStrategy; label: string }[] = [
   { value: 'independent', label: 'А: Независимое' },
   { value: 'fixed_step', label: 'Б: Фиксированный' },
-  { value: 'bresenham', label: 'В: Бр��зенхем' },
+  { value: 'bresenham', label: 'В: Брезенхем' },
 ]
 
 export default function Toolbar({ scope, setScope, reticle, setReticle, ppm }: Props) {

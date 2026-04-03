@@ -66,7 +66,7 @@ export default function RasterStrategySelector({ reticle, setReticle }: Props) {
 
   return (
     <Section
-      title="\u2699 РАСТЕРИЗАЦИЯ"
+      title="\u2699 ОКРУГЛЕНИЕ"
       tooltip="Как размещать точки, если интервал в MRAD не равен целому числу пикселей. Три стратегии решают эту проблему по-разному"
     >
       <div className={styles.options}>
