@@ -9,9 +9,9 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  border: 1px solid #6b7394;
+  border: 1px solid #94a3b8;
   background: transparent;
-  color: #6b7394;
+  color: #94a3b8;
   font-size: 9px;
   font-weight: 700;
   font-family: var(--font);
@@ -25,8 +25,8 @@
 }
 
 .icon:hover {
-  border-color: #8890a8;
-  color: #8890a8;
+  border-color: #a1adc4;
+  color: #a1adc4;
 }
 
 .popup {
@@ -35,15 +35,15 @@
   left: 50%;
   transform: translateX(-50%);
   margin-top: 6px;
-  background: #1a1f2e;
-  border: 1px solid #2a3142;
+  background: #252a3e;
+  border: 1px solid #3b4258;
   border-radius: 6px;
-  padding: 8px 12px;
-  max-width: 250px;
+  padding: 10px 14px;
+  max-width: 280px;
   min-width: 160px;
-  font-size: 11px;
-  color: #8890a8;
-  line-height: 1.4;
+  font-size: 12px;
+  color: #a1adc4;
+  line-height: 1.6;
   z-index: 100;
   white-space: normal;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);

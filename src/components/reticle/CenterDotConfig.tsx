@@ -32,7 +32,7 @@ export default function CenterDotConfig({ reticle, setReticle, ppm }: Props) {
         unit="MRAD"
         hint="Радиус центральной точки. Значение подбирается так, чтобы точка занимала целое число пикселей"
       />
-      <div style={{ fontSize: 11, color: '#8890a8', marginTop: -4 }}>
+      <div style={{ fontSize: 12, color: '#a1adc4', marginTop: -4 }}>
         Диаметр: {diameterPx} пикс
       </div>
     </Section>

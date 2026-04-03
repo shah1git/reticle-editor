@@ -105,16 +105,16 @@ export function TestObjectSvg({ state, zoom, cx, cy }: SvgProps) {
         y={cy - heightMrad * zoom}
         width={widthMrad * zoom}
         height={heightMrad * zoom}
-        fill="#ff6600"
+        fill="#f59e0b"
         opacity={0.2}
-        stroke="#ff6600"
+        stroke="#f59e0b"
         strokeWidth={1}
         strokeDasharray="4 2"
       />
       <text
         x={cx + (widthMrad * zoom) / 2 + 6}
         y={cy - (heightMrad * zoom) / 2}
-        fill="#ff6600"
+        fill="#f59e0b"
         fontSize="9"
         fontFamily="JetBrains Mono"
         opacity={0.8}
@@ -124,7 +124,7 @@ export function TestObjectSvg({ state, zoom, cx, cy }: SvgProps) {
       <text
         x={cx + (widthMrad * zoom) / 2 + 6}
         y={cy - (heightMrad * zoom) / 2 + 12}
-        fill="#ff6600"
+        fill="#f59e0b"
         fontSize="9"
         fontFamily="JetBrains Mono"
         opacity={0.6}

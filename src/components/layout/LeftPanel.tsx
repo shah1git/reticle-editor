@@ -30,8 +30,8 @@ export default function LeftPanel({ scope, setScope, reticle, setReticle }: Prop
           value={reticle.color}
           onChange={v => setReticle({ ...reticle, color: v })}
         />
-        <div style={{ fontSize: 11, color: '#8890a8', marginTop: 2 }}>
-          Должен быть контрастным на тепловых палитрах (White Hot, Black Hot). Рекомендуется зелёный или красный
+        <div style={{ fontSize: 12, color: '#a1adc4', marginTop: 2, lineHeight: 1.6 }}>
+          Должен быть контрастным на тепловых палитрах (White Hot, Black Hot). Рекомендуется: зелёный #4ade80, красный #ff0000, белый #ffffff
         </div>
       </Section>
       <WingConfig reticle={reticle} setReticle={setReticle} ppm={ppm} wingKey="up" title="↑ ВЕРХНЕЕ КРЫЛО" />

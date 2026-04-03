@@ -48,7 +48,7 @@ export default function MradGrid({ width, height, zoom, panX, panY }: Props) {
         <line
           key={`v${mrad}`}
           x1={x} y1={0} x2={x} y2={height}
-          stroke="#6b7394"
+          stroke="#94a3b8"
           strokeWidth={strokeWidth}
           opacity={opacity}
         />
@@ -60,7 +60,7 @@ export default function MradGrid({ width, height, zoom, panX, panY }: Props) {
           <text
             key={`vl${mrad}`}
             x={x + 3} y={cy + 12}
-            fill="#6b7394"
+            fill="#94a3b8"
             fontSize="9"
             fontFamily="JetBrains Mono"
             opacity={0.5}
@@ -83,7 +83,7 @@ export default function MradGrid({ width, height, zoom, panX, panY }: Props) {
         <line
           key={`h${mrad}`}
           x1={0} y1={y} x2={width} y2={y}
-          stroke="#6b7394"
+          stroke="#94a3b8"
           strokeWidth={strokeWidth}
           opacity={opacity}
         />
@@ -94,7 +94,7 @@ export default function MradGrid({ width, height, zoom, panX, panY }: Props) {
           <text
             key={`hl${mrad}`}
             x={cx + 3} y={y - 3}
-            fill="#6b7394"
+            fill="#94a3b8"
             fontSize="9"
             fontFamily="JetBrains Mono"
             opacity={0.5}

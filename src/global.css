@@ -5,19 +5,21 @@
 }
 
 :root {
-  --bg-main: #0c0f18;
-  --bg-panel: #0e1120;
-  --bg-canvas: #080b14;
-  --accent: #00ff88;
-  --accent-orange: #ff6600;
-  --warning: #ff9900;
-  --danger: #ff4466;
-  --text-primary: #e0e4ec;
-  --text-secondary: #6b7394;
-  --border: #1a1f2e;
-  --border-input: #2a3142;
-  --font: 'JetBrains Mono', monospace;
-  --text-hint: #8890a8;
+  --bg-main: #1a1d2e;
+  --bg-panel: #1e2235;
+  --bg-canvas: #121522;
+  --accent: #4ade80;
+  --accent-orange: #f59e0b;
+  --warning: #f59e0b;
+  --danger: #f87171;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --border: #2d3348;
+  --border-input: #3b4258;
+  --bg-input: #252a3e;
+  --font: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --text-hint: #a1adc4;
   --topbar-height: 48px;
 }
 
@@ -31,7 +33,7 @@ body {
   font-family: var(--font);
   background: var(--bg-main);
   color: var(--text-primary);
-  font-size: 12px;
+  font-size: 13px;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -49,7 +51,11 @@ body {
 
 input, select, button {
   font-family: var(--font);
-  font-size: 12px;
+  font-size: 14px;
+}
+
+input[type="number"], .mono {
+  font-family: var(--font-mono);
 }
 
 ::-webkit-scrollbar {

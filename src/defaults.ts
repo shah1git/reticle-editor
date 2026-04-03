@@ -33,6 +33,6 @@ export const defaultReticle: Reticle = {
     left: defaultWing(5.0),
     right: defaultWing(5.0),
   },
-  color: '#00ff88',
+  color: '#4ade80',
   rasterization: 'independent',
 }
