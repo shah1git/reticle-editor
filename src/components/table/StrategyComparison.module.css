@@ -1,48 +1,58 @@
-.section {
-  border-top: 1px solid var(--border);
-  flex-shrink: 0;
+.overlay {
+  position: absolute;
+  bottom: 40px;
+  left: 10px;
+  background: rgba(14, 16, 23, 0.85);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 14px;
+  pointer-events: auto;
+  max-width: 560px;
+  z-index: 10;
 }
 
-.titleRow {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 12px 2px;
-  background: var(--bg-section);
-}
-
-.title {
-  font-size: 10px;
+.toggle {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 11px;
   font-weight: 700;
+  font-family: var(--font);
+  cursor: pointer;
+  padding: 0;
   letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: color 0.15s;
+}
+
+.toggle:hover {
   color: var(--text-primary);
 }
 
 .subtitle {
-  font-size: 9px;
+  font-size: 10px;
   color: var(--text-secondary);
-  padding: 0 12px 6px;
-  background: var(--bg-section);
+  margin-top: 4px;
+  margin-bottom: 6px;
 }
 
 .tableWrap {
-  padding: 0 6px;
+  overflow-x: auto;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 9px;
+  font-size: 11px;
   font-family: var(--font-mono);
 }
 
 .table th {
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 700;
-  text-transform: uppercase;
   letter-spacing: 0.03em;
   color: var(--text-secondary);
-  padding: 3px 2px;
+  padding: 3px 4px;
   text-align: right;
   border-bottom: 1px solid var(--border);
   white-space: nowrap;
@@ -55,11 +65,11 @@
 .thContent {
   display: inline-flex;
   align-items: center;
-  gap: 1px;
+  gap: 2px;
 }
 
 .table td {
-  padding: 4px 2px;
+  padding: 4px 4px;
   text-align: right;
   color: var(--text-primary);
   border-bottom: 1px solid var(--border);
@@ -82,7 +92,7 @@
 }
 
 .checkCell {
-  width: 28px;
+  width: 80px;
   text-align: center !important;
 }
 
@@ -92,9 +102,9 @@
 }
 
 .recommend {
-  font-size: 7px;
+  font-size: 9px;
   color: var(--text-hint);
-  margin-left: 1px;
+  margin-left: 3px;
 }
 
 .driftWarn {
@@ -102,9 +112,8 @@
 }
 
 .footer {
-  font-size: 9px;
+  font-size: 10px;
   color: var(--text-secondary);
-  padding: 4px 12px 8px;
+  padding-top: 4px;
   text-align: center;
-  background: var(--bg-section);
 }

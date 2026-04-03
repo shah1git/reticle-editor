@@ -1,6 +1,6 @@
 .panel {
-  width: 320px;
-  min-width: 320px;
+  width: 400px;
+  min-width: 400px;
   height: calc(100vh - var(--topbar-height) - var(--toolbar-height));
   border-left: 1px solid var(--border);
   display: flex;

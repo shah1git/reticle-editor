@@ -5,6 +5,7 @@ import { calcPixelsPerMrad, getFovMrad } from '../../math/optics'
 import { useCanvasInteraction } from '../../hooks/useCanvasInteraction'
 import MradGrid from '../canvas/MradGrid'
 import ReticleRenderer from '../canvas/ReticleRenderer'
+import StrategyComparison from '../table/StrategyComparison'
 import styles from './Canvas.module.css'
 
 interface Props {
@@ -116,6 +117,8 @@ export default function Canvas({ scope, reticle }: Props) {
           <span className={styles.legendLabel}>±0.5px</span>
         </div>
       </div>
+
+      <StrategyComparison scope={scope} reticle={reticle} />
 
       <div className={styles.hint}>
         <span className={styles.zoomLabel}>
