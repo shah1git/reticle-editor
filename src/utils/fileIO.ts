@@ -61,15 +61,15 @@ export function loadFromJson(
     if (data.scopeProfile) setScope(data.scopeProfile)
     if (data.reticle) {
       const r = data.reticle as any
-      // Backward compat: convert old dots.radius to dotSize
+      // Backward compat: convert dotSize back to dots.radius
       for (const key of ['up', 'down', 'left', 'right']) {
         const w = r.wings?.[key]
-        if (w && w.dotSize == null && w.dots?.radius != null) {
+        if (w?.dots && w.dots.radius == null && w.dotSize != null) {
           const ppm = data.scopeProfile ? calcPixelsPerMrad(data.scopeProfile) : { h: 7.78, v: 7.78 }
           const axisPpm = (key === 'up' || key === 'down') ? ppm.v : ppm.h
-          w.dotSize = Math.max(1, Math.round(w.dots.radius * axisPpm * 2))
+          w.dots.radius = w.dotSize / (2 * axisPpm)
         }
-        if (w && w.dotSize == null) w.dotSize = 2
+        if (w?.dots && w.dots.radius == null) w.dots.radius = 0.1
       }
       setReticle(r as Reticle)
     }

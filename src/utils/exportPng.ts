@@ -64,7 +64,8 @@ export function exportPng(scope: ScopeProfile, reticle: Reticle): void {
       const count = Math.floor(wing.length / wing.dots.spacing)
       if (count > 0) {
         const marks = rasterize(reticle.rasterization, wing.dots.spacing, axisPpm, count)
-        const wingDotRadiusPx = Math.max(1, Math.round(wing.dotSize / 2))
+        const wingDotRadius = snapToPixel(wing.dots.radius, ppmMin)
+        const wingDotRadiusPx = Math.max(1, Math.round(wingDotRadius * ppmMin))
 
         for (const mark of marks) {
           const posPx = gapPx + mark.actualPx

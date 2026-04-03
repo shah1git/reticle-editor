@@ -2,10 +2,10 @@ export interface Wing {
   enabled: boolean
   length: number          // MRAD
   lineThickness: number   // MRAD
-  dotSize: number         // пикс — диаметр точки-метки, целое число ≥ 1
   dots: {
     enabled: boolean
-    spacing: number       // MRAD, interval between dots
+    spacing: number       // MRAD
+    radius: number        // MRAD, snap к целым пикселям
   }
 }
 
@@ -19,6 +19,6 @@ export interface Reticle {
     left: Wing
     right: Wing
   }
-  color: string          // hex color for entire reticle
+  color: string
   rasterization: 'independent' | 'fixed_step' | 'bresenham'
 }

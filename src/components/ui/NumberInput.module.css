@@ -53,13 +53,17 @@
 }
 
 .pxGood {
-  font-size: 9px;
+  font-size: 13px;
+  font-family: var(--font-mono);
+  font-weight: 600;
   color: var(--text-secondary);
   white-space: nowrap;
 }
 
 .pxWarn {
-  font-size: 9px;
+  font-size: 13px;
+  font-family: var(--font-mono);
+  font-weight: 600;
   color: var(--accent-orange);
   white-space: nowrap;
 }
