@@ -1,9 +1,9 @@
 .container {
-  padding: 12px;
+  padding: 8px;
   border-top: 1px solid var(--border);
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 6px;
   background: var(--bg-section);
   flex-shrink: 0;
 }
@@ -11,20 +11,20 @@
 .card {
   background: var(--bg-input);
   border-radius: 6px;
-  padding: 8px 10px;
+  padding: 6px 8px;
 }
 
 .cardLabel {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--text-secondary);
-  margin-bottom: 2px;
+  margin-bottom: 1px;
 }
 
 .cardValue {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-primary);
   font-family: var(--font-mono);

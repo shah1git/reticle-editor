@@ -28,8 +28,8 @@
 }
 
 .valueDim {
-  font-size: 11px;
-  color: var(--text-secondary);
+  font-size: 10px;
+  color: var(--accent);
 }
 
 .link {

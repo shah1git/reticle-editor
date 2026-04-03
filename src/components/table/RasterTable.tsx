@@ -66,7 +66,7 @@ export default function RasterTable({ scope, reticle, activeWing, setActiveWing 
   return (
     <div className={styles.section}>
       <div className={styles.titleRow}>
-        <span className={styles.title}>ТАБЛИЦА РАСТЕРИЗАЦИИ</span>
+        <span className={styles.title}>ТАБЛИЦА ОКРУГЛЕНИЯ</span>
         <Tooltip text="Точные координаты каждой метки в пикселях и MRAD. Показывает куда реально встанет каждая точка на дисплее и насколько она отклоняется от идеала" />
       </div>
 

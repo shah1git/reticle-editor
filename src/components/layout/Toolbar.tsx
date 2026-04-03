@@ -45,7 +45,7 @@ export default function Toolbar({ scope, setScope, reticle, setReticle, ppm }: P
       <div className={styles.sep} />
 
       <div className={styles.group}>
-        <span className={styles.label}>РАСТ:</span>
+        <span className={styles.label}>ОКРУГЛ:</span>
         <select
           className={styles.select}
           value={reticle.rasterization}

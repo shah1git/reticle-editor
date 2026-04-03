@@ -5,5 +5,4 @@
   padding: 0;
   background: var(--bg-panel);
   border-right: 1px solid var(--border);
-  height: calc(100vh - var(--topbar-height) - var(--toolbar-height));
 }
