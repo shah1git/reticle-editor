@@ -2,10 +2,10 @@ export interface Wing {
   enabled: boolean
   length: number          // MRAD
   lineThickness: number   // MRAD
+  dotSize: number         // пикс — диаметр точки-метки, целое число ≥ 1
   dots: {
     enabled: boolean
     spacing: number       // MRAD, interval between dots
-    radius: number        // MRAD, snapped to whole pixels
   }
 }
 

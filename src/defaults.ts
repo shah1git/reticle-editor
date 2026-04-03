@@ -5,10 +5,10 @@ const defaultWing = (length: number): Wing => ({
   enabled: true,
   length,
   lineThickness: 0.1,
+  dotSize: 2,
   dots: {
     enabled: true,
     spacing: 1.0,
-    radius: 0.1,
   },
 })
 
@@ -28,7 +28,7 @@ export const defaultScope: ScopeProfile = {
 export const defaultReticle: Reticle = {
   centerDot: { radius: 0.15 },
   wings: {
-    up: { enabled: false, length: 0, lineThickness: 0.1, dots: { enabled: true, spacing: 1.0, radius: 0.1 } },
+    up: { enabled: false, length: 0, lineThickness: 0.1, dotSize: 2, dots: { enabled: true, spacing: 1.0 } },
     down: defaultWing(10.0),
     left: defaultWing(5.0),
     right: defaultWing(5.0),

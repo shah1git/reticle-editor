@@ -57,9 +57,22 @@ export function loadFromJson(
 ): void {
   const reader = new FileReader()
   reader.onload = () => {
-    const data = JSON.parse(reader.result as string) as SaveData
+    const data = JSON.parse(reader.result as string) as any
     if (data.scopeProfile) setScope(data.scopeProfile)
-    if (data.reticle) setReticle(data.reticle)
+    if (data.reticle) {
+      const r = data.reticle as any
+      // Backward compat: convert old dots.radius to dotSize
+      for (const key of ['up', 'down', 'left', 'right']) {
+        const w = r.wings?.[key]
+        if (w && w.dotSize == null && w.dots?.radius != null) {
+          const ppm = data.scopeProfile ? calcPixelsPerMrad(data.scopeProfile) : { h: 7.78, v: 7.78 }
+          const axisPpm = (key === 'up' || key === 'down') ? ppm.v : ppm.h
+          w.dotSize = Math.max(1, Math.round(w.dots.radius * axisPpm * 2))
+        }
+        if (w && w.dotSize == null) w.dotSize = 2
+      }
+      setReticle(r as Reticle)
+    }
   }
   reader.readAsText(file)
 }

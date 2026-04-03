@@ -95,8 +95,8 @@ export default function ReticleRenderer({ reticle, ppm, cx, cy, zoom }: Props) {
         const dotCount = Math.floor(wing.length / wing.dots.spacing)
         if (dotCount > 0) {
           const marks = rasterize(reticle.rasterization, wing.dots.spacing, axisPpm, dotCount)
-          const wingDotRadius = snapToPixel(wing.dots.radius, dotPpmMin)
-          const wingDotRadiusScreen = wingDotRadius * zoom
+          // dotSize is in pixels; convert to screen coords via zoom/axisPpm
+          const dotRadiusScreen = (wing.dotSize / 2) * (zoom / axisPpm)
 
           for (const mark of marks) {
             const posMrad = gapMrad + mark.actualPx / axisPpm
@@ -107,7 +107,7 @@ export default function ReticleRenderer({ reticle, ppm, cx, cy, zoom }: Props) {
                 key={`dot-${dir}-${mark.index}`}
                 cx={dotCx}
                 cy={dotCy}
-                r={Math.max(wingDotRadiusScreen, 0.5)}
+                r={Math.max(dotRadiusScreen, 0.5)}
                 fill={color}
               />
             )
