@@ -41,8 +41,7 @@ src/
 ├── math/
 │   ├── optics.ts              # calcPixelsPerMrad, snapToPixel, getFovMrad
 │   ├── rasterization.ts       # 3 алгоритма: independent, fixed_step, bresenham
-│   ├── objects.ts             # Тестовые объекты (размеры целей для overlay)
-│   └── __tests__/             # Юнит-тесты математики
+│   ��── __tests__/             # Юнит-тесты математики
 │
 ├── theme/
 │   └── tokens.ts              # Цветовая палитра и шрифтовые токены
@@ -76,8 +75,7 @@ src/
     │
     ├── canvas/
     │   ├── ReticleRenderer.tsx # SVG-рендеринг сетки (центр. точка, крылья, метки)
-    │   ├── MradGrid.tsx        # Фоновая MRAD-сетка с подписями
-    │   └── TestObjectOverlay.tsx # Тестовый объект (цель), перетаскиваемый мышью
+    │   └── MradGrid.tsx        # Фоновая MRAD-сетка с подписями
     │
     └── ui/
         ├── NumberInput.tsx     # Числовое поле с пиксельным эквивалентом и подсказкой
@@ -120,19 +118,14 @@ interface Reticle {
 
 Два типа: `digital` (тепловизор/ночник — фокус, сенсор, дисплей, pixel pitch) и `optical` (оптика — FOV, дисплей для экспорта). Из параметров вычисляется `pixelsPerMrad` — ключевой коэффициент пересчёта.
 
-### TestObjectState (тестовый объект)
+## Canvas — индикатор FOV
 
-```typescript
-interface TestObjectState {
-  enabled: boolean
-  objectIdx: number    // Индекс в массиве TEST_OBJECTS
-  distance: number     // Дистанция в метрах (1–3000)
-  offsetX: number      // Смещение от центра по горизонтали (MRAD)
-  offsetY: number      // Смещение от центра по вертикали (MRAD)
-}
-```
+Нижняя подсказка на canvas показывает:
+- Масштаб (пикс/MRAD)
+- Видимую область в MRAD и процент от полного FOV прицела
+- Подсказки по управлению (Alt+Drag, Прокрутка)
 
-Тестовый объект перетаскивается мышью по canvas (левый клик + drag). Позиция хранится в MRAD, не в пикселях. Кнопка «В центр» сбрасывает offset в (0, 0).
+Кн��пка **«Весь FOV»** (правый нижний угол) — подгоняет zoom так, чтобы весь FOV прицела поместился в canvas. Использует `getFovMrad()` из `src/math/optics.ts`.
 
 ## Стратегии растеризации
 

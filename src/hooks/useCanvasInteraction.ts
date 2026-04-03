@@ -66,6 +66,7 @@ export function useCanvasInteraction() {
 
   return {
     transform,
+    setTransform,
     handlers: {
       onWheel: handleWheel,
       onMouseDown: handleMouseDown,
