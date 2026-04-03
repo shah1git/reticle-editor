@@ -15,9 +15,9 @@ interface Props {
 
 const STRATEGIES: RasterStrategy[] = ['independent', 'fixed_step', 'bresenham']
 const LABELS: Record<RasterStrategy, string> = {
-  independent: 'А: Независимое',
-  fixed_step: 'Б: Фиксированный',
-  bresenham: 'В: Брезенхем',
+  independent: 'А: Незав.',
+  fixed_step: 'Б: Фикс.',
+  bresenham: 'В: Брез.',
 }
 const WING_ARROWS: Record<string, string> = { up: '↑', down: '↓', left: '←', right: '→' }
 

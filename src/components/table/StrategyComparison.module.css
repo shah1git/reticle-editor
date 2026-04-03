@@ -41,7 +41,6 @@
 }
 
 .table {
-  width: 100%;
   border-collapse: collapse;
   font-size: 13px;
   font-family: var(--font-mono);
@@ -52,7 +51,7 @@
   font-weight: 700;
   letter-spacing: 0.03em;
   color: var(--text-secondary);
-  padding: 3px 4px;
+  padding: 3px 3px;
   text-align: right;
   border-bottom: 1px solid var(--border);
   white-space: nowrap;
@@ -60,6 +59,7 @@
 
 .table th:first-child {
   text-align: left;
+  padding-right: 6px;
 }
 
 .thContent {
@@ -69,7 +69,7 @@
 }
 
 .table td {
-  padding: 4px 4px;
+  padding: 4px 3px;
   text-align: right;
   color: var(--text-primary);
   border-bottom: 1px solid var(--border);
@@ -81,6 +81,8 @@
   text-align: left !important;
   color: var(--text-secondary) !important;
   font-weight: 600;
+  font-size: 11px;
+  padding-right: 6px !important;
 }
 
 .rowCurrent {
@@ -92,8 +94,9 @@
 }
 
 .checkCell {
-  width: 80px;
   text-align: center !important;
+  padding-left: 2px !important;
+  padding-right: 0 !important;
 }
 
 .checkMark {
