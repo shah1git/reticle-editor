@@ -4,6 +4,7 @@ import type { WingKey } from '../../App'
 import NumberInput from '../ui/NumberInput'
 import CheckboxInput from '../ui/CheckboxInput'
 import Section from '../ui/Section'
+import Tooltip from '../ui/Tooltip'
 import styles from './WingEditor.module.css'
 
 interface Props {
@@ -24,7 +25,6 @@ const wingLabels: Record<WingKey, string> = {
 export default function WingEditor({ reticle, setReticle, ppm, activeWing, setActiveWing }: Props) {
   const wing = reticle.wings[activeWing]
   const axisPpm = (activeWing === 'up' || activeWing === 'down') ? ppm.v : ppm.h
-  const ppmMin = Math.min(ppm.h, ppm.v)
 
   const updateWing = (patch: Partial<Wing>) => {
     setReticle({
@@ -43,6 +43,8 @@ export default function WingEditor({ reticle, setReticle, ppm, activeWing, setAc
   const markCount = wing.dots.enabled && wing.dots.spacing > 0
     ? Math.floor(wing.length / wing.dots.spacing)
     : 0
+
+  const dotSizeMrad = wing.dotSize / axisPpm
 
   return (
     <Section title="КРЫЛЬЯ" collapsible={false} tooltip="Крыло — линия от центральной точки. Вдоль неё размещаются метки через равные интервалы для измерения расстояний и поправок">
@@ -100,16 +102,31 @@ export default function WingEditor({ reticle, setReticle, ppm, activeWing, setAc
           />
           {wing.dots.enabled && (
             <>
-              <NumberInput
-                label="Радиус точки"
-                value={wing.dots.radius}
-                onChange={v => updateDots({ radius: v })}
-                min={0}
-                defaultValue={0.1}
-                step={1 / ppmMin}
-                pxValue={wing.dots.radius * ppmMin}
-                unit="MRAD"
-              />
+              <div className={styles.dotSizeField}>
+                <div className={styles.dotSizeLabelRow}>
+                  <span className={styles.dotSizeLabel}>РАЗМЕР ТОЧКИ</span>
+                  <Tooltip text="Диаметр каждой точки-метки в пикселях. Задаётся напрямую в пикселях — без пересчёта из MRAD. Каждое крыло может иметь свой размер точки. Минимум 1 пиксель" />
+                </div>
+                <div className={styles.dotSizeInputRow}>
+                  <input
+                    type="number"
+                    className={styles.dotSizeInput}
+                    value={wing.dotSize}
+                    min={1}
+                    step={1}
+                    onChange={e => {
+                      const v = parseInt(e.target.value)
+                      if (!isNaN(v) && v >= 1) updateWing({ dotSize: v })
+                    }}
+                    onBlur={e => {
+                      const v = parseInt(e.target.value)
+                      if (isNaN(v) || v < 1) updateWing({ dotSize: 2 })
+                    }}
+                  />
+                  <span className={styles.dotSizeUnit}>пикс</span>
+                </div>
+                <div className={styles.dotSizeMrad}>= {dotSizeMrad.toFixed(2)} MRAD</div>
+              </div>
               <NumberInput
                 label="Интервал"
                 value={wing.dots.spacing}

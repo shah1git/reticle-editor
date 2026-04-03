@@ -61,15 +61,24 @@ export function loadFromJson(
     if (data.scopeProfile) setScope(data.scopeProfile)
     if (data.reticle) {
       const r = data.reticle as any
-      // Backward compat: convert dotSize back to dots.radius
+      // Backward compat: convert old dots.radius to new dotSize
       for (const key of ['up', 'down', 'left', 'right']) {
         const w = r.wings?.[key]
-        if (w?.dots && w.dots.radius == null && w.dotSize != null) {
-          const ppm = data.scopeProfile ? calcPixelsPerMrad(data.scopeProfile) : { h: 7.78, v: 7.78 }
-          const axisPpm = (key === 'up' || key === 'down') ? ppm.v : ppm.h
-          w.dots.radius = w.dotSize / (2 * axisPpm)
+        if (!w) continue
+        if (w.dotSize == null) {
+          // Old format had dots.radius in MRAD — convert to pixel diameter
+          if (w.dots?.radius != null) {
+            const ppm = data.scopeProfile ? calcPixelsPerMrad(data.scopeProfile) : { h: 7.78, v: 7.78 }
+            const axisPpm = (key === 'up' || key === 'down') ? ppm.v : ppm.h
+            w.dotSize = Math.max(1, Math.round(w.dots.radius * axisPpm * 2))
+          } else {
+            w.dotSize = 2
+          }
         }
-        if (w?.dots && w.dots.radius == null) w.dots.radius = 0.1
+        // Clean up old radius field
+        if (w.dots?.radius != null) {
+          delete w.dots.radius
+        }
       }
       setReticle(r as Reticle)
     }
