@@ -43,6 +43,10 @@ export default function Canvas({ scope, reticle }: Props) {
     setTransform({ zoom: Math.min(zoomH, zoomV), panX: 0, panY: 0 })
   }, [size, fov, setTransform])
 
+  const handleReset = useCallback(() => {
+    setTransform({ zoom: 30, panX: 0, panY: 0 })
+  }, [setTransform])
+
   return (
     <div className={styles.canvas} ref={containerRef}>
       <svg
@@ -72,7 +76,10 @@ export default function Canvas({ scope, reticle }: Props) {
         </span>
         <span className={styles.hintText}>Alt+Перемещение: сдвиг · Прокрутка: масштаб · Ctrl+S: сохранить</span>
       </div>
-      <button className={styles.fitBtn} onClick={handleFitFov}>Весь FOV</button>
+      <div className={styles.btnGroup}>
+        <button className={styles.fitBtn} onClick={handleReset}>Сброс</button>
+        <button className={styles.fitBtn} onClick={handleFitFov}>Весь FOV</button>
+      </div>
     </div>
   )
 }
