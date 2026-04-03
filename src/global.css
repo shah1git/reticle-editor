@@ -46,10 +46,15 @@
   --topbar-height: 52px;
 }
 
-html, body, #root {
+html, #root {
   height: 100%;
   width: 100%;
   overflow: hidden;
+}
+
+body {
+  height: 100%;
+  width: 100%;
 }
 
 body {
