@@ -65,8 +65,8 @@ export default function Canvas({ scope, reticle }: Props) {
       </svg>
       <TestObjectControls state={testObj.state} setState={testObj.setState} />
       <div className={styles.hint}>
-        <span className={styles.zoomLabel}>Zoom: {transform.zoom.toFixed(1)} px/MRAD</span>
-        <span className={styles.hintText}>Scroll to zoom · Alt+Drag or Middle-click to pan</span>
+        <span className={styles.zoomLabel}>Масштаб: {transform.zoom.toFixed(1)} пикс/MRAD</span>
+        <span className={styles.hintText}>Alt+Перемещение: сдвиг · Прокрутка: масштаб · Ctrl+S: сохранить</span>
       </div>
     </div>
   )

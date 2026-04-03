@@ -36,7 +36,7 @@ export function TestObjectControls({ state, setState }: ControlsProps) {
           onChange={e => setState({ ...state, enabled: e.target.checked })}
           className={styles.checkbox}
         />
-        <span className={styles.checkLabel}>Test Object</span>
+        <span className={styles.checkLabel}>ТЕСТОВЫЙ ОБЪЕКТ</span>
       </label>
       {state.enabled && (
         <>
@@ -59,7 +59,7 @@ export function TestObjectControls({ state, setState }: ControlsProps) {
               onChange={e => setState({ ...state, distance: Number(e.target.value) })}
               className={styles.slider}
             />
-            <span className={styles.distLabel}>{state.distance}m</span>
+            <span className={styles.distLabel}>{state.distance} м</span>
           </div>
           <div className={styles.info}>
             {heightMrad.toFixed(2)} × {widthMrad.toFixed(2)} MRAD
@@ -115,7 +115,7 @@ export function TestObjectSvg({ state, zoom, cx, cy }: SvgProps) {
         fontFamily="JetBrains Mono"
         opacity={0.6}
       >
-        {state.distance}m — {heightMrad.toFixed(2)}×{widthMrad.toFixed(2)} MRAD
+        {state.distance} м — {heightMrad.toFixed(2)}×{widthMrad.toFixed(2)} MRAD
       </text>
     </g>
   )

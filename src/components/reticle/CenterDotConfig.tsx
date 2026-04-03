@@ -18,17 +18,22 @@ export default function CenterDotConfig({ reticle, setReticle, ppm }: Props) {
   const diameterPx = Math.round(snappedRadius * ppmMin) * 2
 
   return (
-    <Section title="Center Dot">
+    <Section
+      title="● ЦЕНТРАЛЬНАЯ ТОЧКА"
+      tooltip="Точка прицеливания в центре сетки. Размер задаётся в MRAD и автоматически привязывается к целым пикселям"
+    >
       <NumberInput
-        label="Radius"
+        label="Радиус"
         value={reticle.centerDot.radius}
         onChange={v => setReticle({ ...reticle, centerDot: { radius: v } })}
         min={0}
         step={1 / ppmMin}
         pxValue={radiusPx}
+        unit="MRAD"
+        hint="Радиус центральной точки. Значение подбирается так, чтобы точка занимала целое число пикселей"
       />
-      <div style={{ fontSize: 9, color: 'var(--text-secondary)', marginTop: 2 }}>
-        Diameter: {diameterPx} px
+      <div style={{ fontSize: 11, color: '#8890a8', marginTop: -4 }}>
+        Диаметр: {diameterPx} пикс
       </div>
     </Section>
   )

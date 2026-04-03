@@ -17,7 +17,8 @@
   --border: #1a1f2e;
   --border-input: #2a3142;
   --font: 'JetBrains Mono', monospace;
-  --topbar-height: 52px;
+  --text-hint: #8890a8;
+  --topbar-height: 48px;
 }
 
 html, body, #root {

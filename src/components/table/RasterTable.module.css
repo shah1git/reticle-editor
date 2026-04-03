@@ -4,6 +4,20 @@
   height: 100%;
 }
 
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-primary);
+}
+
 .tabs {
   display: flex;
   gap: 2px;
@@ -12,17 +26,15 @@
 
 .tab {
   flex: 1;
-  background: var(--bg-main);
+  background: #1a1f2e;
   border: 1px solid var(--border-input);
   color: var(--text-secondary);
   padding: 5px 0;
   font-size: 10px;
   font-weight: 600;
   font-family: var(--font);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
   cursor: pointer;
-  border-radius: 3px;
+  border-radius: 4px;
   transition: all 0.15s;
 }
 
@@ -42,14 +54,12 @@
   font-size: 9px;
   color: var(--text-secondary);
   margin-bottom: 6px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
 }
 
 .empty {
   text-align: center;
   color: var(--text-secondary);
-  font-size: 10px;
+  font-size: 11px;
   margin-top: 20px;
 }
 
@@ -69,7 +79,7 @@
   top: 0;
   background: var(--bg-panel);
   font-size: 9px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--text-secondary);
@@ -105,9 +115,55 @@
 }
 
 .errBad {
-  color: var(--accent-orange) !important;
+  color: var(--warning) !important;
 }
 
 .stepWarn {
   color: var(--accent-orange) !important;
+}
+
+.legend {
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  font-size: 9px;
+  color: var(--text-secondary);
+}
+
+.legendTitle {
+  font-weight: 700;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.legendRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.dotGreen {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+.dotGray {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.dotOrange {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--warning);
+  flex-shrink: 0;
 }

@@ -32,33 +32,41 @@ export default function WingConfig({ reticle, setReticle, ppm, wingKey, title }:
   }
 
   return (
-    <Section title={title} defaultOpen={false}>
+    <Section
+      title={title}
+      defaultOpen={false}
+      tooltip="Крыло — линия от центральной точки. На ней размещаются метки через равные интервалы для измерения расстояний и поправок"
+    >
       <CheckboxInput
-        label="Enabled"
+        label={wing.enabled ? 'Включено' : 'Выключено'}
         checked={wing.enabled}
         onChange={v => updateWing({ enabled: v })}
       />
       {wing.enabled && (
         <>
           <NumberInput
-            label="Length"
+            label="Длина"
             value={wing.length}
             onChange={v => updateWing({ length: v })}
             min={0}
             step={0.1}
             pxValue={wing.length * axisPpm}
+            unit="MRAD"
+            hint="Как далеко тянется крыло от центра. 1 MRAD ≈ 10 см на 100 м дистанции"
           />
           <NumberInput
-            label="Thickness"
+            label="Толщина линии"
             value={wing.lineThickness}
             onChange={v => updateWing({ lineThickness: v })}
             min={0.01}
             step={0.01}
             pxValue={wing.lineThickness * axisPpm}
+            unit="MRAD"
+            hint="Тонкая линия (0.05–0.1) меньше перекрывает цель"
           />
           <div style={{ marginTop: 6 }}>
             <CheckboxInput
-              label="Dots"
+              label="Точки на крыле"
               checked={wing.dots.enabled}
               onChange={v => updateDots({ enabled: v })}
             />
@@ -66,20 +74,24 @@ export default function WingConfig({ reticle, setReticle, ppm, wingKey, title }:
           {wing.dots.enabled && (
             <>
               <NumberInput
-                label="Spacing"
+                label="Интервал"
                 value={wing.dots.spacing}
                 onChange={v => updateDots({ spacing: v })}
                 min={0.01}
                 step={0.1}
                 pxValue={wing.dots.spacing * axisPpm}
+                unit="MRAD"
+                hint="Расстояние между точками. При 1.0 MRAD и длине 5.0 будет 5 точек"
               />
               <NumberInput
-                label="Dot Radius"
+                label="Радиус точки"
                 value={wing.dots.radius}
                 onChange={v => updateDots({ radius: v })}
                 min={0}
                 step={1 / ppmMin}
                 pxValue={wing.dots.radius * ppmMin}
+                unit="MRAD"
+                hint="Размер каждой метки. Автоматически привязывается к целым пикселям"
               />
             </>
           )}

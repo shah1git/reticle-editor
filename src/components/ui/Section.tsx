@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from 'react'
+import Tooltip from './Tooltip'
 import styles from './Section.module.css'
 
 interface Props {
@@ -6,10 +7,11 @@ interface Props {
   collapsible?: boolean
   defaultOpen?: boolean
   summary?: string
+  tooltip?: string
   children: ReactNode
 }
 
-export default function Section({ title, collapsible = true, defaultOpen = true, summary, children }: Props) {
+export default function Section({ title, collapsible = true, defaultOpen = true, summary, tooltip, children }: Props) {
   const [open, setOpen] = useState(defaultOpen)
 
   return (
@@ -20,6 +22,7 @@ export default function Section({ title, collapsible = true, defaultOpen = true,
         style={{ cursor: collapsible ? 'pointer' : 'default' }}
       >
         <span className={styles.title}>{title}</span>
+        {tooltip && <Tooltip text={tooltip} />}
         {collapsible && (
           <span className={styles.chevron}>{open ? '▾' : '▸'}</span>
         )}

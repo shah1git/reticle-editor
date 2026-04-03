@@ -7,19 +7,27 @@ interface Props {
   min?: number
   max?: number
   step?: number
-  pxValue?: number | null  // pixel equivalent to show
+  pxValue?: number | null
   unit?: string
+  hint?: string
 }
 
 export default function NumberInput({
-  label, value, onChange, min = 0, max = 99999, step = 0.01, pxValue, unit = 'MRAD',
+  label, value, onChange, min = 0, max = 99999, step = 0.01, pxValue, unit = 'MRAD', hint,
 }: Props) {
   const isWholePixel = pxValue != null && Math.abs(pxValue - Math.round(pxValue)) < 0.01
   const roundedPx = pxValue != null ? Math.round(pxValue) : null
 
   return (
-    <div className={styles.row}>
-      <label className={styles.label}>{label}</label>
+    <div className={styles.field}>
+      <div className={styles.row}>
+        <label className={styles.label}>{label}</label>
+        {pxValue != null && (
+          <span className={isWholePixel ? styles.pxGood : styles.pxWarn}>
+            {roundedPx} пикс{!isWholePixel && pxValue != null && ` (${pxValue.toFixed(1)})`}
+          </span>
+        )}
+      </div>
       <div className={styles.inputWrap}>
         <input
           type="number"
@@ -35,11 +43,7 @@ export default function NumberInput({
         />
         {unit && <span className={styles.unit}>{unit}</span>}
       </div>
-      {pxValue != null && (
-        <span className={isWholePixel ? styles.pxGood : styles.pxWarn}>
-          {roundedPx} px{!isWholePixel && pxValue != null && ` (${pxValue.toFixed(1)})`}
-        </span>
-      )}
+      {hint && <div className={styles.hint}>{hint}</div>}
     </div>
   )
 }

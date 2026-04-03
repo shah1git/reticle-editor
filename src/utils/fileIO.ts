@@ -43,7 +43,7 @@ export function saveToJson(scope: ScopeProfile, reticle: Reticle): void {
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = `${scope.name.replace(/\s+/g, '_')}_reticle.json`
+  a.download = `сетка-${scope.name.replace(/\s+/g, '_')}.json`
   a.click()
   URL.revokeObjectURL(url)
 }

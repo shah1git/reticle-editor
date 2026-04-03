@@ -24,16 +24,19 @@ export default function LeftPanel({ scope, setScope, reticle, setReticle }: Prop
     <aside className={styles.panel}>
       <ScopeProfilePanel scope={scope} setScope={setScope} />
       <CenterDotConfig reticle={reticle} setReticle={setReticle} ppm={ppm} />
-      <Section title="Reticle Color" collapsible={false}>
+      <Section title="ЦВЕТ СЕТКИ" collapsible={false}>
         <ColorInput
-          label="Color"
+          label="Цвет"
           value={reticle.color}
           onChange={v => setReticle({ ...reticle, color: v })}
         />
+        <div style={{ fontSize: 11, color: '#8890a8', marginTop: 2 }}>
+          Должен быть контрастным на тепловых палитрах (White Hot, Black Hot). Рекомендуется зелёный или красный
+        </div>
       </Section>
-      <WingConfig reticle={reticle} setReticle={setReticle} ppm={ppm} wingKey="left" title="Left Wing" />
-      <WingConfig reticle={reticle} setReticle={setReticle} ppm={ppm} wingKey="right" title="Right Wing" />
-      <WingConfig reticle={reticle} setReticle={setReticle} ppm={ppm} wingKey="down" title="Down Wing" />
+      <WingConfig reticle={reticle} setReticle={setReticle} ppm={ppm} wingKey="left" title="← ЛЕВОЕ КРЫЛО" />
+      <WingConfig reticle={reticle} setReticle={setReticle} ppm={ppm} wingKey="right" title="→ ПРАВОЕ КРЫЛО" />
+      <WingConfig reticle={reticle} setReticle={setReticle} ppm={ppm} wingKey="down" title="↓ НИЖНЕЕ КРЫЛО" />
       <RasterStrategySelector reticle={reticle} setReticle={setReticle} />
     </aside>
   )

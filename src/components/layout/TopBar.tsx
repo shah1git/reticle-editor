@@ -28,12 +28,12 @@ export default function TopBar({ scope, reticle, setScope, setReticle }: Props) 
     <header className={styles.topbar}>
       <div className={styles.left}>
         <img src={import.meta.env.BASE_URL + 'logo.svg'} alt="RIKA" className={styles.logo} />
-        <span className={styles.title}>RETICLE EDITOR</span>
+        <span className={styles.title}>РЕДАКТОР СЕТОК</span>
       </div>
       <div className={styles.right}>
-        <button className={styles.btn} onClick={() => saveToJson(scope, reticle)}>SAVE</button>
-        <button className={styles.btn} onClick={handleLoad}>LOAD</button>
-        <button className={styles.btnAccent} onClick={() => exportPng(scope, reticle)}>EXPORT PNG</button>
+        <button className={styles.btn} onClick={handleLoad}>↑ Открыть</button>
+        <button className={styles.btn} onClick={() => saveToJson(scope, reticle)}>↓ Сохранить</button>
+        <button className={styles.btnAccent} onClick={() => exportPng(scope, reticle)}>⬇ Экспорт PNG</button>
         <input
           ref={fileRef}
           type="file"

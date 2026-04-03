@@ -1,41 +1,69 @@
+.field {
+  margin-bottom: 8px;
+}
+
+.label {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin-bottom: 3px;
+}
+
 .nameInput {
   width: 100%;
-  background: var(--bg-main);
+  background: #1a1f2e;
   border: 1px solid var(--border-input);
   color: var(--text-primary);
-  padding: 4px 6px;
-  border-radius: 3px;
+  padding: 5px 8px;
+  border-radius: 4px;
   font-size: 12px;
   font-family: var(--font);
   outline: none;
-  margin-bottom: 8px;
 }
 
 .nameInput:focus {
   border-color: var(--accent);
 }
 
+.hint {
+  font-size: 11px;
+  color: #8890a8;
+  margin-top: 2px;
+  margin-bottom: 6px;
+  line-height: 1.35;
+}
+
+.pairRow {
+  display: flex;
+  gap: 8px;
+}
+
+.pairRow > * {
+  flex: 1;
+}
+
 .calc {
   margin-top: 8px;
-  padding: 6px 8px;
-  background: var(--bg-main);
-  border: 1px solid var(--border);
-  border-radius: 3px;
+  padding: 8px 10px;
+  background: rgba(0, 255, 136, 0.04);
+  border: 1px solid rgba(0, 255, 136, 0.15);
+  border-radius: 4px;
 }
 
 .calcLabel {
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-secondary);
+  letter-spacing: 0.08em;
+  color: var(--accent);
   margin-bottom: 4px;
 }
 
-.calcRow {
-  display: flex;
-  justify-content: space-between;
-  font-size: 10px;
+.calcValue {
+  font-size: 11px;
   color: var(--accent);
   margin-bottom: 2px;
 }
@@ -43,5 +71,6 @@
 .warning {
   font-size: 10px;
   color: var(--accent-orange);
-  margin-top: 4px;
+  margin-top: 6px;
+  line-height: 1.3;
 }

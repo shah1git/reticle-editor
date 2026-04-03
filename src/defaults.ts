@@ -14,7 +14,7 @@ const defaultWing = (length: number): Wing => ({
 
 export const defaultScope: ScopeProfile = {
   type: 'digital',
-  name: 'Default Thermal',
+  name: 'По умолчанию',
   lensFL: 35,
   sensorResX: 384,
   sensorResY: 288,

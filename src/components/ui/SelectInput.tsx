@@ -5,11 +5,12 @@ interface Props {
   value: string
   onChange: (v: string) => void
   options: { value: string; label: string }[]
+  hint?: string
 }
 
-export default function SelectInput({ label, value, onChange, options }: Props) {
+export default function SelectInput({ label, value, onChange, options, hint }: Props) {
   return (
-    <div className={styles.row}>
+    <div className={styles.field}>
       <label className={styles.label}>{label}</label>
       <select
         className={styles.select}
@@ -20,6 +21,7 @@ export default function SelectInput({ label, value, onChange, options }: Props) 
           <option key={o.value} value={o.value}>{o.label}</option>
         ))}
       </select>
+      {hint && <div className={styles.hint}>{hint}</div>}
     </div>
   )
 }
