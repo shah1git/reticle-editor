@@ -85,6 +85,7 @@ export default function WingEditor({ reticle, setReticle, ppm, activeWing, setAc
             step={0.1}
             pxValue={wing.length * axisPpm}
             unit="MRAD"
+            hint={`Как далеко тянется крыло от центральной точки. 1 MRAD \u2248 10 см на 100 м, \u2248 1 м на 1 км.\n\nПри длине ${wing.length.toFixed(1)} и интервале ${wing.dots.spacing.toFixed(1)} на крыле поместится ${Math.floor(wing.length / wing.dots.spacing)} меток. При значении 0 крыло не отображается.`}
           />
           <NumberInput
             label="Толщина линии"
@@ -95,14 +96,14 @@ export default function WingEditor({ reticle, setReticle, ppm, activeWing, setAc
             step={0.05}
             pxValue={wing.lineThickness * axisPpm}
             unit="MRAD"
-            hint="0 — линия не рисуется, только точки"
+            hint={`Толщина линии крыла в MRAD. Тонкая линия (0.05\u20130.1) меньше перекрывает цель, толстая (0.2+) лучше видна на шумном изображении.\n\nЗначение 0 допустимо \u2014 линия не рисуется, остаются только точки-метки (если включены). Это удобно, когда нужна только шкала без направляющей линии.`}
           />
           {wing.dots.enabled && (
             <>
               <div className={styles.dotSizeField}>
                 <div className={styles.dotSizeLabelRow}>
                   <span className={styles.dotSizeLabel}>РАЗМЕР ТОЧКИ</span>
-                  <Tooltip text="Диаметр каждой точки-метки в пикселях. Задаётся напрямую в пикселях — без пересчёта из MRAD. Каждое крыло может иметь свой размер точки. Минимум 1 пиксель" />
+                  <Tooltip text={`Диаметр каждой точки-метки в пикселях. Задаётся напрямую \u2014 без пересчёта из MRAD. Каждое крыло может иметь свой размер.\n\n1 пикс \u2014 минимальная точка, может быть плохо видна. 2\u20133 пикс \u2014 хорошо различимая метка. 4+ пикс \u2014 крупная, для низких разрешений.\n\nТекущий размер ${wing.dotSize} пикс = ${dotSizeMrad.toFixed(2)} MRAD на этой оси.`} />
                 </div>
                 <div className={styles.dotSizeInputRow}>
                   <input
