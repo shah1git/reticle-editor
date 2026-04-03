@@ -51,6 +51,7 @@ export default function Canvas({ scope, reticle }: Props) {
         />
         <TestObjectSvg
           state={testObj.state}
+          setState={testObj.setState}
           zoom={transform.zoom}
           cx={cx}
           cy={cy}

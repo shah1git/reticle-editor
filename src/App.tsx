@@ -6,6 +6,7 @@ import { saveToJson } from './utils/fileIO'
 import { useKeyboard } from './hooks/useKeyboard'
 import TopBar from './components/layout/TopBar'
 import LeftPanel from './components/layout/LeftPanel'
+import Canvas from './components/layout/Canvas'
 import RightPanel from './components/layout/RightPanel'
 import './global.css'
 
@@ -31,7 +32,11 @@ export default function App() {
           reticle={reticle} setReticle={setReticle}
           activeWing={activeWing} setActiveWing={setActiveWing}
         />
-        <RightPanel scope={scope} reticle={reticle} activeWing={activeWing} />
+        <Canvas scope={scope} reticle={reticle} />
+        <RightPanel
+          scope={scope} reticle={reticle}
+          activeWing={activeWing} setActiveWing={setActiveWing}
+        />
       </div>
     </div>
   )

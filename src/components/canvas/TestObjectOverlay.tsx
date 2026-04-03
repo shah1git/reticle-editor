@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { TEST_OBJECTS, objectAngularSize } from '../../math/objects'
 import styles from './TestObjectOverlay.module.css'
 
@@ -6,6 +6,8 @@ interface TestObjectState {
   enabled: boolean
   objectIdx: number
   distance: number
+  offsetX: number
+  offsetY: number
 }
 
 export function useTestObject() {
@@ -13,6 +15,8 @@ export function useTestObject() {
     enabled: false,
     objectIdx: 0,
     distance: 200,
+    offsetX: 0,
+    offsetY: 0,
   })
   return { state, setState }
 }
@@ -26,6 +30,7 @@ export function TestObjectControls({ state, setState }: ControlsProps) {
   const obj = TEST_OBJECTS[state.objectIdx]
   const heightMrad = objectAngularSize(obj.height, state.distance)
   const widthMrad = objectAngularSize(obj.width, state.distance)
+  const hasOffset = state.offsetX !== 0 || state.offsetY !== 0
 
   return (
     <div className={styles.controls}>
@@ -78,6 +83,19 @@ export function TestObjectControls({ state, setState }: ControlsProps) {
           <div className={styles.info}>
             {heightMrad.toFixed(2)} × {widthMrad.toFixed(2)} MRAD
           </div>
+          {hasOffset && (
+            <div className={styles.offsetRow}>
+              <span className={styles.offsetText}>
+                {state.offsetX >= 0 ? '+' : ''}{state.offsetX.toFixed(1)} / {state.offsetY >= 0 ? '+' : ''}{state.offsetY.toFixed(1)} MRAD
+              </span>
+              <button
+                className={styles.resetBtn}
+                onClick={() => setState({ ...state, offsetX: 0, offsetY: 0 })}
+              >
+                ⊕ В центр
+              </button>
+            </div>
+          )}
         </>
       )}
     </div>
@@ -86,46 +104,87 @@ export function TestObjectControls({ state, setState }: ControlsProps) {
 
 interface SvgProps {
   state: TestObjectState
+  setState: (s: TestObjectState) => void
   zoom: number
   cx: number
   cy: number
 }
 
-export function TestObjectSvg({ state, zoom, cx, cy }: SvgProps) {
+export function TestObjectSvg({ state, setState, zoom, cx, cy }: SvgProps) {
+  const stateRef = useRef(state)
+  stateRef.current = state
+
   if (!state.enabled) return null
 
   const obj = TEST_OBJECTS[state.objectIdx]
   const heightMrad = objectAngularSize(obj.height, state.distance)
   const widthMrad = objectAngularSize(obj.width, state.distance)
 
+  const baseCx = cx + state.offsetX * zoom
+  const baseCy = cy + state.offsetY * zoom
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (e.button !== 0 || e.altKey) return
+    e.stopPropagation()
+    e.preventDefault()
+
+    const startX = e.clientX
+    const startY = e.clientY
+    const startOffsetX = stateRef.current.offsetX
+    const startOffsetY = stateRef.current.offsetY
+
+    document.body.style.cursor = 'grabbing'
+
+    const handleMouseMove = (ev: MouseEvent) => {
+      const dx = ev.clientX - startX
+      const dy = ev.clientY - startY
+      setState({
+        ...stateRef.current,
+        offsetX: startOffsetX + dx / zoom,
+        offsetY: startOffsetY + dy / zoom,
+      })
+    }
+
+    const handleMouseUp = () => {
+      document.body.style.cursor = ''
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+    }
+
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseup', handleMouseUp)
+  }
+
   return (
     <g>
       <rect
-        x={cx - (widthMrad * zoom) / 2}
-        y={cy - heightMrad * zoom}
+        x={baseCx - (widthMrad * zoom) / 2}
+        y={baseCy - heightMrad * zoom}
         width={widthMrad * zoom}
         height={heightMrad * zoom}
-        fill="#f59e0b"
+        fill="#ff8c42"
         opacity={0.2}
-        stroke="#f59e0b"
+        stroke="#ff8c42"
         strokeWidth={1}
         strokeDasharray="4 2"
+        style={{ cursor: 'grab' }}
+        onMouseDown={handleMouseDown}
       />
       <text
-        x={cx + (widthMrad * zoom) / 2 + 6}
-        y={cy - (heightMrad * zoom) / 2}
-        fill="#f59e0b"
-        fontSize="9"
+        x={baseCx + (widthMrad * zoom) / 2 + 6}
+        y={baseCy - (heightMrad * zoom) / 2}
+        fill="#ff8c42"
+        fontSize="11"
         fontFamily="JetBrains Mono"
         opacity={0.8}
       >
         {obj.name}
       </text>
       <text
-        x={cx + (widthMrad * zoom) / 2 + 6}
-        y={cy - (heightMrad * zoom) / 2 + 12}
-        fill="#f59e0b"
-        fontSize="9"
+        x={baseCx + (widthMrad * zoom) / 2 + 6}
+        y={baseCy - (heightMrad * zoom) / 2 + 14}
+        fill="#ff8c42"
+        fontSize="11"
         fontFamily="JetBrains Mono"
         opacity={0.6}
       >

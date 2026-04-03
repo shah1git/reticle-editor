@@ -2,20 +2,20 @@
   position: absolute;
   top: 8px;
   left: 8px;
-  background: rgba(14, 17, 32, 0.9);
+  background: rgba(14, 16, 23, 0.92);
   border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 8px 10px;
+  border-radius: 8px;
+  padding: 10px 14px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   z-index: 10;
 }
 
 .checkRow {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   cursor: pointer;
 }
 
@@ -24,7 +24,7 @@
 }
 
 .checkLabel {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -32,12 +32,12 @@
 }
 
 .select {
-  background: var(--bg-main);
+  background: var(--bg-input);
   border: 1px solid var(--border-input);
   color: var(--text-primary);
-  padding: 3px 6px;
-  border-radius: 3px;
-  font-size: 11px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 12px;
   font-family: var(--font);
   outline: none;
   cursor: pointer;
@@ -61,21 +61,22 @@
 }
 
 .distLabelText {
-  font-size: 9px;
+  font-size: 10px;
   color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
 
 .distInput {
-  width: 52px;
-  background: var(--bg-main);
+  width: 56px;
+  height: 28px;
+  background: var(--bg-input);
   border: 1px solid var(--border-input);
   color: var(--accent-orange);
-  padding: 2px 4px;
-  border-radius: 3px;
-  font-size: 11px;
-  font-family: var(--font);
+  padding: 4px 6px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: var(--font-mono);
   outline: none;
   text-align: right;
   -moz-appearance: textfield;
@@ -87,11 +88,44 @@
 }
 
 .distUnit {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--text-secondary);
 }
 
 .info {
-  font-size: 9px;
+  font-size: 11px;
   color: var(--text-secondary);
+}
+
+.offsetRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+}
+
+.offsetText {
+  font-size: 11px;
+  color: var(--accent-orange);
+  font-family: var(--font-mono);
+}
+
+.resetBtn {
+  background: none;
+  border: 1px solid var(--border-input);
+  color: var(--text-secondary);
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-family: var(--font);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+
+.resetBtn:hover {
+  border-color: var(--accent-orange);
+  color: var(--accent-orange);
 }

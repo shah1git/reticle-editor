@@ -1,18 +1,10 @@
 .panel {
-  width: 350px;
-  min-width: 350px;
-  position: sticky;
-  top: 0;
-  align-self: flex-start;
+  width: 380px;
+  min-width: 380px;
   height: calc(100vh - var(--topbar-height));
-  border-left: 0.5px solid var(--border);
+  border-left: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  background: var(--bg-canvas);
-}
-
-.canvasWrap {
-  flex: 1;
-  min-height: 300px;
+  background: var(--bg-panel);
   overflow: hidden;
 }

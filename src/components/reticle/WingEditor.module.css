@@ -1,7 +1,7 @@
 .tabs {
   display: flex;
   gap: 4px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .tab {
@@ -9,24 +9,28 @@
   background: var(--bg-input);
   border: 1px solid var(--border-input);
   color: var(--text-secondary);
-  padding: 6px 4px;
-  font-size: 11px;
+  padding: 8px 4px;
+  font-size: 12px;
   font-weight: 600;
   font-family: var(--font);
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 6px;
   transition: all 0.15s;
   text-align: center;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .tab:hover {
   border-color: var(--text-secondary);
+  background: var(--bg-hover);
 }
 
 .tabActive {
-  border-color: var(--accent);
+  border-color: var(--accent-border);
   color: var(--accent);
+  background: var(--accent-bg);
 }
 
 .tabOff {
@@ -36,66 +40,31 @@
 .controls {
   display: flex;
   gap: 20px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  grid-template-columns: 1fr;
+  gap: 0;
 }
 
-@media (max-width: 1200px) {
-  .cards {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.markCount {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background: var(--bg-input);
-  border: 1px solid var(--border-input);
-  border-radius: 4px;
-  padding: 8px;
-  min-height: 56px;
-}
-
-.markCountLabel {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-secondary);
-  margin-bottom: 2px;
-}
-
-.markCountValue {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text-primary);
-  font-family: var(--font-mono);
-}
-
-/* Dot size field — pixel input */
 .dotSizeField {
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .dotSizeLabelRow {
   display: flex;
   align-items: center;
   gap: 4px;
-  margin-bottom: 3px;
+  margin-bottom: 4px;
 }
 
 .dotSizeLabel {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   color: var(--text-secondary);
 }
 
@@ -107,15 +76,18 @@
 
 .dotSizeInput {
   width: 100%;
+  height: 36px;
   background: var(--bg-input);
   border: 1px solid var(--border-input);
-  color: var(--text-primary);
-  padding: 5px 8px;
-  border-radius: 4px;
+  color: var(--text-value);
+  padding: 8px 12px;
+  border-radius: 6px;
   font-size: 14px;
+  font-weight: 500;
   font-family: var(--font-mono);
   outline: none;
   -moz-appearance: textfield;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .dotSizeInput::-webkit-inner-spin-button,
@@ -124,11 +96,12 @@
 }
 
 .dotSizeInput:focus {
-  border-color: var(--accent);
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.15);
 }
 
 .dotSizeUnit {
-  font-size: 9px;
+  font-size: 11px;
   color: var(--text-secondary);
   flex-shrink: 0;
   min-width: 28px;
@@ -137,6 +110,6 @@
 .dotSizeMrad {
   font-size: 11px;
   color: var(--text-hint);
-  margin-top: 2px;
+  margin-top: 4px;
   font-family: var(--font-mono);
 }

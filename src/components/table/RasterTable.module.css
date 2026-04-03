@@ -1,27 +1,32 @@
 .section {
-  border-top: 1px solid var(--border);
-  padding-top: 12px;
-  margin-top: 4px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
 }
 
 .titleRow {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 10px;
+  padding: 12px 16px;
+  background: var(--bg-section);
+  flex-shrink: 0;
 }
 
 .title {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   color: var(--text-primary);
 }
 
 .tabs {
   display: flex;
   gap: 2px;
-  margin-bottom: 8px;
+  padding: 0 12px 8px;
+  flex-shrink: 0;
 }
 
 .tab {
@@ -29,22 +34,24 @@
   background: var(--bg-input);
   border: 1px solid var(--border-input);
   color: var(--text-secondary);
-  padding: 5px 0;
-  font-size: 10px;
+  padding: 8px 0;
+  font-size: 12px;
   font-weight: 600;
   font-family: var(--font);
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 6px;
   transition: all 0.15s;
 }
 
 .tab:hover {
   border-color: var(--text-secondary);
+  background: var(--bg-hover);
 }
 
 .tabActive {
-  border-color: var(--accent);
+  border-color: var(--accent-border);
   color: var(--accent);
+  background: var(--accent-bg);
 }
 
 .tabOff {
@@ -52,36 +59,39 @@
 }
 
 .summary {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--text-secondary);
-  margin-bottom: 6px;
+  padding: 0 16px 8px;
   line-height: 1.4;
+  flex-shrink: 0;
 }
 
 .totals {
-  padding: 8px 0;
-  border-top: 1px solid var(--border);
-  font-size: 10px;
+  padding: 10px 12px;
+  background: var(--bg-section);
+  font-size: 12px;
   color: var(--text-secondary);
-  line-height: 1.6;
+  line-height: 1.8;
+  flex-shrink: 0;
 }
 
 .empty {
   text-align: center;
   color: var(--text-secondary);
-  font-size: 11px;
-  margin-top: 20px;
+  font-size: 12px;
+  padding: 30px 16px;
 }
 
 .tableWrap {
-  max-height: 400px;
+  flex: 1;
   overflow-y: auto;
+  padding: 0 12px;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
+  font-size: 12px;
   font-family: var(--font-mono);
 }
 
@@ -89,12 +99,12 @@
   position: sticky;
   top: 0;
   background: var(--bg-panel);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   color: var(--text-secondary);
-  padding: 4px 4px;
+  padding: 6px 4px;
   text-align: right;
   border-bottom: 1px solid var(--border);
 }
@@ -111,7 +121,7 @@
 }
 
 .table td {
-  padding: 3px 4px;
+  padding: 6px 4px;
   text-align: right;
   color: var(--text-primary);
   border-bottom: 1px solid var(--border);
@@ -121,6 +131,10 @@
 .table td:first-child {
   text-align: center;
   color: var(--text-secondary);
+}
+
+.table tr:hover td {
+  background: var(--bg-hover);
 }
 
 .errGood {
@@ -140,46 +154,46 @@
 }
 
 .legend {
-  margin-top: 8px;
-  padding-top: 8px;
+  padding: 10px 16px;
   border-top: 1px solid var(--border);
-  font-size: 9px;
+  font-size: 10px;
   color: var(--text-secondary);
+  flex-shrink: 0;
 }
 
 .legendTitle {
   font-weight: 700;
   margin-bottom: 4px;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
 }
 
 .legendRow {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 
 .dotGreen {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--accent);
   flex-shrink: 0;
 }
 
 .dotGray {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--text-secondary);
   flex-shrink: 0;
 }
 
 .dotOrange {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--warning);
   flex-shrink: 0;

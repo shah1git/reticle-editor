@@ -1,22 +1,21 @@
 .section {
-  margin-bottom: 8px;
   border-bottom: 1px solid var(--border);
-  padding-bottom: 8px;
 }
 
 .header {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 8px;
+  padding: 10px 16px;
+  background: var(--bg-section);
   user-select: none;
 }
 
 .title {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   color: var(--text-primary);
 }
 
@@ -26,7 +25,7 @@
 }
 
 .summary {
-  font-size: 9px;
+  font-size: 10px;
   color: var(--text-secondary);
   margin-left: auto;
   white-space: nowrap;
@@ -35,5 +34,5 @@
 }
 
 .body {
-  /* content */
+  padding: 12px 16px;
 }

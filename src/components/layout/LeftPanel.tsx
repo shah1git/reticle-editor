@@ -8,7 +8,6 @@ import CenterDotConfig from '../reticle/CenterDotConfig'
 import ColorInput from '../ui/ColorInput'
 import WingEditor from '../reticle/WingEditor'
 import RasterStrategySelector from '../reticle/RasterStrategySelector'
-import RasterTable from '../table/RasterTable'
 import Section from '../ui/Section'
 import styles from './LeftPanel.module.css'
 
@@ -25,26 +24,21 @@ export default function LeftPanel({ scope, setScope, reticle, setReticle, active
   const ppm = useMemo(() => calcPixelsPerMrad(scope), [scope])
 
   return (
-    <main className={styles.panel}>
+    <aside className={styles.panel}>
       <ScopeProfilePanel scope={scope} setScope={setScope} />
 
-      <div className={styles.row2}>
-        <div className={styles.rowItem}>
-          <CenterDotConfig reticle={reticle} setReticle={setReticle} ppm={ppm} />
+      <CenterDotConfig reticle={reticle} setReticle={setReticle} ppm={ppm} />
+
+      <Section title="ЦВЕТ СЕТКИ" collapsible={false}>
+        <ColorInput
+          label="Цвет"
+          value={reticle.color}
+          onChange={v => setReticle({ ...reticle, color: v })}
+        />
+        <div className={styles.colorHint}>
+          Контрастный на тепловых палитрах. Рекомендуется: #4ade80, #ff0000, #ffffff
         </div>
-        <div className={styles.rowItem}>
-          <Section title="ЦВЕТ СЕТКИ" collapsible={false}>
-            <ColorInput
-              label="Цвет"
-              value={reticle.color}
-              onChange={v => setReticle({ ...reticle, color: v })}
-            />
-            <div className={styles.colorHint}>
-              Контрастный на тепловых палитрах. Рекомендуется: #4ade80, #ff0000, #ffffff
-            </div>
-          </Section>
-        </div>
-      </div>
+      </Section>
 
       <WingEditor
         reticle={reticle}
@@ -55,13 +49,6 @@ export default function LeftPanel({ scope, setScope, reticle, setReticle, active
       />
 
       <RasterStrategySelector reticle={reticle} setReticle={setReticle} />
-
-      <RasterTable
-        scope={scope}
-        reticle={reticle}
-        activeWing={activeWing}
-        setActiveWing={setActiveWing}
-      />
-    </main>
+    </aside>
   )
 }

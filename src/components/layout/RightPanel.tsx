@@ -1,7 +1,7 @@
 import type { ScopeProfile } from '../../types/scope'
 import type { Reticle } from '../../types/reticle'
 import type { WingKey } from '../../App'
-import Canvas from './Canvas'
+import RasterTable from '../table/RasterTable'
 import SummaryCards from './SummaryCards'
 import styles from './RightPanel.module.css'
 
@@ -9,14 +9,18 @@ interface Props {
   scope: ScopeProfile
   reticle: Reticle
   activeWing: WingKey
+  setActiveWing: (w: WingKey) => void
 }
 
-export default function RightPanel({ scope, reticle, activeWing }: Props) {
+export default function RightPanel({ scope, reticle, activeWing, setActiveWing }: Props) {
   return (
     <aside className={styles.panel}>
-      <div className={styles.canvasWrap}>
-        <Canvas scope={scope} reticle={reticle} />
-      </div>
+      <RasterTable
+        scope={scope}
+        reticle={reticle}
+        activeWing={activeWing}
+        setActiveWing={setActiveWing}
+      />
       <SummaryCards scope={scope} reticle={reticle} activeWing={activeWing} />
     </aside>
   )
