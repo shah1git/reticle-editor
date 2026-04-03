@@ -55,8 +55,8 @@ export default function ReticleRenderer({ reticle, ppm, cx, cy, zoom }: Props) {
 
       const halfThickScreen = (thicknessMrad * zoom) / 2
 
-      // Line as rect
-      if (dx !== 0) {
+      // Line as rect (skip if thickness is 0)
+      if (thicknessMrad > 0 && dx !== 0) {
         // Horizontal wing
         const x1 = cx + startMrad * dx * zoom
         const x2 = cx + endMrad * dx * zoom
@@ -72,7 +72,7 @@ export default function ReticleRenderer({ reticle, ppm, cx, cy, zoom }: Props) {
             fill={color}
           />
         )
-      } else {
+      } else if (thicknessMrad > 0) {
         // Vertical wing (up or down)
         const y1 = cy + startMrad * dy * zoom
         const y2 = cy + endMrad * dy * zoom

@@ -40,21 +40,23 @@ export function exportPng(scope: ScopeProfile, reticle: Reticle): void {
     const axisPpm = dy !== 0 ? ppm.v : ppm.h
     const gapPx = dotRadiusPx
 
-    // Line
-    const thickPx = Math.max(1, Math.round(wing.lineThickness * axisPpm))
+    // Line (skip if thickness is 0)
     const lengthPx = Math.round(wing.length * axisPpm)
-    const halfThick = thickPx / 2
-
     ctx.fillStyle = color
-    if (dx !== 0) {
-      const startX = cxPx + gapPx * dx
-      const endX = cxPx + (gapPx + lengthPx) * dx
-      const xMin = Math.min(startX, endX)
-      const width = Math.abs(endX - startX)
-      ctx.fillRect(xMin, cyPx - halfThick, width, thickPx)
-    } else {
-      const startY = cyPx + gapPx
-      ctx.fillRect(cxPx - halfThick, startY, thickPx, lengthPx)
+
+    if (wing.lineThickness > 0) {
+      const thickPx = Math.max(1, Math.round(wing.lineThickness * axisPpm))
+      const halfThick = thickPx / 2
+      if (dx !== 0) {
+        const startX = cxPx + gapPx * dx
+        const endX = cxPx + (gapPx + lengthPx) * dx
+        const xMin = Math.min(startX, endX)
+        const width = Math.abs(endX - startX)
+        ctx.fillRect(xMin, cyPx - halfThick, width, thickPx)
+      } else {
+        const startY = cyPx + gapPx * dy
+        ctx.fillRect(cxPx - halfThick, startY, thickPx, Math.abs(lengthPx * dy))
+      }
     }
 
     // Dots
