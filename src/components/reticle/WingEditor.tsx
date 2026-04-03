@@ -99,6 +99,7 @@ export default function WingEditor({ reticle, setReticle, ppm, activeWing, setAc
             step={0.05}
             pxValue={wing.lineThickness * axisPpm}
             unit="MRAD"
+            hint="0 — линия не рисуется, только точки"
           />
           {wing.dots.enabled && (
             <>
