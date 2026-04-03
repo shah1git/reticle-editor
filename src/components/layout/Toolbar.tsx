@@ -4,6 +4,8 @@ import type { ScopeProfile } from '../../types/scope'
 import type { Reticle } from '../../types/reticle'
 import type { PixelsPerMrad } from '../../math/optics'
 import type { RasterStrategy } from '../../types/rasterization'
+import type { BestStrategyInfo } from '../../math/bestStrategy'
+import { defaultScope } from '../../defaults'
 import ScopeProfilePanel from '../scope/ScopeProfilePanel'
 import styles from './Toolbar.module.css'
 
@@ -13,6 +15,7 @@ interface Props {
   reticle: Reticle
   setReticle: (r: Reticle) => void
   ppm: PixelsPerMrad
+  bestStrategy: BestStrategyInfo
 }
 
 const strategyOptions: { value: RasterStrategy; label: string }[] = [
@@ -21,8 +24,14 @@ const strategyOptions: { value: RasterStrategy; label: string }[] = [
   { value: 'bresenham', label: 'В: Брезенхем' },
 ]
 
-export default function Toolbar({ scope, setScope, reticle, setReticle, ppm }: Props) {
+export default function Toolbar({ scope, setScope, reticle, setReticle, ppm, bestStrategy }: Props) {
   const [scopeOpen, setScopeOpen] = useState(false)
+
+  const isDefaultScope = scope.name === 'По умолчанию' ||
+    (scope.name === defaultScope.name &&
+     scope.lensFL === defaultScope.lensFL &&
+     scope.sensorResX === defaultScope.sensorResX &&
+     scope.displayResX === defaultScope.displayResX)
 
   useEffect(() => {
     if (!scopeOpen) return
@@ -33,14 +42,24 @@ export default function Toolbar({ scope, setScope, reticle, setReticle, ppm }: P
     return () => document.removeEventListener('keydown', handler)
   }, [scopeOpen])
 
+  const isOptimal = bestStrategy.best === reticle.rasterization
+
   return (
     <div className={styles.toolbar}>
-      <div className={styles.group}>
-        <span className={styles.label}>ПРИЦЕЛ:</span>
-        <span className={styles.value}>{scope.name}</span>
-        <span className={styles.valueDim}>{ppm.h.toFixed(1)} пикс/MRAD</span>
-        <button className={styles.link} onClick={() => setScopeOpen(true)}>изменить</button>
-      </div>
+      {isDefaultScope ? (
+        <div className={styles.scopeWarning}>
+          <span>⚠ ПРИЦЕЛ НЕ НАСТРОЕН —</span>
+          <button className={styles.scopeWarningBtn} onClick={() => setScopeOpen(true)}>настроить</button>
+          <span>чтобы ввести параметры вашего прицела</span>
+        </div>
+      ) : (
+        <div className={styles.group}>
+          <span className={styles.label}>ПРИЦЕЛ:</span>
+          <span className={styles.value}>{scope.name}</span>
+          <span className={styles.valueDim}>{ppm.h.toFixed(1)} пикс/MRAD</span>
+          <button className={styles.link} onClick={() => setScopeOpen(true)}>изменить</button>
+        </div>
+      )}
 
       <div className={styles.sep} />
 
@@ -55,6 +74,9 @@ export default function Toolbar({ scope, setScope, reticle, setReticle, ppm }: P
             <option key={o.value} value={o.value}>{o.label}</option>
           ))}
         </select>
+        {!isOptimal && (
+          <span className={styles.strategyWarning}>⚠ Рекомендуется: {bestStrategy.bestLabel}</span>
+        )}
       </div>
 
       {scopeOpen && createPortal(
