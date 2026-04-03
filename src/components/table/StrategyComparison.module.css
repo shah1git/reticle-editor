@@ -44,6 +44,7 @@
   border-collapse: collapse;
   font-size: 13px;
   font-family: var(--font-mono);
+  table-layout: fixed;
 }
 
 .table th {
@@ -82,8 +83,9 @@
   color: var(--text-secondary) !important;
   font-weight: 600;
   font-size: 11px;
-  width: 1%;
   padding-right: 6px !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .rowCurrent {
