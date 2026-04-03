@@ -40,10 +40,6 @@ export default function WingEditor({ reticle, setReticle, ppm, activeWing, setAc
     updateWing({ dots: { ...wing.dots, ...patch } })
   }
 
-  const markCount = wing.dots.enabled && wing.dots.spacing > 0
-    ? Math.floor(wing.length / wing.dots.spacing)
-    : 0
-
   const dotSizeMrad = wing.dotSize / axisPpm
 
   return (
@@ -138,10 +134,6 @@ export default function WingEditor({ reticle, setReticle, ppm, activeWing, setAc
                 pxValue={wing.dots.spacing * axisPpm}
                 unit="MRAD"
               />
-              <div className={styles.markCount}>
-                <div className={styles.markCountLabel}>Меток</div>
-                <div className={styles.markCountValue}>{markCount}</div>
-              </div>
             </>
           )}
         </div>
