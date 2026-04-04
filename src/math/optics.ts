@@ -8,6 +8,9 @@ export interface PixelsPerMrad {
 /** Calculate pixels-per-MRAD for a given scope profile */
 export function calcPixelsPerMrad(scope: ScopeProfile): PixelsPerMrad {
   if (scope.type === 'digital') {
+    if (scope.lensFL <= 0 || scope.displayResX <= 0 || scope.displayResY <= 0 || scope.pixelPitch <= 0) {
+      return { h: 1, v: 1 }
+    }
     // mm_per_100m = (sensorRes / displayRes) * pixelPitch_μm * 100 / lensFL_mm
     // pixels_per_mrad = 100 / mm_per_100m
     const mmPer100mH = (scope.sensorResX / scope.displayResX) * scope.pixelPitch * 100 / scope.lensFL
@@ -18,6 +21,9 @@ export function calcPixelsPerMrad(scope: ScopeProfile): PixelsPerMrad {
     }
   }
   // Optical
+  if (scope.fovDegrees <= 0 || scope.displayResX <= 0) {
+    return { h: 1, v: 1 }
+  }
   const fovMrad = scope.fovDegrees * 17.4533
   const ppm = scope.displayResX / fovMrad
   return { h: ppm, v: ppm }
