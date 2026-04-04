@@ -151,6 +151,65 @@
   color: var(--accent-orange) !important;
 }
 
+.rowHovered td {
+  background: var(--bg-hover);
+}
+
+/* Magnification detail sub-table */
+.magDetail {
+  padding: 6px 8px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-section);
+  flex-shrink: 0;
+}
+
+.magDetailTitle {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.magTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  font-family: var(--font-mono);
+}
+
+.magTable th {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  padding: 2px 3px;
+  text-align: right;
+  border-bottom: 1px solid var(--border);
+}
+
+.magTable th:first-child {
+  text-align: center;
+}
+
+.magTable td {
+  padding: 2px 3px;
+  text-align: right;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border);
+  font-variant-numeric: tabular-nums;
+}
+
+.magTable td:first-child {
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.magRowCurrent td {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
 .legend {
   padding: 6px 12px;
   border-top: 1px solid var(--border);

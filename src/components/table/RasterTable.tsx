@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Reticle } from '../../types/reticle'
 import type { PixelsPerMrad } from '../../math/optics'
@@ -16,8 +16,11 @@ interface Props {
   setActiveWing: (w: WingKey) => void
 }
 
+const MAG_PRESETS = [1, 2, 4, 8]
+
 export default function RasterTable({ reticle, ppm, magnification, focalPlane, activeWing, setActiveWing }: Props) {
   const { t } = useTranslation()
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
   const tabLabels: Record<WingKey, string> = {
     up: t('rasterTable.tabUp'),
@@ -40,6 +43,7 @@ export default function RasterTable({ reticle, ppm, magnification, focalPlane, a
 
   const wing = reticle.wings[activeWing]
   const axisPpm = (activeWing === 'down' || activeWing === 'up') ? ppm.v : ppm.h
+  const baseAxisPpm = focalPlane === 'ffp' && magnification > 0 ? axisPpm / magnification : axisPpm
 
   const marks = useMemo(() => {
     if (!wing.enabled || wing.length <= 0 || !wing.dots.enabled || wing.dots.spacing <= 0) return []
@@ -59,6 +63,20 @@ export default function RasterTable({ reticle, ppm, magnification, focalPlane, a
     const mx = Math.max(...vals)
     return { min: mn, max: mx, allEqual: mn === mx }
   }, [marks])
+
+  const magDetail = useMemo(() => {
+    if (hoveredIndex === null || !wing.enabled || wing.length <= 0 || !wing.dots.enabled || wing.dots.spacing <= 0) return null
+    const count = Math.floor(wing.length / wing.dots.spacing)
+    if (count <= 0) return null
+
+    return MAG_PRESETS.map(m => {
+      const magPpm = focalPlane === 'ffp' ? baseAxisPpm * m : baseAxisPpm
+      const allMarks = rasterize(reticle.rasterization, wing.dots.spacing, magPpm, count)
+      const mark = allMarks.find(mk => mk.index === hoveredIndex)
+      if (!mark) return null
+      return { mag: m, ppmVal: magPpm, mark }
+    }).filter(Boolean) as { mag: number; ppmVal: number; mark: (typeof marks)[number] }[]
+  }, [hoveredIndex, wing, reticle.rasterization, focalPlane, baseAxisPpm])
 
   const modalStep = marks.length > 0 ? marks[0].stepPx : 0
   const lastError = marks.length > 0 ? marks[marks.length - 1].errorPx : 0
@@ -124,7 +142,12 @@ export default function RasterTable({ reticle, ppm, magnification, focalPlane, a
               </thead>
               <tbody>
                 {marks.map(m => (
-                  <tr key={m.index}>
+                  <tr
+                    key={m.index}
+                    onMouseEnter={() => setHoveredIndex(m.index)}
+                    onMouseLeave={() => setHoveredIndex(null)}
+                    className={hoveredIndex === m.index ? styles.rowHovered : ''}
+                  >
                     <td>{m.index}</td>
                     <td>{m.targetMrad.toFixed(2)}</td>
                     <td>{m.actualPx}</td>
@@ -136,6 +159,36 @@ export default function RasterTable({ reticle, ppm, magnification, focalPlane, a
               </tbody>
             </table>
           </div>
+
+          {magDetail && magDetail.length > 0 && (
+            <div className={styles.magDetail}>
+              <div className={styles.magDetailTitle}>#{hoveredIndex} @ {t('magnification.label')}</div>
+              <table className={styles.magTable}>
+                <thead>
+                  <tr>
+                    <th>M</th>
+                    <th>{t('toolbar.pixPerMrad')}</th>
+                    <th>{t('rasterTable.colPx')}</th>
+                    <th>{t('rasterTable.colActual')}</th>
+                    <th>{t('rasterTable.colError')}</th>
+                    <th>{t('rasterTable.colStep')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {magDetail.map(d => (
+                    <tr key={d.mag} className={d.mag === magnification ? styles.magRowCurrent : ''}>
+                      <td>{d.mag}{'\u00d7'}</td>
+                      <td>{d.ppmVal.toFixed(1)}</td>
+                      <td>{d.mark.actualPx}</td>
+                      <td>{d.mark.actualMrad.toFixed(3)}</td>
+                      <td className={errorClass(d.mark.errorPx)}>{d.mark.errorPx >= 0 ? '+' : ''}{d.mark.errorPx.toFixed(2)}</td>
+                      <td>{d.mark.stepPx}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
 
           <div className={styles.totals}>
             <div>{t('rasterTable.totals.totalMarks', { count: marks.length })}</div>
