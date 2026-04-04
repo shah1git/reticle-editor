@@ -3,15 +3,8 @@ import type { PixelsPerMrad } from './optics'
 import type { RasterStrategy } from '../types/rasterization'
 import { rasterize } from './rasterization'
 
-export const strategyLabels: Record<RasterStrategy, string> = {
-  independent: 'А: Независимое',
-  fixed_step: 'Б: Фиксированный',
-  bresenham: 'В: Брезенхем',
-}
-
 export interface BestStrategyInfo {
   best: RasterStrategy
-  bestLabel: string
   bestMaxError: number
   currentMaxError: number
 }
@@ -57,7 +50,6 @@ export function findBestStrategy(reticle: Reticle, ppm: PixelsPerMrad): BestStra
 
   return {
     best: bestStrategy,
-    bestLabel: strategyLabels[bestStrategy],
     bestMaxError: bestMaxErr,
     currentMaxError: currentMaxErr,
   }

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import styles from './NumberInput.module.css'
 
 interface Props {
@@ -18,6 +19,7 @@ interface Props {
 export default function NumberInput({
   label, value, onChange, min, max, step = 0.01, defaultValue, pxValue, unit = 'MRAD', hint, snapFn,
 }: Props) {
+  const { t } = useTranslation()
   const [text, setText] = useState(String(value))
   const [focused, setFocused] = useState(false)
 
@@ -52,7 +54,7 @@ export default function NumberInput({
         <label className={styles.label}>{label}</label>
         {pxValue != null && (
           <span className={isWholePixel ? styles.pxGood : styles.pxWarn}>
-            {roundedPx} пикс{!isWholePixel && pxValue != null && ` (${pxValue.toFixed(1)})`}
+            {roundedPx} {t('units.px')}{!isWholePixel && pxValue != null && ` (${pxValue.toFixed(1)})`}
           </span>
         )}
       </div>

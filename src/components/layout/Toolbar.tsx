@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { useTranslation } from 'react-i18next'
 import type { ScopeProfile } from '../../types/scope'
 import type { Reticle } from '../../types/reticle'
 import type { PixelsPerMrad } from '../../math/optics'
@@ -17,14 +18,21 @@ interface Props {
   bestStrategy: BestStrategyInfo
 }
 
-const strategyOptions: { value: RasterStrategy; label: string }[] = [
-  { value: 'independent', label: 'А: Независимое' },
-  { value: 'fixed_step', label: 'Б: Фиксированный' },
-  { value: 'bresenham', label: 'В: Брезенхем' },
-]
+const strategyTransKeys: Record<string, string> = {
+  independent: 'strategies.independent',
+  fixed_step: 'strategies.fixedStep',
+  bresenham: 'strategies.bresenham',
+}
 
 export default function Toolbar({ scope, setScope, reticle, setReticle, ppm, bestStrategy }: Props) {
+  const { t } = useTranslation()
   const [scopeOpen, setScopeOpen] = useState(false)
+
+  const strategyOptions: { value: RasterStrategy; label: string }[] = [
+    { value: 'independent', label: t('strategies.independent') },
+    { value: 'fixed_step', label: t('strategies.fixedStep') },
+    { value: 'bresenham', label: t('strategies.bresenham') },
+  ]
 
   useEffect(() => {
     if (!scopeOpen) return
@@ -40,16 +48,16 @@ export default function Toolbar({ scope, setScope, reticle, setReticle, ppm, bes
   return (
     <div className={styles.toolbar}>
       <div className={styles.group}>
-        <span className={styles.label}>ПРИЦЕЛ:</span>
+        <span className={styles.label}>{t('toolbar.scope')}</span>
         <span className={styles.value}>{scope.name}</span>
-        <span className={styles.valueDim}>{ppm.h.toFixed(1)} пикс/MRAD</span>
-        <button className={styles.scopeBtn} onClick={() => setScopeOpen(true)}>настроить параметры прицела</button>
+        <span className={styles.valueDim}>{ppm.h.toFixed(1)} {t('toolbar.pixPerMrad')}</span>
+        <button className={styles.scopeBtn} onClick={() => setScopeOpen(true)}>{t('toolbar.configureScope')}</button>
       </div>
 
       <div className={styles.sep} />
 
       <div className={styles.group}>
-        <span className={styles.label}>ОКРУГЛЕНИЕ:</span>
+        <span className={styles.label}>{t('toolbar.rounding')}</span>
         <select
           className={styles.select}
           value={reticle.rasterization}
@@ -60,7 +68,7 @@ export default function Toolbar({ scope, setScope, reticle, setReticle, ppm, bes
           ))}
         </select>
         {!isOptimal && (
-          <span className={styles.strategyWarning}>⚠ Рекомендуется: {bestStrategy.bestLabel}</span>
+          <span className={styles.strategyWarning}>{'\u26a0'} {t('toolbar.recommended')}: {t(strategyTransKeys[bestStrategy.best])}</span>
         )}
       </div>
 
@@ -69,7 +77,7 @@ export default function Toolbar({ scope, setScope, reticle, setReticle, ppm, bes
           <div className={styles.modal} onClick={e => e.stopPropagation()}>
             <ScopeProfilePanel scope={scope} setScope={setScope} />
             <div className={styles.modalFooter}>
-              <button className={styles.modalClose} onClick={() => setScopeOpen(false)}>Готово</button>
+              <button className={styles.modalClose} onClick={() => setScopeOpen(false)}>{t('toolbar.done')}</button>
             </div>
           </div>
         </div>,

@@ -1,0 +1,35 @@
+.switcher {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 16px;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  transition: border-color 0.15s, opacity 0.15s;
+  opacity: 0.5;
+}
+
+.btn:hover {
+  opacity: 0.8;
+}
+
+.btnActive {
+  border-color: var(--accent, #00ff88);
+  opacity: 1;
+}
+
+.flag {
+  width: 32px;
+  height: 22px;
+  border-radius: 2px;
+  display: block;
+}

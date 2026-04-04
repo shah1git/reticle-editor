@@ -1,0 +1,203 @@
+{
+  "topbar": {
+    "title": "RETICLE EDITOR",
+    "open": "\u2191 Open",
+    "save": "\u2193 Save",
+    "exportPng": "\u2b07 Export PNG"
+  },
+  "toolbar": {
+    "scope": "SCOPE:",
+    "pixPerMrad": "px/MRAD",
+    "configureScope": "configure scope parameters",
+    "rounding": "ROUNDING:",
+    "recommended": "Recommended",
+    "done": "Done"
+  },
+  "strategies": {
+    "independent": "A: Independent",
+    "fixedStep": "B: Fixed Step",
+    "bresenham": "C: Bresenham"
+  },
+  "strategyFull": {
+    "independentLabel": "A: Independent Rounding",
+    "fixedStepLabel": "B: Fixed Step",
+    "bresenhamLabel": "C: Bresenham Algorithm"
+  },
+  "leftPanel": {
+    "reticle": "RETICLE"
+  },
+  "centerDot": {
+    "title": "\u25cf CENTER DOT",
+    "tooltip": "Aiming point at the center of the reticle. Size is set in MRAD and automatically snapped to whole pixels",
+    "radius": "Radius",
+    "radiusHint": "Center dot radius. Value is chosen so the dot occupies a whole number of pixels",
+    "diameter": "Diameter: {{value}} px"
+  },
+  "wings": {
+    "title": "WINGS",
+    "tooltip": "A wing is a line from the center dot. Marks are placed along it at equal intervals for measuring distances and corrections",
+    "up": "\u2191 Up",
+    "down": "\u2193 Down",
+    "left": "\u2190 Left",
+    "right": "\u2192 Right",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "dotsOnWing": "Dots on wing",
+    "length": "Length",
+    "lengthHint": "How far the wing extends from the center dot. 1 MRAD \u2248 10 cm at 100 m, \u2248 1 m at 1 km.\n\nWith length {{length}} and interval {{spacing}}, the wing fits {{count}} marks. At 0 the wing is hidden.",
+    "lineThickness": "Line thickness",
+    "lineThicknessHint": "Wing line thickness in MRAD. Thin line (0.05\u20130.1) covers less of the target, thick (0.2+) is more visible on noisy images.\n\nValue 0 is allowed \u2014 no line is drawn, only dot marks remain (if enabled). Useful when you need only a scale without a guide line.",
+    "dotSize": "DOT SIZE",
+    "dotSizeHint": "Diameter of each dot mark in pixels. Set directly \u2014 without conversion from MRAD. Each wing can have its own size.\n\n1 px \u2014 minimum dot, may be hard to see. 2\u20133 px \u2014 clearly visible mark. 4+ px \u2014 large, for low resolutions.\n\nCurrent size {{size}} px = {{mrad}} MRAD on this axis.",
+    "interval": "Interval",
+    "intervalHint": "Distance between adjacent dot marks on the wing in MRAD. Determines how frequently the scale divisions are placed.\n\nWith interval 1.0 and length {{length}}, there will be {{count}} dots. Mark count = length \u00f7 interval (fractions are discarded).\n\nThis parameter creates the rasterization problem: interval \u00d7 pixels per MRAD is almost never a whole number of pixels."
+  },
+  "scopePanel": {
+    "title": "SCOPE PROFILE",
+    "name": "Name",
+    "namePlaceholder": "Profile name",
+    "nameHint": "Name for this parameter set, e.g. \"OVOD 640 F50\"",
+    "type": "Type",
+    "typeDigital": "Digital (thermal / night vision)",
+    "typeOptical": "Optical",
+    "typeHint": "Digital \u2014 scope with electronic display. Optical \u2014 with glass reticle",
+    "focalLength": "Focal length",
+    "focalLengthHint": "Lens focal length. Typical values: 25, 35, 50 mm",
+    "sensorW": "Sensor W",
+    "sensorH": "Sensor H",
+    "sensorHint": "Sensor (matrix) resolution. Example: 384\u00d7288, 640\u00d7512",
+    "displayW": "Display W",
+    "displayH": "Display H",
+    "displayHint": "OLED/LCD display resolution. Example: 1024\u00d7768, 2560\u00d72560",
+    "displayHintOptical": "Resolution for export \u2014 output image size",
+    "pixelPitch": "Pixel pitch",
+    "pixelPitchHint": "Sensor pixel pitch in micrometers. Typical: 12, 17 \u00b5m",
+    "fovDegrees": "Field of view",
+    "fovHint": "Scope field of view from manufacturer specifications",
+    "calculated": "Calculated",
+    "oneMrad": "1 MRAD = {{value}} px",
+    "horizontal": "Horiz: {{value}} px/MRAD",
+    "vertical": "Vert: {{value}} px/MRAD",
+    "fov": "FOV: {{h}} \u00d7 {{v}} MRAD",
+    "nonSquareWarning": "\u26a0 Non-square pixel ratio \u2014 sensor and display proportions don't match"
+  },
+  "summaryCards": {
+    "totalMarks": "Total marks",
+    "maxError": "Max error",
+    "stepRange": "Step range",
+    "strategy": "Strategy"
+  },
+  "rasterTable": {
+    "title": "ROUNDING TABLE",
+    "titleTooltip": "Exact coordinates of each mark in pixels and MRAD. Shows where each dot will actually land on the display and how much it deviates from the ideal",
+    "tabUp": "\u2191 Upper",
+    "tabDown": "\u2193 Lower",
+    "tabLeft": "\u2190 Left",
+    "tabRight": "\u2192 Right",
+    "wingDisabled": "Wing disabled",
+    "dotsNotConfigured": "Dots not configured",
+    "wingNames": {
+      "up": "UPPER WING",
+      "down": "LOWER WING",
+      "left": "LEFT WING",
+      "right": "RIGHT WING"
+    },
+    "summary": "{{name}} \u2022 {{count}} marks \u2022 max error \u00b1{{error}} px \u2022 steps: {{steps}} px",
+    "summaryStepsAll": "all = {{step}}",
+    "summaryStepsRange": "{{min}}\u2013{{max}}",
+    "colIndex": "#",
+    "colIndexTooltip": "Mark number from center. #1 \u2014 closest to center, last \u2014 farthest on the wing",
+    "colMrad": "MRAD",
+    "colMradTooltip": "Calculated (ideal) position in milliradians. Formula: mark number \u00d7 interval. This is where the dot SHOULD be placed",
+    "colPx": "px",
+    "colPxTooltip": "Actual position on the scope display in pixels. Whole number \u2014 this exact pixel is where the dot will land on export",
+    "colActual": "actual",
+    "colActualTooltip": "Actual MRAD after rounding to a whole pixel. Formula: pixel position \u00f7 (pixels per MRAD). Shows the real angular position of the mark",
+    "colError": "error",
+    "colErrorTooltip": "Deviation of actual position from ideal in pixels. Positive (+) \u2014 mark shifted away from center. Negative (\u2212) \u2014 closer to center. Closer to zero \u2014 more accurate",
+    "colStep": "step",
+    "colStepTooltip": "Distance in pixels from previous mark to current. Ideally all steps are equal. Orange highlight means the step differs from the standard step for this wing",
+    "totals": {
+      "totalMarks": "Total marks: {{count}}",
+      "maxError": "Max error: \u00b1{{value}} px",
+      "stepRange": "Step range: {{value}} px",
+      "lastMarkError": "Last mark error: {{value}} px{{type}}",
+      "accumulated": " (accumulated)",
+      "noAccumulation": " (no accumulation)",
+      "strategy": "Strategy: {{value}}"
+    },
+    "legend": {
+      "title": "Colors:",
+      "excellent": "\u2264 0.1 px \u2014 excellent accuracy",
+      "acceptable": "\u2264 0.4 px \u2014 acceptable",
+      "noticeable": "> 0.4 px \u2014 noticeable",
+      "unevenStep": "orange step \u2014 uneven spacing"
+    }
+  },
+  "strategySelector": {
+    "title": "\u2699 ROUNDING",
+    "tooltip": "How to place dots when MRAD interval doesn't equal a whole number of pixels. Three strategies solve this problem differently",
+    "descA": "Each dot is placed on the nearest whole pixel to its ideal position \u2014 independently of other dots.\n\nExample: at 1 MRAD = 7.78 pixels, dot #3 should be at pixel 23.34 \u2192 placed at pixel 23. Dot #4 at 31.12 \u2192 at 31.\n\n\u2705 Each mark is maximally accurate (error \u2264 0.5 pixel)\n\u2705 Error doesn\u2019t accumulate \u2014 10th mark is as accurate as 1st\n\u26a0\ufe0f Distances between adjacent marks may differ by 1 pixel (e.g., alternating steps 8-8-7-8-8-7)\n\nBest option when accuracy of each mark matters for shooting corrections.",
+    "descB": "Distance between all dots is the same = nearest whole number to (interval \u00d7 px/MRAD). For example, if 1 MRAD = 7.78 px, then step = 8 pixels.\n\nExample: dots at 8, 16, 24, 32, 40... pixels. All distances = 8 px.\n\n\u2705 All steps are equal \u2014 easy to document for factory: \"step = 8 pixels\"\n\u274c Error accumulates: by 5th mark \u2014 already +1.1 px, by 10th \u2014 +2.2 px\n\u274c Distant marks are noticeably shifted from correct positions\n\nSuitable for short wings (3\u20135 marks) and specs requiring a single step value.",
+    "descC": "Alternation of two steps in a predictable pattern. The same principle used in computer graphics for drawing smooth lines from pixels.\n\nExample: at 1 MRAD = 7.78 px \u2192 alternating steps of 7 and 8 pixels. Pattern: 8-8-7-8-8-7-8-8-7-8 (repeating cycle).\n\n\u2705 Error doesn\u2019t accumulate (like A) \u2014 each mark is accurate\n\u2705 Visually uniform scale \u2014 only two possible step values\n\u2705 Pattern is predictable and documentable\n\nUniversal option \u2014 best compromise between accuracy and uniformity.",
+    "summaryA": "Each mark on the nearest pixel to ideal. Error \u22640.5 px, no accumulation, but steps are uneven.",
+    "summaryB": "All steps identical. Visually flawless, but error accumulates linearly.",
+    "summaryC": "Identical to A in result. Different implementation (incremental), same result.",
+    "compTable": {
+      "markAccuracy": "Mark accuracy",
+      "intervalAccuracy": "Interval accuracy",
+      "errorAccumulation": "Error accumulation",
+      "visualUniformity": "Visual uniformity",
+      "docSimplicity": "Documentation ease",
+      "scaleLength": "Scale length",
+      "recommendation": "Recommendation",
+      "leq05px": "\u22640.5 px",
+      "growsLinearly": "Grows linearly",
+      "upTo1px": "Up to 1 px",
+      "perfect": "Perfect",
+      "none": "None",
+      "linear": "Linear",
+      "dependsOnStep": "Depends on step",
+      "absolute": "Absolute",
+      "identicalToA": "Identical to A",
+      "needsTable": "Needs table",
+      "singleStep": "Single step",
+      "accurate": "Accurate",
+      "stretchedCompressed": "Stretched/compressed",
+      "coordinateAccuracy": "Coordinate accuracy",
+      "uniformityShort": "Uniformity + short",
+      "altImplementationA": "Alt. implementation of A"
+    }
+  },
+  "strategyComparison": {
+    "title": "Strategy comparison",
+    "colMaxError": "Max error",
+    "colMaxErrorTooltip": "Worst mark positioning error across the entire reticle in pixels. Lower is better. Maximum possible rounding error is \u00b10.5 pixel",
+    "colAvg": "Average",
+    "colAvgTooltip": "Average error across all marks. Shows typical deviation \u2014 how much marks deviate from ideal positions on average",
+    "colFractional": "Fractional",
+    "colFractionalTooltip": "How many marks have non-zero error \u2014 their ideal pixel position is fractional and was rounded. Format: error count / total. Lower = more accurate for given parameters",
+    "colUnevenSteps": "Uneven steps",
+    "colUnevenStepsTooltip": "How many distances between adjacent marks differ from the main step. Strategy B always 0 \u2014 all steps equal. A and C have some steps shorter or longer by 1 pixel",
+    "colDrift": "Drift",
+    "colDriftTooltip": "Error of the farthest mark from center. Shows whether error accumulates toward the wing edge. Strategy B error grows with each mark. A and C \u2014 no accumulation",
+    "colSteps": "Steps",
+    "colStepsTooltip": "What pixel distances between adjacent marks. \"all N\" \u2014 all equal. \"N\u2013M\" \u2014 two step values alternate",
+    "recommended": "recommended",
+    "footer": "{{marks}} marks on {{wings}} wing",
+    "footer_plural": "{{marks}} marks on {{wings}} wings",
+    "allSteps": "all {{step}}",
+    "stratLabels": {
+      "independent": "A: Indep.",
+      "fixedStep": "B: Fixed",
+      "bresenham": "C: Bres."
+    }
+  },
+  "units": {
+    "px": "px",
+    "mrad": "MRAD",
+    "mm": "mm",
+    "um": "\u00b5m",
+    "deg": "\u00b0"
+  }
+}

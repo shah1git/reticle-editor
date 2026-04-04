@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { ScopeProfile } from '../../types/scope'
 import type { Reticle } from '../../types/reticle'
 import type { RasterStrategy } from '../../types/rasterization'
@@ -14,12 +15,7 @@ interface Props {
 }
 
 const STRATEGIES: RasterStrategy[] = ['independent', 'fixed_step', 'bresenham']
-const LABELS: Record<RasterStrategy, string> = {
-  independent: 'А: Незав.',
-  fixed_step: 'Б: Фикс.',
-  bresenham: 'В: Брез.',
-}
-const WING_ARROWS: Record<string, string> = { up: '↑', down: '↓', left: '←', right: '→' }
+const WING_ARROWS: Record<string, string> = { up: '\u2191', down: '\u2193', left: '\u2190', right: '\u2192' }
 
 interface WingData {
   key: string
@@ -67,7 +63,7 @@ function getActiveWings(reticle: Reticle, ppm: PixelsPerMrad) {
     const count = Math.floor(wing.length / wing.dots.spacing)
     if (count <= 0) continue
     wings.push({ key, axisPpm, count, spacing: wing.dots.spacing, length: wing.length })
-    info.push(`${WING_ARROWS[key]}${wing.length}×${wing.dots.spacing}`)
+    info.push(`${WING_ARROWS[key]}${wing.length}\u00d7${wing.dots.spacing}`)
     totalMarks += count
   }
 
@@ -109,8 +105,15 @@ function calcStrategyStats(strategy: RasterStrategy, wings: WingData[]): Strateg
 }
 
 export default function StrategyComparison({ scope, reticle }: Props) {
+  const { t } = useTranslation()
   const [collapsed, setCollapsed] = useState(false)
   const ppm = useMemo(() => calcPixelsPerMrad(scope), [scope])
+
+  const LABELS: Record<RasterStrategy, string> = {
+    independent: t('strategyComparison.stratLabels.independent'),
+    fixed_step: t('strategyComparison.stratLabels.fixedStep'),
+    bresenham: t('strategyComparison.stratLabels.bresenham'),
+  }
 
   const data = useMemo(() => {
     const { wings, info, totalMarks, wingCount } = getActiveWings(reticle, ppm)
@@ -131,12 +134,12 @@ export default function StrategyComparison({ scope, reticle }: Props) {
   return (
     <div className={styles.overlay}>
       <button className={styles.toggle} onClick={() => setCollapsed(!collapsed)}>
-        Сравнение стратегий {collapsed ? '▼' : '▲'}
+        {t('strategyComparison.title')} {collapsed ? '\u25bc' : '\u25b2'}
       </button>
       {!collapsed && (
         <>
           <div className={styles.subtitle}>
-            {info.join('  ')} MRAD  при {ppm.h.toFixed(1)} пикс/MRAD
+            {info.join('  ')} MRAD  {t('toolbar.scope').replace(':', '')} {ppm.h.toFixed(1)} {t('units.px')}/MRAD
           </div>
           <div className={styles.tableWrap}>
             <table className={styles.table}>
@@ -153,12 +156,12 @@ export default function StrategyComparison({ scope, reticle }: Props) {
               <thead>
                 <tr>
                   <th></th>
-                  <th><span className={styles.thContent}>Макс. ошибка<Tooltip text="Наихудшая ошибка позиционирования метки на всей сетке в пикселях. Чем меньше — тем точнее расположены метки. Максимально возможная ошибка при округлении — ±0.5 пикселя" align="left" /></span></th>
-                  <th><span className={styles.thContent}>Средняя<Tooltip text="Средняя ошибка по всем меткам сетки. Показывает типичную погрешность — насколько в среднем метки отклоняются от идеальных позиций" align="left" /></span></th>
-                  <th><span className={styles.thContent}>Дробных<Tooltip text="Сколько меток имеют ненулевую ошибку — их идеальная позиция в пикселях дробная и была округлена. Формат: количество с ошибкой / всего меток. Чем меньше — тем точнее стратегия для данных параметров" align="left" /></span></th>
-                  <th><span className={styles.thContent}>Неравн. шаги<Tooltip text="Сколько расстояний между соседними метками отличаются от основного шага. При стратегии Б всегда 0 — все шаги равны. При А и В часть шагов короче или длиннее на 1 пиксель" align="left" /></span></th>
-                  <th><span className={styles.thContent}>Дрейф<Tooltip text="Ошибка самой дальней метки от центра. Показывает накапливается ли ошибка к краю крыла. При стратегии Б ошибка растёт с каждой меткой. При А и В — не накапливается" align="left" /></span></th>
-                  <th><span className={styles.thContent}>Шаги<Tooltip text="Какие расстояния в пикселях между соседними метками. «все N» — все одинаковые. «N–M» — чередуются два значения шага" align="left" /></span></th>
+                  <th><span className={styles.thContent}>{t('strategyComparison.colMaxError')}<Tooltip text={t('strategyComparison.colMaxErrorTooltip')} align="left" /></span></th>
+                  <th><span className={styles.thContent}>{t('strategyComparison.colAvg')}<Tooltip text={t('strategyComparison.colAvgTooltip')} align="left" /></span></th>
+                  <th><span className={styles.thContent}>{t('strategyComparison.colFractional')}<Tooltip text={t('strategyComparison.colFractionalTooltip')} align="left" /></span></th>
+                  <th><span className={styles.thContent}>{t('strategyComparison.colUnevenSteps')}<Tooltip text={t('strategyComparison.colUnevenStepsTooltip')} align="left" /></span></th>
+                  <th><span className={styles.thContent}>{t('strategyComparison.colDrift')}<Tooltip text={t('strategyComparison.colDriftTooltip')} align="left" /></span></th>
+                  <th><span className={styles.thContent}>{t('strategyComparison.colSteps')}<Tooltip text={t('strategyComparison.colStepsTooltip')} align="left" /></span></th>
                   <th></th>
                 </tr>
               </thead>
@@ -169,17 +172,17 @@ export default function StrategyComparison({ scope, reticle }: Props) {
                   return (
                     <tr key={s.strategy} className={isCurrent ? styles.rowCurrent : ''}>
                       <td className={styles.strategyName}>{LABELS[s.strategy]}</td>
-                      <td>±{s.maxErr.toFixed(2)}</td>
+                      <td>{'\u00b1'}{s.maxErr.toFixed(2)}</td>
                       <td>{s.avgErr.toFixed(2)}</td>
                       <td>{s.fractionalCount}/{s.totalMarks}</td>
                       <td>{s.unevenSteps}/{s.totalMarks}</td>
                       <td className={s.drift > 1.0 ? styles.driftWarn : ''}>{s.drift > 0 ? '+' : ''}{s.drift.toFixed(2)}</td>
-                      <td>{s.allEqual ? `все ${s.minStep}` : `${s.minStep}\u2013${s.maxStep}`}</td>
+                      <td>{s.allEqual ? t('strategyComparison.allSteps', { step: s.minStep }) : `${s.minStep}\u2013${s.maxStep}`}</td>
                       <td className={styles.checkCell}>
                         {isBest && (
                           <>
-                            <span className={styles.checkMark}>✓</span>
-                            {!isCurrentOptimal && !isCurrent && <span className={styles.recommend}>рекомендуется</span>}
+                            <span className={styles.checkMark}>{'\u2713'}</span>
+                            {!isCurrentOptimal && !isCurrent && <span className={styles.recommend}>{t('strategyComparison.recommended')}</span>}
                           </>
                         )}
                       </td>
@@ -190,7 +193,10 @@ export default function StrategyComparison({ scope, reticle }: Props) {
             </table>
           </div>
           <div className={styles.footer}>
-            {totalMarks} меток на {wingCount} {wingCount === 1 ? 'крыле' : 'крыльях'}
+            {wingCount === 1
+              ? t('strategyComparison.footer', { marks: totalMarks, wings: wingCount })
+              : t('strategyComparison.footer_plural', { marks: totalMarks, wings: wingCount })
+            }
           </div>
         </>
       )}

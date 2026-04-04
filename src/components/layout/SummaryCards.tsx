@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { ScopeProfile } from '../../types/scope'
 import type { Reticle } from '../../types/reticle'
 import type { WingKey } from '../../App'
@@ -12,14 +13,15 @@ interface Props {
   activeWing: WingKey
 }
 
-const strategyLabels: Record<string, string> = {
-  independent: 'А: Независимое',
-  fixed_step: 'Б: Фиксированный',
-  bresenham: 'В: Брезенхем',
-}
-
 export default function SummaryCards({ scope, reticle }: Props) {
+  const { t } = useTranslation()
   const ppm = useMemo(() => calcPixelsPerMrad(scope), [scope])
+
+  const strategyTransKeys: Record<string, string> = {
+    independent: 'strategies.independent',
+    fixed_step: 'strategies.fixedStep',
+    bresenham: 'strategies.bresenham',
+  }
 
   const stats = useMemo(() => {
     let totalMarks = 0
@@ -47,29 +49,28 @@ export default function SummaryCards({ scope, reticle }: Props) {
       totalMarks,
       maxError,
       stepRange: totalMarks > 0
-        ? (minStep === maxStep ? `${minStep}` : `${minStep}–${maxStep}`)
-        : '—',
-      strategy: strategyLabels[reticle.rasterization] || reticle.rasterization,
+        ? (minStep === maxStep ? `${minStep}` : `${minStep}\u2013${maxStep}`)
+        : '\u2014',
     }
   }, [reticle, ppm])
 
   return (
     <div className={styles.container}>
       <div className={styles.card}>
-        <div className={styles.cardLabel}>Всего меток</div>
+        <div className={styles.cardLabel}>{t('summaryCards.totalMarks')}</div>
         <div className={styles.cardValue}>{stats.totalMarks}</div>
       </div>
       <div className={styles.card}>
-        <div className={styles.cardLabel}>Макс. ошибка</div>
-        <div className={styles.cardValue}>{stats.maxError.toFixed(2)} пикс</div>
+        <div className={styles.cardLabel}>{t('summaryCards.maxError')}</div>
+        <div className={styles.cardValue}>{stats.maxError.toFixed(2)} {t('units.px')}</div>
       </div>
       <div className={styles.card}>
-        <div className={styles.cardLabel}>Диапазон шагов</div>
-        <div className={styles.cardValue}>{stats.stepRange} пикс</div>
+        <div className={styles.cardLabel}>{t('summaryCards.stepRange')}</div>
+        <div className={styles.cardValue}>{stats.stepRange} {t('units.px')}</div>
       </div>
       <div className={styles.card}>
-        <div className={styles.cardLabel}>Стратегия</div>
-        <div className={styles.cardValue}>{stats.strategy}</div>
+        <div className={styles.cardLabel}>{t('summaryCards.strategy')}</div>
+        <div className={styles.cardValue}>{t(strategyTransKeys[reticle.rasterization])}</div>
       </div>
     </div>
   )

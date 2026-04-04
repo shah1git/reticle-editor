@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import type { Reticle } from '../../types/reticle'
 import type { PixelsPerMrad } from '../../math/optics'
 import type { WingKey } from '../../App'
@@ -16,9 +17,11 @@ interface Props {
 }
 
 export default function LeftPanel({ reticle, setReticle, ppm, activeWing, setActiveWing }: Props) {
+  const { t } = useTranslation()
+
   return (
     <aside className={styles.panel}>
-      <Section title="СЕТКА" collapsible={false}>
+      <Section title={t('leftPanel.reticle')} collapsible={false}>
         <CenterDotConfig reticle={reticle} setReticle={setReticle} ppm={ppm} />
       </Section>
 

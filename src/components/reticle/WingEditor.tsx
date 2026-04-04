@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import type { Reticle, Wing } from '../../types/reticle'
 import type { PixelsPerMrad } from '../../math/optics'
 import type { WingKey } from '../../App'
@@ -15,16 +16,17 @@ interface Props {
   setActiveWing: (w: WingKey) => void
 }
 
-const wingLabels: Record<WingKey, string> = {
-  up: '↑ Верх',
-  down: '↓ Низ',
-  left: '← Лево',
-  right: '→ Право',
-}
-
 export default function WingEditor({ reticle, setReticle, ppm, activeWing, setActiveWing }: Props) {
+  const { t } = useTranslation()
   const wing = reticle.wings[activeWing]
   const axisPpm = (activeWing === 'up' || activeWing === 'down') ? ppm.v : ppm.h
+
+  const wingLabels: Record<WingKey, string> = {
+    up: t('wings.up'),
+    down: t('wings.down'),
+    left: t('wings.left'),
+    right: t('wings.right'),
+  }
 
   const updateWing = (patch: Partial<Wing>) => {
     setReticle({
@@ -43,7 +45,7 @@ export default function WingEditor({ reticle, setReticle, ppm, activeWing, setAc
   const dotSizeMrad = wing.dotSize / axisPpm
 
   return (
-    <Section title="КРЫЛЬЯ" collapsible={false} tooltip="Крыло — линия от центральной точки. Вдоль неё размещаются метки через равные интервалы для измерения расстояний и поправок">
+    <Section title={t('wings.title')} collapsible={false} tooltip={t('wings.tooltip')}>
       <div className={styles.tabs}>
         {(['up', 'down', 'left', 'right'] as const).map(key => {
           const w = reticle.wings[key]
@@ -61,13 +63,13 @@ export default function WingEditor({ reticle, setReticle, ppm, activeWing, setAc
 
       <div className={styles.controls}>
         <CheckboxInput
-          label={wing.enabled ? 'Включено' : 'Выключено'}
+          label={wing.enabled ? t('wings.enabled') : t('wings.disabled')}
           checked={wing.enabled}
           onChange={v => updateWing({ enabled: v })}
         />
         {wing.enabled && (
           <CheckboxInput
-            label="Точки на крыле"
+            label={t('wings.dotsOnWing')}
             checked={wing.dots.enabled}
             onChange={v => updateDots({ enabled: v })}
           />
@@ -77,7 +79,7 @@ export default function WingEditor({ reticle, setReticle, ppm, activeWing, setAc
       {wing.enabled && (
         <div className={styles.cards}>
           <NumberInput
-            label="Длина"
+            label={t('wings.length')}
             value={wing.length}
             onChange={v => updateWing({ length: v })}
             min={0}
@@ -85,10 +87,10 @@ export default function WingEditor({ reticle, setReticle, ppm, activeWing, setAc
             step={0.1}
             pxValue={wing.length * axisPpm}
             unit="MRAD"
-            hint={`Как далеко тянется крыло от центральной точки. 1 MRAD \u2248 10 см на 100 м, \u2248 1 м на 1 км.\n\nПри длине ${wing.length.toFixed(1)} и интервале ${wing.dots.spacing.toFixed(1)} на крыле поместится ${Math.floor(wing.length / wing.dots.spacing)} меток. При значении 0 крыло не отображается.`}
+            hint={t('wings.lengthHint', { length: wing.length.toFixed(1), spacing: wing.dots.spacing.toFixed(1), count: Math.floor(wing.length / wing.dots.spacing) })}
           />
           <NumberInput
-            label="Толщина линии"
+            label={t('wings.lineThickness')}
             value={wing.lineThickness}
             onChange={v => updateWing({ lineThickness: v })}
             min={0}
@@ -96,14 +98,14 @@ export default function WingEditor({ reticle, setReticle, ppm, activeWing, setAc
             step={0.05}
             pxValue={wing.lineThickness * axisPpm}
             unit="MRAD"
-            hint={`Толщина линии крыла в MRAD. Тонкая линия (0.05\u20130.1) меньше перекрывает цель, толстая (0.2+) лучше видна на шумном изображении.\n\nЗначение 0 допустимо \u2014 линия не рисуется, остаются только точки-метки (если включены). Это удобно, когда нужна только шкала без направляющей линии.`}
+            hint={t('wings.lineThicknessHint')}
           />
           {wing.dots.enabled && (
             <>
               <div className={styles.dotSizeField}>
                 <div className={styles.dotSizeLabelRow}>
-                  <span className={styles.dotSizeLabel}>РАЗМЕР ТОЧКИ</span>
-                  <Tooltip text={`Диаметр каждой точки-метки в пикселях. Задаётся напрямую \u2014 без пересчёта из MRAD. Каждое крыло может иметь свой размер.\n\n1 пикс \u2014 минимальная точка, может быть плохо видна. 2\u20133 пикс \u2014 хорошо различимая метка. 4+ пикс \u2014 крупная, для низких разрешений.\n\nТекущий размер ${wing.dotSize} пикс = ${dotSizeMrad.toFixed(2)} MRAD на этой оси.`} />
+                  <span className={styles.dotSizeLabel}>{t('wings.dotSize')}</span>
+                  <Tooltip text={t('wings.dotSizeHint', { size: wing.dotSize, mrad: dotSizeMrad.toFixed(2) })} />
                 </div>
                 <div className={styles.dotSizeInputRow}>
                   <input
@@ -121,12 +123,12 @@ export default function WingEditor({ reticle, setReticle, ppm, activeWing, setAc
                       if (isNaN(v) || v < 1) updateWing({ dotSize: 2 })
                     }}
                   />
-                  <span className={styles.dotSizeUnit}>пикс</span>
+                  <span className={styles.dotSizeUnit}>{t('units.px')}</span>
                 </div>
                 <div className={styles.dotSizeMrad}>= {dotSizeMrad.toFixed(2)} MRAD</div>
               </div>
               <NumberInput
-                label="Интервал"
+                label={t('wings.interval')}
                 value={wing.dots.spacing}
                 onChange={v => updateDots({ spacing: v })}
                 min={0.1}
@@ -134,7 +136,7 @@ export default function WingEditor({ reticle, setReticle, ppm, activeWing, setAc
                 step={0.1}
                 pxValue={wing.dots.spacing * axisPpm}
                 unit="MRAD"
-                hint={`Расстояние между соседними точками-метками на крыле в MRAD. Определяет, как часто расставлены деления шкалы.\n\nПри интервале 1.0 и длине ${wing.length.toFixed(1)} получится ${Math.floor(wing.length / wing.dots.spacing)} точек. Количество меток = длина \u00f7 интервал (дробные отбрасываются).\n\nИменно этот параметр порождает проблему растеризации: интервал \u00d7 пикселей на MRAD почти никогда не равен целому числу пикселей.`}
+                hint={t('wings.intervalHint', { length: wing.length.toFixed(1), count: Math.floor(wing.length / wing.dots.spacing) })}
               />
             </>
           )}

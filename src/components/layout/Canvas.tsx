@@ -1,8 +1,9 @@
 import { useRef, useState, useEffect, useMemo, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { ScopeProfile } from '../../types/scope'
 import type { Reticle } from '../../types/reticle'
 import { calcPixelsPerMrad, getFovMrad } from '../../math/optics'
-import { findBestStrategy, strategyLabels } from '../../math/bestStrategy'
+import { findBestStrategy } from '../../math/bestStrategy'
 import { useCanvasInteraction } from '../../hooks/useCanvasInteraction'
 import MradGrid from '../canvas/MradGrid'
 import ReticleRenderer from '../canvas/ReticleRenderer'
@@ -14,7 +15,14 @@ interface Props {
   reticle: Reticle
 }
 
+const strategyTransKeys: Record<string, string> = {
+  independent: 'strategies.independent',
+  fixed_step: 'strategies.fixedStep',
+  bresenham: 'strategies.bresenham',
+}
+
 export default function Canvas({ scope, reticle }: Props) {
+  const { t } = useTranslation()
   const containerRef = useRef<HTMLDivElement>(null)
   const [size, setSize] = useState({ width: 800, height: 600 })
   const [sizeReady, setSizeReady] = useState(false)
@@ -108,24 +116,24 @@ export default function Canvas({ scope, reticle }: Props) {
       <div className={styles.scopeInfo}>
         <div className={styles.scopeName}>{scope.name}</div>
         {scope.type === 'digital' ? (
-          <div>{scope.sensorResX}×{scope.sensorResY} → {scope.displayResX}×{scope.displayResY} | F{scope.lensFL} | {scope.pixelPitch}μm</div>
+          <div>{scope.sensorResX}{'\u00d7'}{scope.sensorResY} {'\u2192'} {scope.displayResX}{'\u00d7'}{scope.displayResY} | F{scope.lensFL} | {scope.pixelPitch}{'\u03bc'}m</div>
         ) : (
-          <div>{scope.displayResX}×{scope.displayResY} | FOV {scope.fovDegrees}°</div>
+          <div>{scope.displayResX}{'\u00d7'}{scope.displayResY} | FOV {scope.fovDegrees}{'\u00b0'}</div>
         )}
-        <div>1 MRAD = <span className={styles.ppmValue}>{ppm.h.toFixed(1)}</span> пикс</div>
-        <div>FOV: {fov.h.toFixed(0)} × {fov.v.toFixed(0)} MRAD</div>
+        <div>{t('scopePanel.oneMrad', { value: ppm.h.toFixed(1) })}</div>
+        <div>FOV: {fov.h.toFixed(0)} {'\u00d7'} {fov.v.toFixed(0)} MRAD</div>
         {isOptimal ? (
-          <div className={styles.roundingLine}>Округление: {strategyLabels[reticle.rasterization]} <span className={styles.roundingCheck}>✓</span></div>
+          <div className={styles.roundingLine}>{t('toolbar.rounding')} {t(strategyTransKeys[reticle.rasterization])} <span className={styles.roundingCheck}>{'\u2713'}</span></div>
         ) : (
           <>
-            <div className={styles.roundingLine}>Округление: {strategyLabels[reticle.rasterization]}</div>
-            <div className={styles.roundingOptimal}>Оптимально: {bestStrategy.bestLabel} (±{bestStrategy.bestMaxError.toFixed(2)} пикс)</div>
+            <div className={styles.roundingLine}>{t('toolbar.rounding')} {t(strategyTransKeys[reticle.rasterization])}</div>
+            <div className={styles.roundingOptimal}>{t('toolbar.recommended')}: {t(strategyTransKeys[bestStrategy.best])} ({'\u00b1'}{bestStrategy.bestMaxError.toFixed(2)} {t('units.px')})</div>
           </>
         )}
         <div className={styles.legendRow}>
           <span className={styles.legendLabel}>0</span>
           <span className={styles.gradient} />
-          <span className={styles.legendLabel}>±0.5px</span>
+          <span className={styles.legendLabel}>{'\u00b1'}0.5{t('units.px')}</span>
         </div>
       </div>
 
@@ -133,27 +141,26 @@ export default function Canvas({ scope, reticle }: Props) {
 
       <div className={styles.hint}>
         <span className={styles.zoomLabel}>
-          Масштаб: {transform.zoom.toFixed(1)} пикс/MRAD · Видно: {visibleW.toFixed(1)} × {visibleH.toFixed(1)} из {fov.h.toFixed(0)} × {fov.v.toFixed(0)} MRAD ({fovPct.toFixed(0)}%)
+          {transform.zoom.toFixed(1)} {t('units.px')}/MRAD {'\u00b7'} {visibleW.toFixed(1)} {'\u00d7'} {visibleH.toFixed(1)} / {fov.h.toFixed(0)} {'\u00d7'} {fov.v.toFixed(0)} MRAD ({fovPct.toFixed(0)}%)
         </span>
-        <span className={styles.hintText}>Alt+Перемещение: сдвиг · Прокрутка: масштаб · Ctrl+S: сохранить</span>
       </div>
       <div className={styles.controls}>
         <div className={styles.zoomControls}>
           <button className={styles.ctrlBtn} onClick={handleZoomIn}>+</button>
-          <button className={styles.ctrlBtn} onClick={handleZoomOut}>−</button>
+          <button className={styles.ctrlBtn} onClick={handleZoomOut}>{'\u2212'}</button>
         </div>
         <div className={styles.panControls}>
-          <button className={styles.ctrlBtn} onClick={() => handlePan(0, 80)}>↑</button>
+          <button className={styles.ctrlBtn} onClick={() => handlePan(0, 80)}>{'\u2191'}</button>
           <div className={styles.panRow}>
-            <button className={styles.ctrlBtn} onClick={() => handlePan(80, 0)}>←</button>
-            <button className={styles.ctrlBtn} onClick={handleCenter}>⊙</button>
-            <button className={styles.ctrlBtn} onClick={() => handlePan(-80, 0)}>→</button>
+            <button className={styles.ctrlBtn} onClick={() => handlePan(80, 0)}>{'\u2190'}</button>
+            <button className={styles.ctrlBtn} onClick={handleCenter}>{'\u2299'}</button>
+            <button className={styles.ctrlBtn} onClick={() => handlePan(-80, 0)}>{'\u2192'}</button>
           </div>
-          <button className={styles.ctrlBtn} onClick={() => handlePan(0, -80)}>↓</button>
+          <button className={styles.ctrlBtn} onClick={() => handlePan(0, -80)}>{'\u2193'}</button>
         </div>
         <div className={styles.actionBtns}>
-          <button className={styles.fitBtn} onClick={handleReset}>Сброс</button>
-          <button className={styles.fitBtn} onClick={handleFitFov}>Весь FOV</button>
+          <button className={styles.fitBtn} onClick={handleReset}>Reset</button>
+          <button className={styles.fitBtn} onClick={handleFitFov}>FOV</button>
         </div>
       </div>
     </div>

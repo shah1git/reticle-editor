@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { ScopeProfile } from '../../types/scope'
 import type { Reticle } from '../../types/reticle'
 import type { WingKey } from '../../App'
@@ -14,28 +15,29 @@ interface Props {
   setActiveWing: (w: WingKey) => void
 }
 
-const tabLabels: Record<WingKey, string> = {
-  up: '↑ Верхнее',
-  down: '↓ Нижнее',
-  left: '← Левое',
-  right: '→ Правое',
-}
-
-const wingNames: Record<WingKey, string> = {
-  up: 'ВЕРХНЕЕ КРЫЛО',
-  down: 'НИЖНЕЕ КРЫЛО',
-  left: 'ЛЕВОЕ КРЫЛО',
-  right: 'ПРАВОЕ КРЫЛО',
-}
-
-const strategyLabels: Record<string, string> = {
-  independent: 'А: Независимое округление',
-  fixed_step: 'Б: Фиксированный шаг',
-  bresenham: 'В: Алгоритм Брезенхема',
-}
-
 export default function RasterTable({ scope, reticle, activeWing, setActiveWing }: Props) {
+  const { t } = useTranslation()
   const ppm = useMemo(() => calcPixelsPerMrad(scope), [scope])
+
+  const tabLabels: Record<WingKey, string> = {
+    up: t('rasterTable.tabUp'),
+    down: t('rasterTable.tabDown'),
+    left: t('rasterTable.tabLeft'),
+    right: t('rasterTable.tabRight'),
+  }
+
+  const wingNames: Record<WingKey, string> = {
+    up: t('rasterTable.wingNames.up'),
+    down: t('rasterTable.wingNames.down'),
+    left: t('rasterTable.wingNames.left'),
+    right: t('rasterTable.wingNames.right'),
+  }
+
+  const strategyLabels: Record<string, string> = {
+    independent: t('strategyFull.independentLabel'),
+    fixed_step: t('strategyFull.fixedStepLabel'),
+    bresenham: t('strategyFull.bresenhamLabel'),
+  }
 
   const wing = reticle.wings[activeWing]
   const axisPpm = (activeWing === 'down' || activeWing === 'up') ? ppm.v : ppm.h
@@ -63,49 +65,58 @@ export default function RasterTable({ scope, reticle, activeWing, setActiveWing 
   const lastError = marks.length > 0 ? marks[marks.length - 1].errorPx : 0
   const disabled = !wing.enabled || wing.length <= 0
 
+  const stepsText = steps.allEqual
+    ? t('rasterTable.summaryStepsAll', { step: steps.min })
+    : t('rasterTable.summaryStepsRange', { min: steps.min, max: steps.max })
+
   return (
     <div className={styles.section}>
       <div className={styles.titleRow}>
-        <span className={styles.title}>ТАБЛИЦА ОКРУГЛЕНИЯ</span>
-        <Tooltip text="Точные координаты каждой метки в пикселях и MRAD. Показывает куда реально встанет каждая точка на дисплее и насколько она отклоняется от идеала" />
+        <span className={styles.title}>{t('rasterTable.title')}</span>
+        <Tooltip text={t('rasterTable.titleTooltip')} />
       </div>
 
       <div className={styles.tabs}>
-        {(['up', 'down', 'left', 'right'] as const).map(t => {
-          const w = reticle.wings[t]
+        {(['up', 'down', 'left', 'right'] as const).map(tab => {
+          const w = reticle.wings[tab]
           const off = !w.enabled || w.length <= 0
           return (
             <button
-              key={t}
-              className={`${styles.tab} ${activeWing === t ? styles.tabActive : ''} ${off ? styles.tabOff : ''}`}
-              onClick={() => setActiveWing(t)}
+              key={tab}
+              className={`${styles.tab} ${activeWing === tab ? styles.tabActive : ''} ${off ? styles.tabOff : ''}`}
+              onClick={() => setActiveWing(tab)}
             >
-              {tabLabels[t]}
+              {tabLabels[tab]}
             </button>
           )
         })}
       </div>
 
       {disabled ? (
-        <div className={styles.empty}>Крыло выключено</div>
+        <div className={styles.empty}>{t('rasterTable.wingDisabled')}</div>
       ) : marks.length === 0 ? (
-        <div className={styles.empty}>Точки не настроены</div>
+        <div className={styles.empty}>{t('rasterTable.dotsNotConfigured')}</div>
       ) : (
         <>
           <div className={styles.summary}>
-            {wingNames[activeWing]} &bull; {marks.length} меток &bull; макс. ошибка &plusmn;{maxError.toFixed(2)} пикс &bull; шаги: {steps.allEqual ? `все = ${steps.min}` : `${steps.min}\u2013${steps.max}`} пикс
+            {t('rasterTable.summary', {
+              name: wingNames[activeWing],
+              count: marks.length,
+              error: maxError.toFixed(2),
+              steps: stepsText,
+            })}
           </div>
 
           <div className={styles.tableWrap}>
             <table className={styles.table}>
               <thead>
                 <tr>
-                  <th><span className={styles.thContent}>#<Tooltip text="Порядковый номер метки от центра. #1 — ближайшая к центру, последняя — самая дальняя на крыле" /></span></th>
-                  <th><span className={styles.thContent}>MRAD<Tooltip text="Расчётная (идеальная) позиция в миллирадианах. Формула: номер метки × интервал. Это позиция, куда точка ДОЛЖНА встать" /></span></th>
-                  <th><span className={styles.thContent}>пикс<Tooltip text="Фактическая позиция на дисплее прицела в пикселях. Целое число — именно на этот пиксель встанет точка при экспорте" /></span></th>
-                  <th><span className={styles.thContent}>факт.<Tooltip text="Какой MRAD реально получился после округления до целого пикселя. Формула: позиция в пикселях ÷ (пикселей на MRAD). Позволяет оценить реальную угловую позицию метки" /></span></th>
-                  <th><span className={styles.thContent}>ошибка<Tooltip text="Отклонение фактической позиции от идеальной в пикселях. Положительное значение (+) — метка сдвинута дальше от центра. Отрицательное (−) — ближе к центру. Чем ближе к нулю — тем точнее" align="left" /></span></th>
-                  <th><span className={styles.thContent}>шаг<Tooltip text="Расстояние в пикселях от предыдущей метки до текущей. В идеале все шаги равны. Если шаг подсвечен оранжевым — он отличается от стандартного шага для этого крыла" align="left" /></span></th>
+                  <th><span className={styles.thContent}>{t('rasterTable.colIndex')}<Tooltip text={t('rasterTable.colIndexTooltip')} /></span></th>
+                  <th><span className={styles.thContent}>{t('rasterTable.colMrad')}<Tooltip text={t('rasterTable.colMradTooltip')} /></span></th>
+                  <th><span className={styles.thContent}>{t('rasterTable.colPx')}<Tooltip text={t('rasterTable.colPxTooltip')} /></span></th>
+                  <th><span className={styles.thContent}>{t('rasterTable.colActual')}<Tooltip text={t('rasterTable.colActualTooltip')} /></span></th>
+                  <th><span className={styles.thContent}>{t('rasterTable.colError')}<Tooltip text={t('rasterTable.colErrorTooltip')} align="left" /></span></th>
+                  <th><span className={styles.thContent}>{t('rasterTable.colStep')}<Tooltip text={t('rasterTable.colStepTooltip')} align="left" /></span></th>
                 </tr>
               </thead>
               <tbody>
@@ -124,19 +135,19 @@ export default function RasterTable({ scope, reticle, activeWing, setActiveWing 
           </div>
 
           <div className={styles.totals}>
-            <div>Всего меток: {marks.length}</div>
-            <div>Макс. ошибка: &plusmn;{maxError.toFixed(2)} пикс</div>
-            <div>Диапазон шагов: {steps.allEqual ? `${steps.min} пикс` : `${steps.min}\u2013${steps.max} пикс`}</div>
-            <div>Ошибка к последней метке: {lastError >= 0 ? '+' : ''}{lastError.toFixed(2)} пикс{reticle.rasterization === 'fixed_step' ? ' (накопленная)' : ' (без накопления)'}</div>
-            <div>Стратегия: {strategyLabels[reticle.rasterization] || reticle.rasterization}</div>
+            <div>{t('rasterTable.totals.totalMarks', { count: marks.length })}</div>
+            <div>{t('rasterTable.totals.maxError', { value: maxError.toFixed(2) })}</div>
+            <div>{t('rasterTable.totals.stepRange', { value: steps.allEqual ? `${steps.min} ${t('units.px')}` : `${steps.min}\u2013${steps.max} ${t('units.px')}` })}</div>
+            <div>{t('rasterTable.totals.lastMarkError', { value: `${lastError >= 0 ? '+' : ''}${lastError.toFixed(2)}`, type: reticle.rasterization === 'fixed_step' ? t('rasterTable.totals.accumulated') : t('rasterTable.totals.noAccumulation') })}</div>
+            <div>{t('rasterTable.totals.strategy', { value: strategyLabels[reticle.rasterization] || reticle.rasterization })}</div>
           </div>
 
           <div className={styles.legend}>
-            <div className={styles.legendTitle}>Цвета:</div>
-            <div className={styles.legendRow}><span className={styles.dotGreen} /> {'\u2264'} 0.1 пикс — отличная точность</div>
-            <div className={styles.legendRow}><span className={styles.dotGray} /> {'\u2264'} 0.4 пикс — приемлемая</div>
-            <div className={styles.legendRow}><span className={styles.dotOrange} /> {'>'} 0.4 пикс — заметная</div>
-            <div className={styles.legendRow}><span className={styles.dotOrange} /> оранжевый шаг — неравномерное расстояние</div>
+            <div className={styles.legendTitle}>{t('rasterTable.legend.title')}</div>
+            <div className={styles.legendRow}><span className={styles.dotGreen} /> {t('rasterTable.legend.excellent')}</div>
+            <div className={styles.legendRow}><span className={styles.dotGray} /> {t('rasterTable.legend.acceptable')}</div>
+            <div className={styles.legendRow}><span className={styles.dotOrange} /> {t('rasterTable.legend.noticeable')}</div>
+            <div className={styles.legendRow}><span className={styles.dotOrange} /> {t('rasterTable.legend.unevenStep')}</div>
           </div>
         </>
       )}

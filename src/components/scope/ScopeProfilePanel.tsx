@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { ScopeProfile } from '../../types/scope'
 import { calcPixelsPerMrad, getFovMrad, isSquarePixelRatio } from '../../math/optics'
 import Section from '../ui/Section'
@@ -12,6 +13,7 @@ interface Props {
 }
 
 export default function ScopeProfilePanel({ scope, setScope }: Props) {
+  const { t } = useTranslation()
   const ppm = useMemo(() => calcPixelsPerMrad(scope), [scope])
   const fov = useMemo(() => getFovMrad(scope), [scope])
   const squarePx = useMemo(() => isSquarePixelRatio(ppm), [ppm])
@@ -19,68 +21,68 @@ export default function ScopeProfilePanel({ scope, setScope }: Props) {
   const update = (patch: Partial<ScopeProfile>) => setScope({ ...scope, ...patch })
 
   return (
-    <Section title="ПРОФИЛЬ ПРИЦЕЛА" defaultOpen={true}>
+    <Section title={t('scopePanel.title')} defaultOpen={true}>
       <div className={styles.field}>
-        <label className={styles.label}>Название</label>
+        <label className={styles.label}>{t('scopePanel.name')}</label>
         <input
           className={styles.nameInput}
           value={scope.name}
           onChange={e => update({ name: e.target.value })}
-          placeholder="Имя профиля"
+          placeholder={t('scopePanel.namePlaceholder')}
         />
-        <div className={styles.hint}>Имя для этого набора параметров, например «OVOD 640 F50»</div>
+        <div className={styles.hint}>{t('scopePanel.nameHint')}</div>
       </div>
 
       <SelectInput
-        label="Тип"
+        label={t('scopePanel.type')}
         value={scope.type}
         onChange={v => update({ type: v as 'digital' | 'optical' })}
         options={[
-          { value: 'digital', label: 'Цифровой (тепловизор / ночник)' },
-          { value: 'optical', label: 'Оптический' },
+          { value: 'digital', label: t('scopePanel.typeDigital') },
+          { value: 'optical', label: t('scopePanel.typeOptical') },
         ]}
-        hint="Цифровой — прицел с электронным дисплеем. Оптический — со стеклянной сеткой"
+        hint={t('scopePanel.typeHint')}
       />
 
       {scope.type === 'digital' ? (
         <>
-          <NumberInput label="Фокусное расстояние" value={scope.lensFL} onChange={v => update({ lensFL: v })} min={1} step={1} unit="мм" hint="Фокусное расстояние объектива. Типичные значения: 25, 35, 50 мм" />
+          <NumberInput label={t('scopePanel.focalLength')} value={scope.lensFL} onChange={v => update({ lensFL: v })} min={1} step={1} unit={t('units.mm')} hint={t('scopePanel.focalLengthHint')} />
           <div className={styles.pairRow}>
-            <NumberInput label="Сенсор Ш" value={scope.sensorResX} onChange={v => update({ sensorResX: v })} min={1} step={1} unit="пикс" />
-            <NumberInput label="Сенсор В" value={scope.sensorResY} onChange={v => update({ sensorResY: v })} min={1} step={1} unit="пикс" />
+            <NumberInput label={t('scopePanel.sensorW')} value={scope.sensorResX} onChange={v => update({ sensorResX: v })} min={1} step={1} unit={t('units.px')} />
+            <NumberInput label={t('scopePanel.sensorH')} value={scope.sensorResY} onChange={v => update({ sensorResY: v })} min={1} step={1} unit={t('units.px')} />
           </div>
-          <div className={styles.hint}>Разрешение сенсора (матрицы). Например: 384×288, 640×512</div>
+          <div className={styles.hint}>{t('scopePanel.sensorHint')}</div>
           <div className={styles.pairRow}>
-            <NumberInput label="Дисплей Ш" value={scope.displayResX} onChange={v => update({ displayResX: v })} min={1} step={1} unit="пикс" />
-            <NumberInput label="Дисплей В" value={scope.displayResY} onChange={v => update({ displayResY: v })} min={1} step={1} unit="пикс" />
+            <NumberInput label={t('scopePanel.displayW')} value={scope.displayResX} onChange={v => update({ displayResX: v })} min={1} step={1} unit={t('units.px')} />
+            <NumberInput label={t('scopePanel.displayH')} value={scope.displayResY} onChange={v => update({ displayResY: v })} min={1} step={1} unit={t('units.px')} />
           </div>
-          <div className={styles.hint}>Разрешение OLED/LCD дисплея. Например: 1024×768, 2560×2560</div>
-          <NumberInput label="Размер пикселя" value={scope.pixelPitch} onChange={v => update({ pixelPitch: v })} min={0.1} step={0.1} unit="мкм" hint="Pitch пикселя сенсора в микрометрах. Типичные: 12, 17 мкм" />
+          <div className={styles.hint}>{t('scopePanel.displayHint')}</div>
+          <NumberInput label={t('scopePanel.pixelPitch')} value={scope.pixelPitch} onChange={v => update({ pixelPitch: v })} min={0.1} step={0.1} unit={t('units.um')} hint={t('scopePanel.pixelPitchHint')} />
         </>
       ) : (
         <>
-          <NumberInput label="Поле зрения" value={scope.fovDegrees} onChange={v => update({ fovDegrees: v })} min={0.1} step={0.1} unit="°" hint="Угол обзора прицела из спецификации производителя" />
+          <NumberInput label={t('scopePanel.fovDegrees')} value={scope.fovDegrees} onChange={v => update({ fovDegrees: v })} min={0.1} step={0.1} unit={t('units.deg')} hint={t('scopePanel.fovHint')} />
           <div className={styles.pairRow}>
-            <NumberInput label="Дисплей Ш" value={scope.displayResX} onChange={v => update({ displayResX: v })} min={1} step={1} unit="пикс" />
-            <NumberInput label="Дисплей В" value={scope.displayResY} onChange={v => update({ displayResY: v })} min={1} step={1} unit="пикс" />
+            <NumberInput label={t('scopePanel.displayW')} value={scope.displayResX} onChange={v => update({ displayResX: v })} min={1} step={1} unit={t('units.px')} />
+            <NumberInput label={t('scopePanel.displayH')} value={scope.displayResY} onChange={v => update({ displayResY: v })} min={1} step={1} unit={t('units.px')} />
           </div>
-          <div className={styles.hint}>Разрешение для экспорта — размер выходного изображения</div>
+          <div className={styles.hint}>{t('scopePanel.displayHintOptical')}</div>
         </>
       )}
 
       <div className={styles.calc}>
-        <div className={styles.calcLabel}>Рассчитано</div>
+        <div className={styles.calcLabel}>{t('scopePanel.calculated')}</div>
         {squarePx ? (
-          <div className={styles.calcValue}>1 MRAD = {ppm.h.toFixed(3)} пикс</div>
+          <div className={styles.calcValue}>{t('scopePanel.oneMrad', { value: ppm.h.toFixed(3) })}</div>
         ) : (
           <>
-            <div className={styles.calcValue}>Гориз: {ppm.h.toFixed(3)} пикс/MRAD</div>
-            <div className={styles.calcValue}>Верт: {ppm.v.toFixed(3)} пикс/MRAD</div>
+            <div className={styles.calcValue}>{t('scopePanel.horizontal', { value: ppm.h.toFixed(3) })}</div>
+            <div className={styles.calcValue}>{t('scopePanel.vertical', { value: ppm.v.toFixed(3) })}</div>
           </>
         )}
-        <div className={styles.calcValue}>FOV: {fov.h.toFixed(1)} × {fov.v.toFixed(1)} MRAD</div>
+        <div className={styles.calcValue}>{t('scopePanel.fov', { h: fov.h.toFixed(1), v: fov.v.toFixed(1) })}</div>
         {!squarePx && (
-          <div className={styles.warning}>⚠ Неквадратное соотношение пикселей — пропорции сенсора и дисплея не совпадают</div>
+          <div className={styles.warning}>{t('scopePanel.nonSquareWarning')}</div>
         )}
       </div>
     </Section>
