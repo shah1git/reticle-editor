@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import styles from './LanguageSwitcher.module.css'
 
 const languages = [
-  { code: 'en', flag: FlagUS, label: 'English' },
+  { code: 'en', flag: FlagEN, label: 'English' },
   { code: 'ru', flag: FlagRU, label: 'Русский' },
   { code: 'zh', flag: FlagCN, label: '中文' },
 ] as const
@@ -27,27 +27,11 @@ export default function LanguageSwitcher() {
   )
 }
 
-function FlagUS() {
+function FlagEN() {
   return (
     <svg viewBox="0 0 60 40" className={styles.flag}>
-      <rect width="60" height="40" fill="#B22234" />
-      <rect y="3.08" width="60" height="3.08" fill="#FFF" />
-      <rect y="9.23" width="60" height="3.08" fill="#FFF" />
-      <rect y="15.38" width="60" height="3.08" fill="#FFF" />
-      <rect y="21.54" width="60" height="3.08" fill="#FFF" />
-      <rect y="27.69" width="60" height="3.08" fill="#FFF" />
-      <rect y="33.85" width="60" height="3.08" fill="#FFF" />
-      <rect width="24" height="21.54" fill="#3C3B6E" />
-      <g fill="#FFF" fontSize="3" textAnchor="middle" dominantBaseline="central">
-        <circle cx="4" cy="2.5" r="1" /><circle cx="8" cy="2.5" r="1" /><circle cx="12" cy="2.5" r="1" /><circle cx="16" cy="2.5" r="1" /><circle cx="20" cy="2.5" r="1" />
-        <circle cx="6" cy="5" r="1" /><circle cx="10" cy="5" r="1" /><circle cx="14" cy="5" r="1" /><circle cx="18" cy="5" r="1" />
-        <circle cx="4" cy="7.5" r="1" /><circle cx="8" cy="7.5" r="1" /><circle cx="12" cy="7.5" r="1" /><circle cx="16" cy="7.5" r="1" /><circle cx="20" cy="7.5" r="1" />
-        <circle cx="6" cy="10" r="1" /><circle cx="10" cy="10" r="1" /><circle cx="14" cy="10" r="1" /><circle cx="18" cy="10" r="1" />
-        <circle cx="4" cy="12.5" r="1" /><circle cx="8" cy="12.5" r="1" /><circle cx="12" cy="12.5" r="1" /><circle cx="16" cy="12.5" r="1" /><circle cx="20" cy="12.5" r="1" />
-        <circle cx="6" cy="15" r="1" /><circle cx="10" cy="15" r="1" /><circle cx="14" cy="15" r="1" /><circle cx="18" cy="15" r="1" />
-        <circle cx="4" cy="17.5" r="1" /><circle cx="8" cy="17.5" r="1" /><circle cx="12" cy="17.5" r="1" /><circle cx="16" cy="17.5" r="1" /><circle cx="20" cy="17.5" r="1" />
-        <circle cx="6" cy="20" r="1" /><circle cx="10" cy="20" r="1" /><circle cx="14" cy="20" r="1" /><circle cx="18" cy="20" r="1" />
-      </g>
+      <rect width="60" height="40" fill="#FFF" />
+      <text x="30" y="21" textAnchor="middle" dominantBaseline="central" fill="#000" fontSize="18" fontWeight="bold" fontFamily="sans-serif">EN</text>
     </svg>
   )
 }
