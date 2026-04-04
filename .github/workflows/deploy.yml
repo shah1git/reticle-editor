@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main, master]
+    branches: [main, dev]
 
 permissions:
   contents: read
@@ -11,32 +11,59 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      - run: npm ci
-      - run: npm run build
-
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
-
-  deploy:
-    needs: build
+  build-and-deploy:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - id: deployment
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: main-src
+
+      - name: Checkout dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          path: dev-src
+        continue-on-error: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build main
+        run: |
+          cd main-src
+          npm ci
+          npm run build
+
+      - name: Build dev
+        run: |
+          if [ -d "dev-src" ]; then
+            cd dev-src
+            npm ci
+            npx vite build --base=/reticle-editor/dev/
+          fi
+
+      - name: Merge builds
+        run: |
+          mkdir -p site
+          cp -r main-src/dist/* site/
+          if [ -d "dev-src/dist" ]; then
+            mkdir -p site/dev
+            cp -r dev-src/dist/* site/dev/
+          fi
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy
+        id: deployment
         uses: actions/deploy-pages@v4
