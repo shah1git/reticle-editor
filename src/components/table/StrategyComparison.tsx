@@ -1,16 +1,14 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { ScopeProfile } from '../../types/scope'
 import type { Reticle } from '../../types/reticle'
 import type { RasterStrategy } from '../../types/rasterization'
 import type { PixelsPerMrad } from '../../math/optics'
-import { calcPixelsPerMrad } from '../../math/optics'
 import { rasterize } from '../../math/rasterization'
 import Tooltip from '../ui/Tooltip'
 import styles from './StrategyComparison.module.css'
 
 interface Props {
-  scope: ScopeProfile
+  ppm: PixelsPerMrad
   reticle: Reticle
 }
 
@@ -104,10 +102,9 @@ function calcStrategyStats(strategy: RasterStrategy, wings: WingData[]): Strateg
   }
 }
 
-export default function StrategyComparison({ scope, reticle }: Props) {
+export default function StrategyComparison({ ppm, reticle }: Props) {
   const { t } = useTranslation()
   const [collapsed, setCollapsed] = useState(false)
-  const ppm = useMemo(() => calcPixelsPerMrad(scope), [scope])
 
   const LABELS: Record<RasterStrategy, string> = {
     independent: t('strategyComparison.stratLabels.independent'),

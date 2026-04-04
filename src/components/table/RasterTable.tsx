@@ -1,23 +1,23 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { ScopeProfile } from '../../types/scope'
 import type { Reticle } from '../../types/reticle'
+import type { PixelsPerMrad } from '../../math/optics'
 import type { WingKey } from '../../App'
-import { calcPixelsPerMrad } from '../../math/optics'
 import { rasterize } from '../../math/rasterization'
 import Tooltip from '../ui/Tooltip'
 import styles from './RasterTable.module.css'
 
 interface Props {
-  scope: ScopeProfile
   reticle: Reticle
+  ppm: PixelsPerMrad
+  magnification: number
+  focalPlane: 'ffp' | 'sfp'
   activeWing: WingKey
   setActiveWing: (w: WingKey) => void
 }
 
-export default function RasterTable({ scope, reticle, activeWing, setActiveWing }: Props) {
+export default function RasterTable({ reticle, ppm, magnification, focalPlane, activeWing, setActiveWing }: Props) {
   const { t } = useTranslation()
-  const ppm = useMemo(() => calcPixelsPerMrad(scope), [scope])
 
   const tabLabels: Record<WingKey, string> = {
     up: t('rasterTable.tabUp'),
@@ -68,6 +68,10 @@ export default function RasterTable({ scope, reticle, activeWing, setActiveWing 
     ? t('rasterTable.summaryStepsAll', { step: steps.min })
     : t('rasterTable.summaryStepsRange', { min: steps.min, max: steps.max })
 
+  const magInfo = magnification > 1
+    ? ` \u00b7 [${magnification}\u00d7 ${focalPlane.toUpperCase()} \u00b7 ${axisPpm.toFixed(1)} ${t('toolbar.pixPerMrad')}]`
+    : ''
+
   return (
     <div className={styles.section}>
       <div className={styles.titleRow}>
@@ -103,7 +107,7 @@ export default function RasterTable({ scope, reticle, activeWing, setActiveWing 
               count: marks.length,
               error: maxError.toFixed(2),
               steps: stepsText,
-            })}
+            })}{magInfo}
           </div>
 
           <div className={styles.tableWrap}>

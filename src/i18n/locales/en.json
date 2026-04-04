@@ -201,6 +201,14 @@
     "stepNext": "Step \u2192",
     "cross": "Cross"
   },
+  "focalPlane": {
+    "label": "FOCAL PLANE:",
+    "ffp": "FFP",
+    "sfp": "SFP"
+  },
+  "magnification": {
+    "label": "Magnification"
+  },
   "units": {
     "px": "px",
     "mrad": "MRAD",

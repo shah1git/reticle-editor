@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next'
 import type { ScopeProfile } from '../../types/scope'
 import type { Reticle } from '../../types/reticle'
 import type { DotHoverInfo } from '../../types/dotTooltip'
-import { calcPixelsPerMrad, getFovMrad } from '../../math/optics'
+import type { PixelsPerMrad } from '../../math/optics'
+import { getFovMrad } from '../../math/optics'
 import { findBestStrategy } from '../../math/bestStrategy'
 import { useCanvasInteraction } from '../../hooks/useCanvasInteraction'
 import MradGrid from '../canvas/MradGrid'
@@ -15,6 +16,9 @@ import styles from './Canvas.module.css'
 interface Props {
   scope: ScopeProfile
   reticle: Reticle
+  ppm: PixelsPerMrad
+  magnification: number
+  setMagnification: (m: number) => void
 }
 
 const strategyTransKeys: Record<string, string> = {
@@ -22,17 +26,23 @@ const strategyTransKeys: Record<string, string> = {
   fixed_step: 'strategies.fixedStep',
 }
 
-export default function Canvas({ scope, reticle }: Props) {
+const MAG_PRESETS = [1, 2, 4, 8]
+
+export default function Canvas({ scope, reticle, ppm, magnification, setMagnification }: Props) {
   const { t } = useTranslation()
   const containerRef = useRef<HTMLDivElement>(null)
   const [size, setSize] = useState({ width: 800, height: 600 })
   const [sizeReady, setSizeReady] = useState(false)
   const { transform, handlers, setTransform } = useCanvasInteraction()
-  const ppm = useMemo(() => calcPixelsPerMrad(scope), [scope])
   const fov = useMemo(() => getFovMrad(scope), [scope])
   const [dotHover, setDotHover] = useState<DotHoverInfo | null>(null)
   const bestStrategy = useMemo(() => findBestStrategy(reticle, ppm), [reticle, ppm])
   const isOptimal = bestStrategy.best === reticle.rasterization
+
+  const effectiveFov = useMemo(() => ({
+    h: fov.h / magnification,
+    v: fov.v / magnification,
+  }), [fov, magnification])
 
   useEffect(() => {
     const el = containerRef.current
@@ -46,30 +56,30 @@ export default function Canvas({ scope, reticle }: Props) {
     return () => ro.disconnect()
   }, [])
 
-  // Auto-fit when FOV changes (scope params) or on initial measurement
+  // Auto-fit when FOV changes (scope params or magnification)
   const lastFovKey = useRef('')
   useEffect(() => {
     if (!sizeReady) return
-    const key = `${fov.h}:${fov.v}`
+    const key = `${effectiveFov.h}:${effectiveFov.v}`
     if (lastFovKey.current === key) return
     lastFovKey.current = key
-    const zoomH = size.width / fov.h
-    const zoomV = size.height / fov.v
+    const zoomH = size.width / effectiveFov.h
+    const zoomV = size.height / effectiveFov.v
     setTransform({ zoom: Math.min(zoomH, zoomV), panX: 0, panY: 0 })
-  }, [sizeReady, fov, size, setTransform])
+  }, [sizeReady, effectiveFov, size, setTransform])
 
   const cx = size.width / 2 + transform.panX
   const cy = size.height / 2 + transform.panY
 
   const visibleW = size.width / transform.zoom
   const visibleH = size.height / transform.zoom
-  const fovPct = fov.h > 0 ? (visibleW / fov.h) * 100 : 0
+  const fovPct = effectiveFov.h > 0 ? (visibleW / effectiveFov.h) * 100 : 0
 
   const handleFitFov = useCallback(() => {
-    const zoomH = size.width / fov.h
-    const zoomV = size.height / fov.v
+    const zoomH = size.width / effectiveFov.h
+    const zoomV = size.height / effectiveFov.v
     setTransform({ zoom: Math.min(zoomH, zoomV), panX: 0, panY: 0 })
-  }, [size, fov, setTransform])
+  }, [size, effectiveFov, setTransform])
 
   const handleReset = useCallback(() => {
     setTransform({ zoom: 30, panX: 0, panY: 0 })
@@ -123,8 +133,8 @@ export default function Canvas({ scope, reticle }: Props) {
         ) : (
           <div>{scope.displayResX}{'\u00d7'}{scope.displayResY} | FOV {scope.fovDegrees}{'\u00b0'}</div>
         )}
-        <div>{t('scopePanel.oneMrad', { value: ppm.h.toFixed(1) })}</div>
-        <div>FOV: {fov.h.toFixed(0)} {'\u00d7'} {fov.v.toFixed(0)} MRAD</div>
+        <div>{t('scopePanel.oneMrad', { value: ppm.h.toFixed(1) })} {reticle.focalPlane.toUpperCase()} {magnification > 1 ? `${magnification}\u00d7` : ''}</div>
+        <div>FOV: {effectiveFov.h.toFixed(0)} {'\u00d7'} {effectiveFov.v.toFixed(0)} MRAD</div>
         {isOptimal ? (
           <div className={styles.roundingLine}>{t('toolbar.rounding')} {t(strategyTransKeys[reticle.rasterization])} <span className={styles.roundingCheck}>{'\u2713'}</span></div>
         ) : (
@@ -142,14 +152,25 @@ export default function Canvas({ scope, reticle }: Props) {
 
       {dotHover && <DotTooltip info={dotHover} />}
 
-      <StrategyComparison scope={scope} reticle={reticle} />
+      <StrategyComparison ppm={ppm} reticle={reticle} />
 
       <div className={styles.hint}>
         <span className={styles.zoomLabel}>
-          {transform.zoom.toFixed(1)} {t('units.px')}/MRAD {'\u00b7'} {visibleW.toFixed(1)} {'\u00d7'} {visibleH.toFixed(1)} / {fov.h.toFixed(0)} {'\u00d7'} {fov.v.toFixed(0)} MRAD ({fovPct.toFixed(0)}%)
+          {transform.zoom.toFixed(1)} {t('units.px')}/MRAD {'\u00b7'} {visibleW.toFixed(1)} {'\u00d7'} {visibleH.toFixed(1)} / {effectiveFov.h.toFixed(0)} {'\u00d7'} {effectiveFov.v.toFixed(0)} MRAD ({fovPct.toFixed(0)}%)
         </span>
       </div>
       <div className={styles.controls}>
+        <div className={styles.magBtns}>
+          {MAG_PRESETS.map(m => (
+            <button
+              key={m}
+              className={`${styles.magBtn} ${magnification === m ? styles.magBtnActive : ''}`}
+              onClick={() => setMagnification(m)}
+            >
+              {m}{'\u00d7'}
+            </button>
+          ))}
+        </div>
         <div className={styles.zoomControls}>
           <button className={styles.ctrlBtn} onClick={handleZoomIn}>+</button>
           <button className={styles.ctrlBtn} onClick={handleZoomOut}>{'\u2212'}</button>

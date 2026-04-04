@@ -1,21 +1,19 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { ScopeProfile } from '../../types/scope'
 import type { Reticle } from '../../types/reticle'
+import type { PixelsPerMrad } from '../../math/optics'
 import type { WingKey } from '../../App'
-import { calcPixelsPerMrad } from '../../math/optics'
 import { rasterize } from '../../math/rasterization'
 import styles from './SummaryCards.module.css'
 
 interface Props {
-  scope: ScopeProfile
+  ppm: PixelsPerMrad
   reticle: Reticle
   activeWing: WingKey
 }
 
-export default function SummaryCards({ scope, reticle }: Props) {
+export default function SummaryCards({ ppm, reticle }: Props) {
   const { t } = useTranslation()
-  const ppm = useMemo(() => calcPixelsPerMrad(scope), [scope])
 
   const strategyTransKeys: Record<string, string> = {
     independent: 'strategies.independent',

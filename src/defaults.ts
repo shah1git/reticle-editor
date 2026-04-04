@@ -35,4 +35,5 @@ export const defaultReticle: Reticle = {
   },
   color: '#00ff88',
   rasterization: 'independent',
+  focalPlane: 'ffp' as const,
 }

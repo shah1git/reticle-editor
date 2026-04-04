@@ -39,8 +39,17 @@ export default function App() {
   const [scope, setScope] = useState<ScopeProfile>(initial.scope)
   const [reticle, setReticle] = useState<Reticle>(initial.reticle)
   const [activeWing, setActiveWing] = useState<WingKey>('down')
+  const [magnification, setMagnification] = useState(1)
   const ppm = useMemo(() => calcPixelsPerMrad(scope), [scope])
-  const bestStrategy = useMemo(() => findBestStrategy(reticle, ppm), [reticle, ppm])
+
+  const effectivePpm = useMemo(() => {
+    if (reticle.focalPlane === 'ffp') {
+      return { h: ppm.h * magnification, v: ppm.v * magnification }
+    }
+    return ppm
+  }, [ppm, magnification, reticle.focalPlane])
+
+  const bestStrategy = useMemo(() => findBestStrategy(reticle, effectivePpm), [reticle, effectivePpm])
 
   useEffect(() => {
     try {
@@ -60,8 +69,9 @@ export default function App() {
       <MobileLayout
         scope={scope} setScope={setScope}
         reticle={reticle} setReticle={setReticle}
-        ppm={ppm} bestStrategy={bestStrategy}
+        ppm={effectivePpm} bestStrategy={bestStrategy}
         activeWing={activeWing} setActiveWing={setActiveWing}
+        magnification={magnification} setMagnification={setMagnification}
       />
     )
   }
@@ -69,16 +79,22 @@ export default function App() {
   return (
     <div className="app">
       <TopBar scope={scope} reticle={reticle} setScope={setScope} setReticle={setReticle} />
-      <Toolbar scope={scope} setScope={setScope} reticle={reticle} setReticle={setReticle} ppm={ppm} bestStrategy={bestStrategy} />
+      <Toolbar scope={scope} setScope={setScope} reticle={reticle} setReticle={setReticle} ppm={effectivePpm} bestStrategy={bestStrategy} />
       <div className="app-body">
         <LeftPanel
           reticle={reticle} setReticle={setReticle}
-          ppm={ppm}
+          ppm={effectivePpm}
           activeWing={activeWing} setActiveWing={setActiveWing}
         />
-        <Canvas scope={scope} reticle={reticle} />
-        <RightPanel
+        <Canvas
           scope={scope} reticle={reticle}
+          ppm={effectivePpm}
+          magnification={magnification} setMagnification={setMagnification}
+        />
+        <RightPanel
+          reticle={reticle}
+          ppm={effectivePpm}
+          magnification={magnification}
           activeWing={activeWing} setActiveWing={setActiveWing}
         />
       </div>

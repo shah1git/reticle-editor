@@ -21,11 +21,14 @@ interface Props {
   bestStrategy: BestStrategyInfo
   activeWing: WingKey
   setActiveWing: (w: WingKey) => void
+  magnification: number
+  setMagnification: (m: number) => void
 }
 
 export default function MobileLayout({
   scope, setScope, reticle, setReticle,
   ppm, bestStrategy, activeWing, setActiveWing,
+  magnification, setMagnification,
 }: Props) {
   const [activeTab, setActiveTab] = useState<MobileTab>('canvas')
 
@@ -51,14 +54,20 @@ export default function MobileLayout({
 
         {activeTab === 'canvas' && (
           <div className={styles.canvasPanel}>
-            <Canvas scope={scope} reticle={reticle} />
+            <Canvas
+              scope={scope} reticle={reticle}
+              ppm={ppm}
+              magnification={magnification} setMagnification={setMagnification}
+            />
           </div>
         )}
 
         {activeTab === 'table' && (
           <div className={styles.scrollPanel}>
             <RightPanel
-              scope={scope} reticle={reticle}
+              reticle={reticle}
+              ppm={ppm}
+              magnification={magnification}
               activeWing={activeWing} setActiveWing={setActiveWing}
             />
           </div>

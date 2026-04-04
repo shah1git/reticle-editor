@@ -21,4 +21,5 @@ export interface Reticle {
   }
   color: string
   rasterization: 'independent' | 'fixed_step'
+  focalPlane: 'ffp' | 'sfp'
 }

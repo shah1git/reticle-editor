@@ -55,6 +55,20 @@ export default function Toolbar({ scope, setScope, reticle, setReticle, ppm, bes
       <div className={styles.sep} />
 
       <div className={styles.group}>
+        <span className={styles.label}>{t('focalPlane.label')}</span>
+        <select
+          className={styles.select}
+          value={reticle.focalPlane}
+          onChange={e => setReticle({ ...reticle, focalPlane: e.target.value as 'ffp' | 'sfp' })}
+        >
+          <option value="ffp">{t('focalPlane.ffp')}</option>
+          <option value="sfp">{t('focalPlane.sfp')}</option>
+        </select>
+      </div>
+
+      <div className={styles.sep} />
+
+      <div className={styles.group}>
         <span className={styles.label}>{t('toolbar.rounding')}</span>
         <select
           className={styles.select}

@@ -201,6 +201,14 @@
     "stepNext": "\u6b65\u957f \u2192",
     "cross": "\u4ea4\u53c9"
   },
+  "focalPlane": {
+    "label": "\u7126\u5e73\u9762\uff1a",
+    "ffp": "FFP",
+    "sfp": "SFP"
+  },
+  "magnification": {
+    "label": "\u500d\u7387"
+  },
   "units": {
     "px": "\u50cf\u7d20",
     "mrad": "MRAD",
