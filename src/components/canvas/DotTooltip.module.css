@@ -1,0 +1,60 @@
+.tooltip {
+  position: fixed;
+  pointer-events: none;
+  z-index: 100;
+  background: rgba(14, 16, 23, 0.92);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  min-width: 200px;
+  max-width: 280px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+.header {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+
+.separator {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 4px 0;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 1px 0;
+}
+
+.label {
+  font-family: var(--font);
+  font-size: 12px;
+  color: var(--text-hint);
+  flex-shrink: 0;
+}
+
+.value {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: #ffffff;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.cross {
+  font-family: var(--font);
+  font-size: 12px;
+  color: var(--text-hint);
+  padding-top: 1px;
+}
+
+.crossValue {
+  font-family: var(--font-mono);
+  color: #ffffff;
+}

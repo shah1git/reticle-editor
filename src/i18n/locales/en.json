@@ -193,6 +193,14 @@
       "bresenham": "C: Bresenham"
     }
   },
+  "dotTooltip": {
+    "target": "Target",
+    "actual": "Actual",
+    "error": "Error",
+    "stepPrev": "Step \u2190",
+    "stepNext": "Step \u2192",
+    "cross": "Cross"
+  },
   "units": {
     "px": "px",
     "mrad": "MRAD",

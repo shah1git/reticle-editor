@@ -193,6 +193,14 @@
       "bresenham": "C\uff1a\u5e03\u96f7\u68ee\u6c49\u59c6"
     }
   },
+  "dotTooltip": {
+    "target": "\u76ee\u6807",
+    "actual": "\u5b9e\u9645",
+    "error": "\u8bef\u5dee",
+    "stepPrev": "\u6b65\u957f \u2190",
+    "stepNext": "\u6b65\u957f \u2192",
+    "cross": "\u4ea4\u53c9"
+  },
   "units": {
     "px": "\u50cf\u7d20",
     "mrad": "MRAD",

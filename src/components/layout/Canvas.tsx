@@ -2,11 +2,13 @@ import { useRef, useState, useEffect, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ScopeProfile } from '../../types/scope'
 import type { Reticle } from '../../types/reticle'
+import type { DotHoverInfo } from '../../types/dotTooltip'
 import { calcPixelsPerMrad, getFovMrad } from '../../math/optics'
 import { findBestStrategy } from '../../math/bestStrategy'
 import { useCanvasInteraction } from '../../hooks/useCanvasInteraction'
 import MradGrid from '../canvas/MradGrid'
 import ReticleRenderer from '../canvas/ReticleRenderer'
+import DotTooltip from '../canvas/DotTooltip'
 import StrategyComparison from '../table/StrategyComparison'
 import styles from './Canvas.module.css'
 
@@ -28,6 +30,7 @@ export default function Canvas({ scope, reticle }: Props) {
   const { transform, handlers, setTransform } = useCanvasInteraction()
   const ppm = useMemo(() => calcPixelsPerMrad(scope), [scope])
   const fov = useMemo(() => getFovMrad(scope), [scope])
+  const [dotHover, setDotHover] = useState<DotHoverInfo | null>(null)
   const bestStrategy = useMemo(() => findBestStrategy(reticle, ppm), [reticle, ppm])
   const isOptimal = bestStrategy.best === reticle.rasterization
 
@@ -109,6 +112,7 @@ export default function Canvas({ scope, reticle }: Props) {
           cx={cx}
           cy={cy}
           zoom={transform.zoom}
+          onDotHover={setDotHover}
         />
       </svg>
 
@@ -135,6 +139,8 @@ export default function Canvas({ scope, reticle }: Props) {
           <span className={styles.legendLabel}>{'\u00b1'}0.5{t('units.px')}</span>
         </div>
       </div>
+
+      {dotHover && <DotTooltip info={dotHover} />}
 
       <StrategyComparison scope={scope} reticle={reticle} />
 
