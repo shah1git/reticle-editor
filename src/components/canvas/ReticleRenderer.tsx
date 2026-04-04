@@ -14,6 +14,8 @@ interface Props {
   cy: number
   zoom: number
   onDotHover?: (info: DotHoverInfo | null) => void
+  magnification?: number
+  focalPlane?: 'ffp' | 'sfp'
 }
 
 type Dir = 'up' | 'down' | 'left' | 'right'
@@ -28,7 +30,8 @@ interface WingRenderData {
   dotRadiusScreen: number
 }
 
-export default function ReticleRenderer({ reticle, ppm, cx, cy, zoom, onDotHover }: Props) {
+export default function ReticleRenderer({ reticle, ppm, cx, cy, zoom, onDotHover, magnification = 1, focalPlane = 'ffp' }: Props) {
+  const visualMag = focalPlane === 'ffp' ? magnification : 1
   const { lines, wings } = useMemo(() => {
     const lines: React.JSX.Element[] = []
     const wings: WingRenderData[] = []
@@ -106,14 +109,14 @@ export default function ReticleRenderer({ reticle, ppm, cx, cy, zoom, onDotHover
         const dotCount = Math.floor(wing.length / wing.dots.spacing)
         if (dotCount > 0) {
           const marks = rasterize(reticle.rasterization, wing.dots.spacing, axisPpm, dotCount)
-          const dotRadiusScreen = (wing.dotSize / 2) * (zoom / axisPpm)
+          const dotRadiusScreen = (wing.dotSize / 2) * (zoom / axisPpm) * visualMag
           wings.push({ dir, marks, axisPpm, gapMrad, dx, dy, dotRadiusScreen })
         }
       }
     }
 
     return { lines, wings }
-  }, [reticle, ppm, cx, cy, zoom])
+  }, [reticle, ppm, cx, cy, zoom, visualMag])
 
   const handleDotEnter = useCallback((
     e: React.MouseEvent,

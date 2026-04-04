@@ -123,6 +123,8 @@ export default function Canvas({ scope, reticle, ppm, magnification, setMagnific
           cy={cy}
           zoom={transform.zoom}
           onDotHover={setDotHover}
+          magnification={magnification}
+          focalPlane={reticle.focalPlane}
         />
       </svg>
 
