@@ -163,10 +163,10 @@ export default function RasterTable({ reticle, ppm, magnification, focalPlane, a
                 <thead>
                   <tr>
                     <th>M</th>
-                    <th>{t('toolbar.pixPerMrad')}</th>
                     <th>{t('rasterTable.colMrad')}</th>
                     <th>ideal {t('units.px')}</th>
                     <th>{t('rasterTable.colPx')}</th>
+                    <th>{t('rasterTable.colActual')}</th>
                     <th>{t('rasterTable.colError')}</th>
                     <th>{t('rasterTable.colStep')}</th>
                   </tr>
@@ -174,11 +174,11 @@ export default function RasterTable({ reticle, ppm, magnification, focalPlane, a
                 <tbody>
                   {magDetail.map(d => (
                     <tr key={d.mag} className={d.mag === magnification ? styles.magRowCurrent : ''}>
-                      <td>{d.mag}{'\u00d7'}</td>
-                      <td>{d.ppmVal.toFixed(1)}</td>
+                      <td>{d.mag}{'\u00d7'} {'\u00b7'} {d.ppmVal.toFixed(1)}</td>
                       <td>{d.mark.targetMrad.toFixed(2)}</td>
                       <td>{d.mark.targetPx.toFixed(2)}</td>
                       <td>{d.mark.actualPx}</td>
+                      <td>{d.mark.actualMrad.toFixed(3)}</td>
                       <td className={errorClass(d.mark.errorPx)}>{d.mark.errorPx >= 0 ? '+' : ''}{d.mark.errorPx.toFixed(2)}</td>
                       <td>{d.mark.stepPx}</td>
                     </tr>
