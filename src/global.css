@@ -39,7 +39,7 @@
   --border-focus: #00ff88;
 
   /* Fonts */
-  --font: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  --font: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
 
   /* Layout */

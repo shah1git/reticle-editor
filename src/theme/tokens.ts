@@ -24,7 +24,7 @@ export const colors = {
 } as const
 
 export const fonts = {
-  family: "'JetBrains Mono', 'Fira Code', 'Consolas', monospace",
+  family: "'Inter', system-ui, -apple-system, sans-serif",
   familyMono: "'JetBrains Mono', 'Fira Code', 'Consolas', monospace",
   sizeLabel: '13px',
   sizeInput: '16px',

@@ -20,7 +20,6 @@
   font-family: var(--font);
   cursor: pointer;
   padding: 0;
-  letter-spacing: 0.05em;
   text-transform: uppercase;
   transition: color 0.15s;
 }
@@ -50,7 +49,6 @@
 .table th {
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.03em;
   color: var(--text-secondary);
   padding: 3px 3px;
   text-align: right;
