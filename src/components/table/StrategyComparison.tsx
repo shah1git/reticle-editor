@@ -142,12 +142,12 @@ export default function StrategyComparison({ scope, reticle }: Props) {
             <table className={styles.table}>
               <colgroup>
                 <col style={{ width: 72 }} />
-                <col />
-                <col />
-                <col />
-                <col />
-                <col />
-                <col />
+                <col style={{ width: 80 }} />
+                <col style={{ width: 62 }} />
+                <col style={{ width: 62 }} />
+                <col style={{ width: 44 }} />
+                <col style={{ width: 52 }} />
+                <col style={{ width: 56 }} />
                 <col style={{ width: 28 }} />
               </colgroup>
               <thead>
