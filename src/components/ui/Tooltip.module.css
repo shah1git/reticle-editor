@@ -9,9 +9,9 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  border: 1px solid var(--text-hint, #6b7394);
+  border: 1px solid var(--text-hint);
   background: transparent;
-  color: var(--text-hint, #6b7394);
+  color: var(--text-hint);
   font-size: 9px;
   font-weight: 700;
   font-family: var(--font);
@@ -25,8 +25,8 @@
 }
 
 .icon:hover {
-  border-color: var(--text-secondary, #8b95b0);
-  color: var(--text-secondary, #8b95b0);
+  border-color: var(--text-secondary);
+  color: var(--text-secondary);
 }
 
 .popup {
@@ -36,8 +36,8 @@
   padding: 10px 14px;
   max-width: 280px;
   min-width: 160px;
-  font-size: 12px;
-  color: var(--text-secondary, #8b95b0);
+  font-size: 13px;
+  color: var(--text-secondary);
   line-height: 1.6;
   z-index: 10000;
   white-space: normal;

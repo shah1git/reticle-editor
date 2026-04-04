@@ -36,7 +36,7 @@
   border: 1px solid var(--border-input);
   padding: 4px 12px;
   border-radius: 4px;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--text-secondary);
   background: none;
   font-family: var(--font);
@@ -106,7 +106,7 @@
   color: var(--accent);
   padding: 6px 16px;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   font-family: var(--font);
   cursor: pointer;
@@ -125,7 +125,7 @@
 
 .strategyWarning {
   color: var(--accent-orange);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   animation: pulse 2s ease-in-out infinite;
 }

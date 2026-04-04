@@ -15,8 +15,8 @@ export const colors = {
   red: '#ff5c6c',
   yellow: '#ffd166',
   textPrimary: '#ffffff',
-  textSecondary: '#d0d6e2',
-  textHint: '#a8b0c4',
+  textSecondary: '#ffffff',
+  textHint: '#ffffff',
   textValue: '#ffffff',
   border: '#2e3348',
   borderInput: '#3a4058',
@@ -26,8 +26,8 @@ export const colors = {
 export const fonts = {
   family: "'JetBrains Mono', 'Fira Code', 'Consolas', monospace",
   familyMono: "'JetBrains Mono', 'Fira Code', 'Consolas', monospace",
-  sizeLabel: '11px',
-  sizeInput: '14px',
-  sizeHeading: '13px',
-  sizeHint: '12px',
+  sizeLabel: '13px',
+  sizeInput: '16px',
+  sizeHeading: '14px',
+  sizeHint: '13px',
 } as const

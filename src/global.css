@@ -29,8 +29,8 @@
 
   /* Text */
   --text-primary: #ffffff;
-  --text-secondary: #d0d6e2;
-  --text-hint: #a8b0c4;
+  --text-secondary: #ffffff;
+  --text-hint: #ffffff;
   --text-value: #ffffff;
 
   /* Borders */
@@ -62,7 +62,7 @@ body {
   font-family: var(--font);
   background: var(--bg-main);
   color: var(--text-primary);
-  font-size: 13px;
+  font-size: 14px;
   -webkit-font-smoothing: antialiased;
 }
 

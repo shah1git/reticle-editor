@@ -10,7 +10,7 @@
   border: 1px solid var(--border-input);
   color: var(--text-secondary);
   padding: 8px 4px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   font-family: var(--font);
   cursor: pointer;
@@ -61,7 +61,7 @@
 }
 
 .dotSizeLabel {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -82,7 +82,7 @@
   color: var(--text-value);
   padding: 8px 12px;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   font-family: var(--font-mono);
   outline: none;
@@ -101,14 +101,14 @@
 }
 
 .dotSizeUnit {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--text-secondary);
   flex-shrink: 0;
   min-width: 28px;
 }
 
 .dotSizeMrad {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--text-hint);
   margin-top: 4px;
   font-family: var(--font-mono);

@@ -34,7 +34,7 @@ export default function CenterDotConfig({ reticle, setReticle, ppm }: Props) {
         unit="MRAD"
         hint={t('centerDot.radiusHint')}
       />
-      <div style={{ fontSize: 12, color: '#a1adc4', marginTop: -4 }}>
+      <div style={{ fontSize: 13, color: '#ffffff', marginTop: -4 }}>
         {t('centerDot.diameter', { value: diameterPx })}
       </div>
     </Section>
