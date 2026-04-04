@@ -36,11 +36,6 @@ export default function RasterTable({ reticle, ppm, magnification, focalPlane, a
     right: t('rasterTable.wingNames.right'),
   }
 
-  const strategyLabels: Record<string, string> = {
-    independent: t('strategyFull.independentLabel'),
-    fixed_step: t('strategyFull.fixedStepLabel'),
-  }
-
   const wing = reticle.wings[activeWing]
   const axisPpm = (activeWing === 'down' || activeWing === 'up') ? ppm.v : ppm.h
   const baseAxisPpm = focalPlane === 'ffp' && magnification > 0 ? axisPpm / magnification : axisPpm
@@ -79,7 +74,6 @@ export default function RasterTable({ reticle, ppm, magnification, focalPlane, a
   }, [hoveredIndex, wing, reticle.rasterization, focalPlane, baseAxisPpm])
 
   const modalStep = marks.length > 0 ? marks[0].stepPx : 0
-  const lastError = marks.length > 0 ? marks[marks.length - 1].errorPx : 0
   const disabled = !wing.enabled || wing.length <= 0
 
   const stepsText = steps.allEqual
@@ -189,14 +183,6 @@ export default function RasterTable({ reticle, ppm, magnification, focalPlane, a
               </table>
             </div>
           )}
-
-          <div className={styles.totals}>
-            <div>{t('rasterTable.totals.totalMarks', { count: marks.length })}</div>
-            <div>{t('rasterTable.totals.maxError', { value: maxError.toFixed(2) })}</div>
-            <div>{t('rasterTable.totals.stepRange', { value: steps.allEqual ? `${steps.min} ${t('units.px')}` : `${steps.min}\u2013${steps.max} ${t('units.px')}` })}</div>
-            <div>{t('rasterTable.totals.lastMarkError', { value: `${lastError >= 0 ? '+' : ''}${lastError.toFixed(2)}`, type: reticle.rasterization === 'fixed_step' ? t('rasterTable.totals.accumulated') : t('rasterTable.totals.noAccumulation') })}</div>
-            <div>{t('rasterTable.totals.strategy', { value: strategyLabels[reticle.rasterization] || reticle.rasterization })}</div>
-          </div>
 
           <div className={styles.legend}>
             <div className={styles.legendTitle}>{t('rasterTable.legend.title')}</div>
