@@ -1,5 +1,7 @@
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+
+declare const __APP_VERSION__: string
 import type { ScopeProfile } from '../../types/scope'
 import type { Reticle } from '../../types/reticle'
 import { saveToJson, loadFromJson } from '../../utils/fileIO'
@@ -32,6 +34,7 @@ export default function TopBar({ scope, reticle, setScope, setReticle }: Props) 
       <div className={styles.left}>
         <img src={import.meta.env.BASE_URL + 'logo.svg'} alt="RIKA" className={styles.logo} />
         <span className={styles.title}>{t('topbar.title')}</span>
+        <span className={styles.version}>v{__APP_VERSION__}</span>
         <LanguageSwitcher />
       </div>
       <div className={styles.right}>
