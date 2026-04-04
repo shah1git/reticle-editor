@@ -33,3 +33,15 @@
   border-radius: 2px;
   display: block;
 }
+
+@media (max-width: 767px) {
+  .switcher {
+    margin-left: 4px;
+    gap: 3px;
+  }
+
+  .flag {
+    width: 24px;
+    height: 16px;
+  }
+}

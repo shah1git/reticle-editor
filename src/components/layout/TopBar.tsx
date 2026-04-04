@@ -35,9 +35,18 @@ export default function TopBar({ scope, reticle, setScope, setReticle }: Props) 
         <LanguageSwitcher />
       </div>
       <div className={styles.right}>
-        <button className={styles.btn} onClick={handleLoad}>{t('topbar.open')}</button>
-        <button className={styles.btn} onClick={() => saveToJson(scope, reticle)}>{t('topbar.save')}</button>
-        <button className={styles.btnAccent} onClick={() => exportPng(scope, reticle)}>{t('topbar.exportPng')}</button>
+        <button className={styles.btn} onClick={handleLoad}>
+          <span className={styles.btnText}>{t('topbar.open')}</span>
+          <span className={styles.btnIcon}>{'\ud83d\udcc2'}</span>
+        </button>
+        <button className={styles.btn} onClick={() => saveToJson(scope, reticle)}>
+          <span className={styles.btnText}>{t('topbar.save')}</span>
+          <span className={styles.btnIcon}>{'\ud83d\udcbe'}</span>
+        </button>
+        <button className={styles.btnAccent} onClick={() => exportPng(scope, reticle)}>
+          <span className={styles.btnText}>{t('topbar.exportPng')}</span>
+          <span className={styles.btnIcon}>{'\u2b07'}</span>
+        </button>
         <input
           ref={fileRef}
           type="file"

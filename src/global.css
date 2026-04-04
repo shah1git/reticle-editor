@@ -45,6 +45,7 @@
   /* Layout */
   --topbar-height: 52px;
   --toolbar-height: 48px;
+  --tabbar-height: 56px;
 }
 
 html, #root {

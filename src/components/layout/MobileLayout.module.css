@@ -1,0 +1,43 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.content {
+  flex: 1;
+  overflow: hidden;
+  margin-bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom, 0px));
+}
+
+.scrollPanel {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scrollPanel > aside {
+  width: 100% !important;
+  min-width: 0 !important;
+  border-left: none !important;
+  border-right: none !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+.scrollPanel > .toolbar {
+  flex-shrink: 0;
+}
+
+.canvasPanel {
+  width: 100%;
+  height: 100%;
+}
+
+.canvasPanel > div {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 100% !important;
+}

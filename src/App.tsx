@@ -6,11 +6,13 @@ import { saveToJson } from './utils/fileIO'
 import { calcPixelsPerMrad } from './math/optics'
 import { findBestStrategy } from './math/bestStrategy'
 import { useKeyboard } from './hooks/useKeyboard'
+import { useIsMobile } from './hooks/useIsMobile'
 import TopBar from './components/layout/TopBar'
 import Toolbar from './components/layout/Toolbar'
 import LeftPanel from './components/layout/LeftPanel'
 import Canvas from './components/layout/Canvas'
 import RightPanel from './components/layout/RightPanel'
+import MobileLayout from './components/layout/MobileLayout'
 import './global.css'
 
 export type WingKey = 'up' | 'down' | 'left' | 'right'
@@ -51,6 +53,18 @@ export default function App() {
   }, [scope, reticle])
 
   useKeyboard({ onSave: handleSave })
+  const isMobile = useIsMobile()
+
+  if (isMobile) {
+    return (
+      <MobileLayout
+        scope={scope} setScope={setScope}
+        reticle={reticle} setReticle={setReticle}
+        ppm={ppm} bestStrategy={bestStrategy}
+        activeWing={activeWing} setActiveWing={setActiveWing}
+      />
+    )
+  }
 
   return (
     <div className="app">

@@ -207,5 +207,10 @@
     "mm": "mm",
     "um": "\u00b5m",
     "deg": "\u00b0"
+  },
+  "mobileTabs": {
+    "settings": "Settings",
+    "canvas": "Reticle",
+    "table": "Table"
   }
 }

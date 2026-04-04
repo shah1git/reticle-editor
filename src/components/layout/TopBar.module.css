@@ -63,3 +63,49 @@
   background: rgba(0, 255, 136, 0.15);
   border-color: var(--accent);
 }
+
+.btnText {
+  display: inline;
+}
+
+.btnIcon {
+  display: none;
+  font-size: 18px;
+}
+
+@media (max-width: 767px) {
+  .topbar {
+    height: var(--topbar-height);
+    padding: 0 12px;
+  }
+
+  .left {
+    gap: 8px;
+  }
+
+  .logo {
+    height: 28px;
+  }
+
+  .title {
+    display: none;
+  }
+
+  .right {
+    gap: 4px;
+  }
+
+  .btn, .btnAccent {
+    padding: 6px 10px;
+    font-size: 0;
+  }
+
+  .btnText {
+    display: none;
+  }
+
+  .btnIcon {
+    display: inline;
+    font-size: 18px;
+  }
+}

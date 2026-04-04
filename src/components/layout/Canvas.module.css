@@ -1,6 +1,6 @@
 .canvas {
   flex: 1;
-  min-width: 400px;
+  min-width: 300px;
   height: calc(100vh - var(--topbar-height) - var(--toolbar-height));
   background: var(--bg-canvas);
   overflow: hidden;
