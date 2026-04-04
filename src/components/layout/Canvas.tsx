@@ -18,7 +18,6 @@ interface Props {
 const strategyTransKeys: Record<string, string> = {
   independent: 'strategies.independent',
   fixed_step: 'strategies.fixedStep',
-  bresenham: 'strategies.bresenham',
 }
 
 export default function Canvas({ scope, reticle }: Props) {

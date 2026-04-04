@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { rasterizeIndependent, rasterizeFixedStep, rasterizeBresenham } from '../rasterization'
+import { rasterizeIndependent, rasterizeFixedStep } from '../rasterization'
 
 const SPACING = 1.0 // 1 MRAD
 const PPM = 7.778   // ~7.778 px/MRAD
@@ -55,28 +55,3 @@ describe('rasterizeFixedStep', () => {
   })
 })
 
-describe('rasterizeBresenham', () => {
-  it('uses only floor and ceil steps', () => {
-    const marks = rasterizeBresenham(SPACING, PPM, COUNT)
-    const idealStep = SPACING * PPM
-    const lo = Math.floor(idealStep)
-    const hi = Math.ceil(idealStep)
-    for (const m of marks) {
-      expect([lo, hi]).toContain(m.stepPx)
-    }
-  })
-
-  it('error stays bounded', () => {
-    const marks = rasterizeBresenham(SPACING, PPM, COUNT)
-    for (const m of marks) {
-      expect(Math.abs(m.errorPx)).toBeLessThan(1.0)
-    }
-  })
-
-  it('total position is close to ideal', () => {
-    const marks = rasterizeBresenham(SPACING, PPM, 20)
-    const last = marks[marks.length - 1]
-    // Bresenham should keep error bounded even at mark 20
-    expect(Math.abs(last.errorPx)).toBeLessThan(1.0)
-  })
-})

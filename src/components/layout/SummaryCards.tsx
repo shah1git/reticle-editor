@@ -20,7 +20,6 @@ export default function SummaryCards({ scope, reticle }: Props) {
   const strategyTransKeys: Record<string, string> = {
     independent: 'strategies.independent',
     fixed_step: 'strategies.fixedStep',
-    bresenham: 'strategies.bresenham',
   }
 
   const stats = useMemo(() => {

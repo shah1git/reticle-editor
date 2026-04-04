@@ -27,12 +27,6 @@ export default function RasterStrategySelector({ reticle, setReticle }: Props) {
       summary: t('strategySelector.summaryB'),
       desc: t('strategySelector.descB'),
     },
-    {
-      value: 'bresenham',
-      label: t('strategyFull.bresenhamLabel'),
-      summary: t('strategySelector.summaryC'),
-      desc: t('strategySelector.descC'),
-    },
   ]
 
   const current = strategies.find(s => s.value === reticle.rasterization)!
@@ -78,17 +72,16 @@ export default function RasterStrategySelector({ reticle, setReticle }: Props) {
                   <th></th>
                   <th>{t('strategyFull.independentLabel')}</th>
                   <th>{t('strategyFull.fixedStepLabel')}</th>
-                  <th>{t('strategyFull.bresenhamLabel')}</th>
                 </tr>
               </thead>
               <tbody>
-                <tr><td>{t('strategySelector.compTable.markAccuracy')}</td><td>{'\u2705'} {t('strategySelector.compTable.leq05px')}</td><td>{'\u274c'} {t('strategySelector.compTable.growsLinearly')}</td><td>{'\u2705'} {t('strategySelector.compTable.leq05px')}</td></tr>
-                <tr><td>{t('strategySelector.compTable.intervalAccuracy')}</td><td>{'\u26a0'} {t('strategySelector.compTable.upTo1px')}</td><td>{'\u2705'} {t('strategySelector.compTable.perfect')}</td><td>{'\u26a0'} {t('strategySelector.compTable.upTo1px')}</td></tr>
-                <tr><td>{t('strategySelector.compTable.errorAccumulation')}</td><td>{'\u2705'} {t('strategySelector.compTable.none')}</td><td>{'\u274c'} {t('strategySelector.compTable.linear')}</td><td>{'\u2705'} {t('strategySelector.compTable.none')}</td></tr>
-                <tr><td>{t('strategySelector.compTable.visualUniformity')}</td><td>{'\u26a0'} {t('strategySelector.compTable.dependsOnStep')}</td><td>{'\u2705'} {t('strategySelector.compTable.absolute')}</td><td>{'\u26a0'} {t('strategySelector.compTable.identicalToA')}</td></tr>
-                <tr><td>{t('strategySelector.compTable.docSimplicity')}</td><td>{'\u26a0'} {t('strategySelector.compTable.needsTable')}</td><td>{'\u2705'} {t('strategySelector.compTable.singleStep')}</td><td>{'\u26a0'} {t('strategySelector.compTable.needsTable')}</td></tr>
-                <tr><td>{t('strategySelector.compTable.scaleLength')}</td><td>{'\u2705'} {t('strategySelector.compTable.accurate')}</td><td>{'\u274c'} {t('strategySelector.compTable.stretchedCompressed')}</td><td>{'\u2705'} {t('strategySelector.compTable.accurate')}</td></tr>
-                <tr><td>{t('strategySelector.compTable.recommendation')}</td><td>{t('strategySelector.compTable.coordinateAccuracy')}</td><td>{t('strategySelector.compTable.uniformityShort')}</td><td>{t('strategySelector.compTable.altImplementationA')}</td></tr>
+                <tr><td>{t('strategySelector.compTable.markAccuracy')}</td><td>{'\u2705'} {t('strategySelector.compTable.leq05px')}</td><td>{'\u274c'} {t('strategySelector.compTable.growsLinearly')}</td></tr>
+                <tr><td>{t('strategySelector.compTable.intervalAccuracy')}</td><td>{'\u26a0'} {t('strategySelector.compTable.upTo1px')}</td><td>{'\u2705'} {t('strategySelector.compTable.perfect')}</td></tr>
+                <tr><td>{t('strategySelector.compTable.errorAccumulation')}</td><td>{'\u2705'} {t('strategySelector.compTable.none')}</td><td>{'\u274c'} {t('strategySelector.compTable.linear')}</td></tr>
+                <tr><td>{t('strategySelector.compTable.visualUniformity')}</td><td>{'\u26a0'} {t('strategySelector.compTable.dependsOnStep')}</td><td>{'\u2705'} {t('strategySelector.compTable.absolute')}</td></tr>
+                <tr><td>{t('strategySelector.compTable.docSimplicity')}</td><td>{'\u26a0'} {t('strategySelector.compTable.needsTable')}</td><td>{'\u2705'} {t('strategySelector.compTable.singleStep')}</td></tr>
+                <tr><td>{t('strategySelector.compTable.scaleLength')}</td><td>{'\u2705'} {t('strategySelector.compTable.accurate')}</td><td>{'\u274c'} {t('strategySelector.compTable.stretchedCompressed')}</td></tr>
+                <tr><td>{t('strategySelector.compTable.recommendation')}</td><td>{t('strategySelector.compTable.coordinateAccuracy')}</td><td>{t('strategySelector.compTable.uniformityShort')}</td></tr>
               </tbody>
             </table>
           </div>

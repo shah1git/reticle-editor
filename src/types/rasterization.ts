@@ -9,4 +9,4 @@ export interface RasterMark {
   stepPx: number      // step from previous mark in pixels
 }
 
-export type RasterStrategy = 'independent' | 'fixed_step' | 'bresenham'
+export type RasterStrategy = 'independent' | 'fixed_step'

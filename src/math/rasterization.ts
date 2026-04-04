@@ -62,51 +62,6 @@ export function rasterizeFixedStep(
   return marks
 }
 
-/**
- * Strategy C: Bresenham
- * Alternates floor/ceil steps distributed evenly (like Bresenham line algorithm)
- * Error doesn't accumulate, visually smoothest result
- */
-export function rasterizeBresenham(
-  spacingMrad: number,
-  pxPerMrad: number,
-  count: number,
-): RasterMark[] {
-  const idealStep = spacingMrad * pxPerMrad
-  const shortStep = Math.floor(idealStep)
-  const longStep = Math.ceil(idealStep)
-  const marks: RasterMark[] = []
-  let accumPx = 0
-  let error = 0
-
-  for (let i = 1; i <= count; i++) {
-    const targetMrad = i * spacingMrad
-    const targetPx = targetMrad * pxPerMrad
-    // Bresenham-style: accumulate fractional part
-    error += idealStep - shortStep
-    let step: number
-    if (error >= 0.5) {
-      step = longStep
-      error -= 1
-    } else {
-      step = shortStep
-    }
-    accumPx += step
-    const actualMrad = accumPx / pxPerMrad
-    marks.push({
-      index: i,
-      targetMrad,
-      targetPx,
-      actualPx: accumPx,
-      actualMrad,
-      errorMrad: actualMrad - targetMrad,
-      errorPx: accumPx - targetPx,
-      stepPx: step,
-    })
-  }
-  return marks
-}
-
 /** Dispatch to the right rasterization function */
 export function rasterize(
   strategy: RasterStrategy,
@@ -117,6 +72,5 @@ export function rasterize(
   switch (strategy) {
     case 'independent': return rasterizeIndependent(spacingMrad, pxPerMrad, count)
     case 'fixed_step': return rasterizeFixedStep(spacingMrad, pxPerMrad, count)
-    case 'bresenham': return rasterizeBresenham(spacingMrad, pxPerMrad, count)
   }
 }

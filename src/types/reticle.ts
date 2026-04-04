@@ -20,5 +20,5 @@ export interface Reticle {
     right: Wing
   }
   color: string
-  rasterization: 'independent' | 'fixed_step' | 'bresenham'
+  rasterization: 'independent' | 'fixed_step'
 }

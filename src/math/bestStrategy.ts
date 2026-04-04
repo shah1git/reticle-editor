@@ -10,7 +10,7 @@ export interface BestStrategyInfo {
 }
 
 export function findBestStrategy(reticle: Reticle, ppm: PixelsPerMrad): BestStrategyInfo {
-  const strategies: RasterStrategy[] = ['independent', 'fixed_step', 'bresenham']
+  const strategies: RasterStrategy[] = ['independent', 'fixed_step']
   let bestStrategy: RasterStrategy = reticle.rasterization
   let bestMaxErr = Infinity
 

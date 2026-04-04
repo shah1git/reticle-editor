@@ -21,7 +21,6 @@ interface Props {
 const strategyTransKeys: Record<string, string> = {
   independent: 'strategies.independent',
   fixed_step: 'strategies.fixedStep',
-  bresenham: 'strategies.bresenham',
 }
 
 export default function Toolbar({ scope, setScope, reticle, setReticle, ppm, bestStrategy }: Props) {
@@ -31,7 +30,6 @@ export default function Toolbar({ scope, setScope, reticle, setReticle, ppm, bes
   const strategyOptions: { value: RasterStrategy; label: string }[] = [
     { value: 'independent', label: t('strategies.independent') },
     { value: 'fixed_step', label: t('strategies.fixedStep') },
-    { value: 'bresenham', label: t('strategies.bresenham') },
   ]
 
   useEffect(() => {

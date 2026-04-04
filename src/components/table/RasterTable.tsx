@@ -36,7 +36,6 @@ export default function RasterTable({ scope, reticle, activeWing, setActiveWing 
   const strategyLabels: Record<string, string> = {
     independent: t('strategyFull.independentLabel'),
     fixed_step: t('strategyFull.fixedStepLabel'),
-    bresenham: t('strategyFull.bresenhamLabel'),
   }
 
   const wing = reticle.wings[activeWing]

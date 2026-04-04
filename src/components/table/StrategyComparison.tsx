@@ -14,7 +14,7 @@ interface Props {
   reticle: Reticle
 }
 
-const STRATEGIES: RasterStrategy[] = ['independent', 'fixed_step', 'bresenham']
+const STRATEGIES: RasterStrategy[] = ['independent', 'fixed_step']
 const WING_ARROWS: Record<string, string> = { up: '\u2191', down: '\u2193', left: '\u2190', right: '\u2192' }
 
 interface WingData {
@@ -112,7 +112,6 @@ export default function StrategyComparison({ scope, reticle }: Props) {
   const LABELS: Record<RasterStrategy, string> = {
     independent: t('strategyComparison.stratLabels.independent'),
     fixed_step: t('strategyComparison.stratLabels.fixedStep'),
-    bresenham: t('strategyComparison.stratLabels.bresenham'),
   }
 
   const data = useMemo(() => {
