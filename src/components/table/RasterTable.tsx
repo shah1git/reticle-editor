@@ -16,7 +16,7 @@ interface Props {
   setActiveWing: (w: WingKey) => void
 }
 
-const MAG_PRESETS = [1, 2, 4, 8]
+const MAG_PRESETS = [1, 2, 3, 4, 5, 6, 7, 8]
 
 export default function RasterTable({ reticle, ppm, magnification, focalPlane, activeWing, setActiveWing }: Props) {
   const { t } = useTranslation()

@@ -28,7 +28,7 @@ npm run preview   # preview production-сборки
 
 ```
 src/
-├── App.tsx                    # Корневой компонент, state: scope, reticle, activeWing
+├── App.tsx                    # Корневой компонент, state: scope, reticle, activeWing, magnification
 ├── defaults.ts                # Значения по умолчанию для ScopeProfile и Reticle
 ├── global.css                 # CSS-переменные, сброс, скроллбары
 ├── main.tsx                   # Точка входа React
@@ -58,7 +58,7 @@ src/
     ├── layout/
     │   ├── TopBar.tsx          # Шапка: логотип, кнопки Открыть/Сохранить/Экспорт
     │   ├── LeftPanel.tsx       # Левая колонка (300px, scroll): настройки сетки
-    │   ├── Canvas.tsx          # Центр (flex:1): SVG-canvas с zoom/pan, grid, reticle
+    │   ├── Canvas.tsx          # Центр (flex:1): SVG-canvas с zoom/pan, grid, reticle, кнопки кратности
     │   ├── RightPanel.tsx      # Правая колонка (380px): таблица растеризации + сводка
     │   └── SummaryCards.tsx    # 2×2 сводка: метки, ошибка, шаги, стратегия
     │
@@ -71,10 +71,10 @@ src/
     │   └── RasterStrategySelector.tsx # Выбор А/Б/В + сворачиваемое описание
     │
     ├── table/
-    │   └── RasterTable.tsx     # Таблица растеризации с тултипами на заголовках
+    │   └── RasterTable.tsx     # Таблица растеризации + детейл по кратностям при hover
     │
     ├── canvas/
-    │   ├── ReticleRenderer.tsx # SVG-рендеринг сетки (центр. точка, крылья, метки)
+    │   ├── ReticleRenderer.tsx # SVG-рендеринг сетки (центр. точка, крылья, метки, FFP-масштаб точек)
     │   └── MradGrid.tsx        # Фоновая MRAD-сетка с подписями
     │
     └── ui/
@@ -111,6 +111,7 @@ interface Reticle {
   wings: { up, down, left, right: Wing }
   color: string                  // Цвет сетки (#hex)
   rasterization: 'independent' | 'fixed_step' | 'bresenham'
+  focalPlane: 'ffp' | 'sfp'     // Фокальная плоскость
 }
 ```
 
@@ -118,14 +119,26 @@ interface Reticle {
 
 Два типа: `digital` (тепловизор/ночник — фокус, сенсор, дисплей, pixel pitch) и `optical` (оптика — FOV, дисплей для экспорта). Из параметров вычисляется `pixelsPerMrad` — ключевой коэффициент пересчёта.
 
+## FFP / SFP и кратность
+
+Два режима фокальной плоскости (селектор в Toolbar):
+
+- **FFP (First Focal Plane)** — сетка масштабируется с кратностью. `effectivePpm = basePpm × magnification`. Растеризация пересчитывается — на каждой кратности свои ошибки округления. Точки-метки визуально масштабируются пропорционально.
+- **SFP (Second Focal Plane)** — сетка фиксирована. `effectivePpm = basePpm`. Растеризация не меняется, только FOV сужается.
+
+Кнопки кратности (1×–8×) расположены на Canvas в блоке контролов. `magnification` — состояние предпросмотра, НЕ сохраняется в JSON.
+
+`effectivePpm` вычисляется в `App.tsx` и передаётся во все компоненты вместо basePpm. `calcPixelsPerMrad` в `src/math/optics.ts` по-прежнему вычисляет только basePpm.
+
 ## Canvas — индикатор FOV
 
 Нижняя подсказка на canvas показывает:
 - Масштаб (пикс/MRAD)
-- Видимую область в MRAD и процент от полного FOV прицела
-- Подсказки по управлению (Alt+Drag, Прокрутка)
+- Видимую область в MRAD и процент от полного FOV прицела (с учётом кратности)
 
-Кн��пка **«Весь FOV»** (правый нижний угол) — подгоняет zoom так, чтобы весь FOV прицела поместился в canvas. Использует `getFovMrad()` из `src/math/optics.ts`.
+Кнопка **«FOV»** (правый нижний угол) — подгоняет zoom так, чтобы effectiveFov (`fov / magnification`) поместился в canvas. Использует `getFovMrad()` из `src/math/optics.ts`.
+
+В блоке scopeInfo (верхний правый угол) отображаются: параметры прицела, effectivePpm, режим фокальной плоскости, текущая кратность, effectiveFov.
 
 ## Стратегии растеризации
 
@@ -144,8 +157,9 @@ interface Reticle {
 
 Три колонки:
 - **Левая** (300px, scroll): профиль прицела → центральная точка → цвет → крылья (табы) → стратегия растеризации
-- **Центр** (flex:1): SVG-canvas с MRAD-сеткой, рендеринг сетки, тестовый объект, zoom/pan
-- **Правая** (380px): таблица растеризации (табы крыльев, данные, итоги, легенда) + сводка 2×2
+- **Toolbar**: профиль прицела, селектор FFP/SFP, стратегия округления
+- **Центр** (flex:1): SVG-canvas с MRAD-сеткой, рендеринг сетки, zoom/pan, кнопки кратности (1×–8×)
+- **Правая** (380px): таблица растеризации (табы крыльев, данные, легенда, детейл по кратностям при hover) + сводка 2×2
 
 ## Цветовая палитра
 
