@@ -188,9 +188,9 @@
     "footer_plural": "{{wings}} \u4e2a\u6807\u7ebf\u81c2\u4e0a\u5171 {{marks}} \u4e2a\u6807\u8bb0",
     "allSteps": "\u5168\u90e8 {{step}}",
     "stratLabels": {
-      "independent": "A\uff1a\u72ec\u7acb",
-      "fixedStep": "B\uff1a\u56fa\u5b9a",
-      "bresenham": "C\uff1a\u5e03\u96f7\u68ee"
+      "independent": "A\uff1a\u72ec\u7acb\u53d6\u6574",
+      "fixedStep": "B\uff1a\u56fa\u5b9a\u6b65\u957f",
+      "bresenham": "C\uff1a\u5e03\u96f7\u68ee\u6c49\u59c6"
     }
   },
   "units": {

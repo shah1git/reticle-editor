@@ -188,9 +188,9 @@
     "footer_plural": "{{marks}} marks on {{wings}} wings",
     "allSteps": "all {{step}}",
     "stratLabels": {
-      "independent": "A: Indep.",
-      "fixedStep": "B: Fixed",
-      "bresenham": "C: Bres."
+      "independent": "A: Independent",
+      "fixedStep": "B: Fixed Step",
+      "bresenham": "C: Bresenham"
     }
   },
   "units": {
