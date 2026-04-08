@@ -3,7 +3,8 @@
     "title": "\u5206\u5212\u677f\u7f16\u8f91\u5668",
     "open": "\u2191 \u6253\u5f00",
     "save": "\u2193 \u4fdd\u5b58",
-    "exportPng": "\u2b07 \u5bfc\u51faPNG"
+    "exportPng": "\u2b07 \u5bfc\u51faPNG",
+    "exportBmp": "\u2b07 \u5bfc\u51faBMP"
   },
   "toolbar": {
     "scope": "\u7784\u51c6\u955c\uff1a",
