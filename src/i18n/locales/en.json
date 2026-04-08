@@ -3,7 +3,8 @@
     "title": "RETICLE EDITOR",
     "open": "\u2191 Open",
     "save": "\u2193 Save",
-    "exportPng": "\u2b07 Export PNG"
+    "exportPng": "\u2b07 Export PNG",
+    "exportBmp": "\u2b07 Export BMP"
   },
   "toolbar": {
     "scope": "SCOPE:",
