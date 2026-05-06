@@ -57,21 +57,20 @@ export function wingDotPixels(
 ): PixelRect[] {
   switch (kind) {
     case 'pair': {
-      // Symmetric pair straddling the wing line, just outside it.
+      // Pair of pixels straddling the wing line, drawn as a single contiguous
+      // rectangle that also covers the axis pixels at the mark's row/column.
+      // Drawing the axis column too matters because the mark is colored by
+      // its rasterization error, while the wing line is the reticle colour;
+      // if we left the axis column unpainted at the mark, an off-coloured
+      // band of the line would appear *between* the two mark pixels, which
+      // visually looks like a gap. With the axis included, the mark reads as
+      // a clean perpendicular tick at its position.
       const offset = Math.floor(lineThicknessPx / 2) + 1
+      const span = 2 * offset + 1
       if (axisAlong === 'h') {
-        // Horizontal wing — line along X. Mark has a pixel above and below
-        // the line at the mark's column.
-        return [
-          { x: 0, y: -offset, w: 1, h: 1 },
-          { x: 0, y: offset, w: 1, h: 1 },
-        ]
+        return [{ x: 0, y: -offset, w: 1, h: span }]
       }
-      // Vertical wing — line along Y. Mark has a pixel left and right.
-      return [
-        { x: -offset, y: 0, w: 1, h: 1 },
-        { x: offset, y: 0, w: 1, h: 1 },
-      ]
+      return [{ x: -offset, y: 0, w: span, h: 1 }]
     }
   }
 }
