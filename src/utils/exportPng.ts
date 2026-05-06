@@ -264,9 +264,15 @@ function drawInfoPanel(ctx: CanvasRenderingContext2D, x0: number, y0: number, sc
   ctx.font = FONT_SMALL
   ctx.fillStyle = COL_LABEL
   ctx.textAlign = 'center'
-  ctx.fillText(t('describe.footer', { version: __APP_VERSION__, url: PROJECT_URL }), x0 + INFO_WIDTH / 2, y + LINE_H - 4)
+  // Footer is rendered on multiple lines so it doesn't overflow the
+  // narrow info panel (the URL alone often exceeds the panel width).
+  const footerText = t('describe.footer', { version: __APP_VERSION__, url: PROJECT_URL })
+  const footerLines = footerText.split(' · ')
+  for (const line of footerLines) {
+    ctx.fillText(line, x0 + INFO_WIDTH / 2, y + LINE_H - 6)
+    y += LINE_H - 4
+  }
   ctx.textAlign = 'left'
-  y += LINE_H
 
   return y + PADDING
 }
@@ -306,8 +312,8 @@ function measureInfoHeight(scope: ScopeProfile, reticle: Reticle): number {
 
   const tableRows = wingStats.reduce((s, w) => s + (w.count > 0 ? w.count + 1 : 0), 0)
   const normalRows = lines - tableRows
-  // Body height + footer block (logo ~70px + URL line + paddings)
-  return PADDING * 2 + normalRows * LINE_H + tableRows * (LINE_H - 4) + wingStats.length * 12 + 80 + 110
+  // Body height + footer block (logo ~70px + 2 footer text lines + paddings)
+  return PADDING * 2 + normalRows * LINE_H + tableRows * (LINE_H - 4) + wingStats.length * 12 + 80 + 130
 }
 
 export async function exportPng(scope: ScopeProfile, reticle: Reticle): Promise<void> {
