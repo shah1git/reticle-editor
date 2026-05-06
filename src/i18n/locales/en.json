@@ -3,8 +3,62 @@
     "title": "RETICLE EDITOR",
     "open": "\u2191 Open",
     "save": "\u2193 Save",
+    "describe": "\ud83d\udccb Describe",
     "exportPng": "\u2b07 Export PNG",
     "exportBmp": "\u2b07 Export BMP"
+  },
+  "describe": {
+    "title": "Reticle description",
+    "copy": "Copy",
+    "copied": "Copied",
+    "close": "Close",
+    "scope": {
+      "header": "SCOPE",
+      "name": "Name: {{name}}",
+      "typeDigital": "Type: digital (thermal / night vision)",
+      "typeOptical": "Type: optical",
+      "lensFL": "Focal length: {{value}} mm",
+      "sensor": "Sensor: {{w}}\u00d7{{h}} px",
+      "display": "Display: {{w}}\u00d7{{h}} px",
+      "pixelPitch": "Sensor pixel pitch: {{value}} \u03bcm",
+      "fovDegrees": "Field of view: {{value}}\u00b0",
+      "ppm": "Pixels/MRAD: {{h}} (Horiz) \u00d7 {{v}} (Vert)",
+      "fovMrad": "FOV: {{h}} \u00d7 {{v}} MRAD",
+      "nonSquare": "\u26a0 Non-square pixel ratio"
+    },
+    "reticle": {
+      "header": "RETICLE",
+      "color": "Color: {{color}}",
+      "focalPlane": "Focal plane: {{plane}}",
+      "ffp": "FFP (first, reticle scales with zoom)",
+      "sfp": "SFP (second, reticle fixed)",
+      "magnification": "Magnification: \u00d7{{value}}",
+      "rasterization": "Rasterization: {{strategy}}",
+      "centerDot": "Center dot: radius {{mradRadius}} MRAD, diameter {{pxDiameter}} px",
+      "centerDotDisabled": "Center dot disabled"
+    },
+    "wing": {
+      "headerUp": "\u2191 UP WING",
+      "headerDown": "\u2193 DOWN WING",
+      "headerLeft": "\u2190 LEFT WING",
+      "headerRight": "\u2192 RIGHT WING",
+      "disabled": "disabled",
+      "length": "Length: {{mrad}} MRAD ({{px}} px)",
+      "lineThickness": "Line thickness: {{mrad}} MRAD ({{px}} px)",
+      "noLine": "Line not drawn (dots only)",
+      "dotSize": "Dot size: {{px}} px ({{mrad}} MRAD)",
+      "dotsDisabled": "Dots on this wing disabled",
+      "spacing": "Spacing between dots: {{mrad}} MRAD ({{px}} px)",
+      "count": "Dot count: {{count}}",
+      "maxError": "Max positioning error: \u00b1{{px}} px",
+      "step": "Step: {{step}} px (uniform)",
+      "stepRange": "Step: {{min}}\u2013{{max}} px"
+    },
+    "summary": {
+      "header": "SUMMARY",
+      "totalMarks": "Total marks: {{count}}",
+      "maxError": "Overall max error: \u00b1{{px}} px"
+    }
   },
   "toolbar": {
     "scope": "SCOPE:",

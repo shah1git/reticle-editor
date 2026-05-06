@@ -3,8 +3,62 @@
     "title": "\u5206\u5212\u677f\u7f16\u8f91\u5668",
     "open": "\u2191 \u6253\u5f00",
     "save": "\u2193 \u4fdd\u5b58",
+    "describe": "\ud83d\udccb \u63cf\u8ff0",
     "exportPng": "\u2b07 \u5bfc\u51faPNG",
     "exportBmp": "\u2b07 \u5bfc\u51faBMP"
+  },
+  "describe": {
+    "title": "\u5206\u5212\u677f\u63cf\u8ff0",
+    "copy": "\u590d\u5236",
+    "copied": "\u5df2\u590d\u5236",
+    "close": "\u5173\u95ed",
+    "scope": {
+      "header": "\u7784\u51c6\u955c",
+      "name": "\u540d\u79f0\uff1a{{name}}",
+      "typeDigital": "\u7c7b\u578b\uff1a\u6570\u5b57\uff08\u70ed\u6210\u50cf / \u591c\u89c6\uff09",
+      "typeOptical": "\u7c7b\u578b\uff1a\u5149\u5b66",
+      "lensFL": "\u7126\u8ddd\uff1a{{value}} \u6beb\u7c73",
+      "sensor": "\u4f20\u611f\u5668\uff1a{{w}}\u00d7{{h}} \u50cf\u7d20",
+      "display": "\u663e\u793a\u5c4f\uff1a{{w}}\u00d7{{h}} \u50cf\u7d20",
+      "pixelPitch": "\u4f20\u611f\u5668\u50cf\u7d20\u95f4\u8ddd\uff1a{{value}} \u5fae\u7c73",
+      "fovDegrees": "\u89c6\u573a\u89d2\uff1a{{value}}\u00b0",
+      "ppm": "\u50cf\u7d20/\u5bc6\u4f4d\uff1a{{h}}\uff08\u6a2a\uff09\u00d7 {{v}}\uff08\u7eb5\uff09",
+      "fovMrad": "\u89c6\u573a\uff1a{{h}} \u00d7 {{v}} \u5bc6\u4f4d",
+      "nonSquare": "\u26a0 \u975e\u65b9\u5f62\u50cf\u7d20\u6bd4"
+    },
+    "reticle": {
+      "header": "\u5206\u5212\u677f",
+      "color": "\u989c\u8272\uff1a{{color}}",
+      "focalPlane": "\u7126\u5e73\u9762\uff1a{{plane}}",
+      "ffp": "FFP\uff08\u524d\u7f6e\uff0c\u5206\u5212\u677f\u968f\u500d\u7387\u7f29\u653e\uff09",
+      "sfp": "SFP\uff08\u540e\u7f6e\uff0c\u5206\u5212\u677f\u56fa\u5b9a\uff09",
+      "magnification": "\u500d\u7387\uff1a\u00d7{{value}}",
+      "rasterization": "\u5149\u6805\u5316\uff1a{{strategy}}",
+      "centerDot": "\u4e2d\u5fc3\u70b9\uff1a\u534a\u5f84 {{mradRadius}} \u5bc6\u4f4d\uff0c\u76f4\u5f84 {{pxDiameter}} \u50cf\u7d20",
+      "centerDotDisabled": "\u4e2d\u5fc3\u70b9\u5df2\u5173\u95ed"
+    },
+    "wing": {
+      "headerUp": "\u2191 \u4e0a\u7ffc",
+      "headerDown": "\u2193 \u4e0b\u7ffc",
+      "headerLeft": "\u2190 \u5de6\u7ffc",
+      "headerRight": "\u2192 \u53f3\u7ffc",
+      "disabled": "\u5df2\u5173\u95ed",
+      "length": "\u957f\u5ea6\uff1a{{mrad}} \u5bc6\u4f4d\uff08{{px}} \u50cf\u7d20\uff09",
+      "lineThickness": "\u7ebf\u5bbd\uff1a{{mrad}} \u5bc6\u4f4d\uff08{{px}} \u50cf\u7d20\uff09",
+      "noLine": "\u4e0d\u7ed8\u5236\u7ebf\u6761\uff08\u4ec5\u523b\u5ea6\u70b9\uff09",
+      "dotSize": "\u523b\u5ea6\u70b9\u5927\u5c0f\uff1a{{px}} \u50cf\u7d20\uff08{{mrad}} \u5bc6\u4f4d\uff09",
+      "dotsDisabled": "\u6b64\u7ffc\u523b\u5ea6\u70b9\u5df2\u5173\u95ed",
+      "spacing": "\u523b\u5ea6\u70b9\u95f4\u8ddd\uff1a{{mrad}} \u5bc6\u4f4d\uff08{{px}} \u50cf\u7d20\uff09",
+      "count": "\u523b\u5ea6\u70b9\u6570\u91cf\uff1a{{count}}",
+      "maxError": "\u6700\u5927\u5b9a\u4f4d\u8bef\u5dee\uff1a\u00b1{{px}} \u50cf\u7d20",
+      "step": "\u6b65\u957f\uff1a{{step}} \u50cf\u7d20\uff08\u5747\u5300\uff09",
+      "stepRange": "\u6b65\u957f\uff1a{{min}}\u2013{{max}} \u50cf\u7d20"
+    },
+    "summary": {
+      "header": "\u6c47\u603b",
+      "totalMarks": "\u603b\u523b\u5ea6\u70b9\u6570\uff1a{{count}}",
+      "maxError": "\u6574\u4f53\u6700\u5927\u8bef\u5dee\uff1a\u00b1{{px}} \u50cf\u7d20"
+    }
   },
   "toolbar": {
     "scope": "\u7784\u51c6\u955c\uff1a",

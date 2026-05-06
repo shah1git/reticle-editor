@@ -78,7 +78,7 @@ export default function App() {
 
   return (
     <div className="app">
-      <TopBar scope={scope} reticle={reticle} setScope={setScope} setReticle={setReticle} />
+      <TopBar scope={scope} reticle={reticle} setScope={setScope} setReticle={setReticle} ppm={effectivePpm} magnification={magnification} />
       <Toolbar scope={scope} setScope={setScope} reticle={reticle} setReticle={setReticle} ppm={effectivePpm} bestStrategy={bestStrategy} />
       <div className="app-body">
         <LeftPanel
