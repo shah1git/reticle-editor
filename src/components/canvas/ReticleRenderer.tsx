@@ -33,8 +33,6 @@ interface WingRenderData {
   axisPpm: number
   /** Image-pixel offset (firmware) from center to inner edge of the wing line. */
   gapPx: number
-  /** Wing line thickness in firmware-px (for hover positioning of bracket marks). */
-  lineThicknessPx: number
   dx: number
   dy: number
 }
@@ -127,7 +125,7 @@ export default function ReticleRenderer({ reticle, ppm, cx, cy, pixelScale, onDo
       const dotCount = effectiveDotCount(wing)
       if (dotCount > 0) {
         const marks = rasterize(reticle.rasterization, wing.dots.spacing, effectiveAxisPpm, dotCount)
-        wings.push({ dir, marks, axisPpm: effectiveAxisPpm, gapPx: gapPxBase, lineThicknessPx, dx, dy })
+        wings.push({ dir, marks, axisPpm: effectiveAxisPpm, gapPx: gapPxBase, dx, dy })
       }
     }
 
@@ -189,7 +187,7 @@ export default function ReticleRenderer({ reticle, ppm, cx, cy, pixelScale, onDo
       {wings.map(w => {
         const dotKind = reticle.wings[w.dir].dots.kind
         const axisAlong: 'h' | 'v' = (w.dir === 'left' || w.dir === 'right') ? 'h' : 'v'
-        const pixels = wingDotPixels(dotKind, axisAlong, w.lineThicknessPx)
+        const pixels = wingDotPixels(dotKind, axisAlong)
         return w.marks.map(mark => {
           // mark.actualPx is in effective-image-pixels → screen via pixelScale.
           // Gap is in firmware-image-pixels → screen via screenScale.

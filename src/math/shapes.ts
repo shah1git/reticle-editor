@@ -37,40 +37,31 @@ export function centerMarkHalfExtent(kind: CenterMarkKind): number {
 }
 
 /**
- * Pixel rectangles for a wing dot.
+ * Pixel rectangles for a wing dot. `axisAlong` is the wing direction:
+ *   - 'h' for horizontal wings (left/right) — line lies along X axis.
+ *   - 'v' for vertical wings (up/down) — line lies along Y axis.
  *
- * `axisAlong` is the wing direction: 'h' for horizontal wings (left/right —
- * line lies along X axis) and 'v' for vertical wings (up/down — line lies
- * along Y axis).
- *
- * `lineThicknessPx` is the wing line thickness in firmware-px so the mark
- * can sit just outside the line and not overlap it.
- *
- * Returned rectangles are anchored at the mark's position on the axis (the
- * rasterized integer firmware-px offset from the center along the wing
- * direction is applied by the renderer).
+ * Returned rectangles are anchored at the mark's position on the axis.
+ * Marks describe themselves only; they don't try to coordinate with the
+ * wing line — that's a separate component painted independently. Any
+ * visual overlap simply uses the mark colour because marks are drawn
+ * after the line.
  */
-export function wingDotPixels(
-  kind: WingDotKind,
-  axisAlong: 'h' | 'v',
-  lineThicknessPx: number,
-): PixelRect[] {
+export function wingDotPixels(kind: WingDotKind, axisAlong: 'h' | 'v'): PixelRect[] {
   switch (kind) {
     case 'pair': {
-      // Pair of pixels straddling the wing line, drawn as a single contiguous
-      // rectangle that also covers the axis pixels at the mark's row/column.
-      // Drawing the axis column too matters because the mark is colored by
-      // its rasterization error, while the wing line is the reticle colour;
-      // if we left the axis column unpainted at the mark, an off-coloured
-      // band of the line would appear *between* the two mark pixels, which
-      // visually looks like a gap. With the axis included, the mark reads as
-      // a clean perpendicular tick at its position.
-      const offset = Math.floor(lineThicknessPx / 2) + 1
-      const span = 2 * offset + 1
       if (axisAlong === 'h') {
-        return [{ x: 0, y: -offset, w: 1, h: span }]
+        // Horizontal wing: one pixel above the axis row, one below.
+        return [
+          { x: 0, y: -1, w: 1, h: 1 },
+          { x: 0, y: 1, w: 1, h: 1 },
+        ]
       }
-      return [{ x: -offset, y: 0, w: span, h: 1 }]
+      // Vertical wing: one pixel left of the axis column, one right.
+      return [
+        { x: -1, y: 0, w: 1, h: 1 },
+        { x: 1, y: 0, w: 1, h: 1 },
+      ]
     }
   }
 }
