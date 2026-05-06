@@ -102,7 +102,7 @@ export function describeReticle(
   // 1 пиксель в MRAD и в миллиметрах на 100 м (1 MRAD ≈ 100 мм / 100 м).
   const pxMradH = ppm.h > 0 ? 1 / ppm.h : 0
   const pxMradV = ppm.v > 0 ? 1 / ppm.v : 0
-  lines.push('  ' + t('describe.scope.onePixel', {
+  lines.push('  ' + t('describe.scope.clickValue', {
     mradH: fmt(pxMradH, 4),
     mradV: fmt(pxMradV, 4),
     mmH: fmt(pxMradH * 100, 2),

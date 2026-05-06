@@ -28,7 +28,7 @@
       "pixelPitch": "\u4f20\u611f\u5668\u50cf\u7d20\u95f4\u8ddd\uff1a{{value}} \u5fae\u7c73",
       "fovDegrees": "\u89c6\u573a\u89d2\uff1a{{value}}\u00b0",
       "ppm": "\u50cf\u7d20/\u5bc6\u4f4d\uff1a{{h}}\uff08\u6a2a\uff09\u00d7 {{v}}\uff08\u7eb5\uff09",
-      "onePixel": "1 \u50cf\u7d20\uff1a{{mradH}} \u00d7 {{mradV}} \u5bc6\u4f4d = 100 \u7c73\u5904 {{mmH}} \u00d7 {{mmV}} \u6beb\u7c73",
+      "clickValue": "\u523b\u5ea6\u503c\uff1a{{mradH}} \u00d7 {{mradV}} \u5bc6\u4f4d = 100 \u7c73\u5904 {{mmH}} \u00d7 {{mmV}} \u6beb\u7c73",
       "fovMrad": "\u89c6\u573a\uff1a{{h}} \u00d7 {{v}} \u5bc6\u4f4d",
       "nonSquare": "\u26a0 \u975e\u65b9\u5f62\u50cf\u7d20\u6bd4"
     },
