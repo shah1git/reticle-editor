@@ -2,7 +2,7 @@ import type { ScopeProfile } from '../types/scope'
 import type { Reticle } from '../types/reticle'
 import i18n from '../i18n'
 import { calcPixelsPerMrad, snapToPixel, getFovMrad, isSquarePixelRatio } from '../math/optics'
-import { rasterize } from '../math/rasterization'
+import { rasterize, effectiveDotCount } from '../math/rasterization'
 import { findBestStrategy } from '../math/bestStrategy'
 import { errorToColor } from '../math/errorColor'
 
@@ -49,7 +49,7 @@ function getWingStats(reticle: Reticle, ppm: { h: number; v: number }): WingStat
     const wing = reticle.wings[key]
     if (!wing.enabled || wing.length <= 0) continue
     const axisPpm = (key === 'up' || key === 'down') ? ppm.v : ppm.h
-    const count = (wing.dots.enabled && wing.dots.spacing > 0) ? Math.floor(wing.length / wing.dots.spacing) : 0
+    const count = effectiveDotCount(wing)
     const marks = count > 0 ? rasterize(reticle.rasterization, wing.dots.spacing, axisPpm, count) : []
     let maxError = 0, minStep = Infinity, maxStep = 0
     for (const m of marks) {
@@ -373,8 +373,8 @@ export function exportPng(scope: ScopeProfile, reticle: Reticle): void {
       }
     }
 
-    if (wing.dots.enabled && wing.dots.spacing > 0) {
-      const count = Math.floor(wing.length / wing.dots.spacing)
+    {
+      const count = effectiveDotCount(wing)
       if (count > 0) {
         const marks = rasterize(reticle.rasterization, wing.dots.spacing, axisPpm, count)
         const wingDotRadiusPx = Math.max(1, Math.round(wing.dotSize / 2))

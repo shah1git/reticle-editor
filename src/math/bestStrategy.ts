@@ -1,7 +1,7 @@
 import type { Reticle } from '../types/reticle'
 import type { PixelsPerMrad } from './optics'
 import type { RasterStrategy } from '../types/rasterization'
-import { rasterize } from './rasterization'
+import { rasterize, effectiveDotCount } from './rasterization'
 
 export interface BestStrategyInfo {
   best: RasterStrategy
@@ -18,10 +18,9 @@ export function findBestStrategy(reticle: Reticle, ppm: PixelsPerMrad): BestStra
     let maxErr = 0
     for (const key of ['up', 'down', 'left', 'right'] as const) {
       const wing = reticle.wings[key]
-      if (!wing.enabled || wing.length <= 0 || !wing.dots.enabled || wing.dots.spacing <= 0) continue
-      const axisPpm = (key === 'up' || key === 'down') ? ppm.v : ppm.h
-      const count = Math.floor(wing.length / wing.dots.spacing)
+      const count = effectiveDotCount(wing)
       if (count <= 0) continue
+      const axisPpm = (key === 'up' || key === 'down') ? ppm.v : ppm.h
       const marks = rasterize(strategy, wing.dots.spacing, axisPpm, count)
       for (const m of marks) {
         const err = Math.abs(m.errorPx)
@@ -37,10 +36,9 @@ export function findBestStrategy(reticle: Reticle, ppm: PixelsPerMrad): BestStra
   let currentMaxErr = 0
   for (const key of ['up', 'down', 'left', 'right'] as const) {
     const wing = reticle.wings[key]
-    if (!wing.enabled || wing.length <= 0 || !wing.dots.enabled || wing.dots.spacing <= 0) continue
-    const axisPpm = (key === 'up' || key === 'down') ? ppm.v : ppm.h
-    const count = Math.floor(wing.length / wing.dots.spacing)
+    const count = effectiveDotCount(wing)
     if (count <= 0) continue
+    const axisPpm = (key === 'up' || key === 'down') ? ppm.v : ppm.h
     const marks = rasterize(reticle.rasterization, wing.dots.spacing, axisPpm, count)
     for (const m of marks) {
       const err = Math.abs(m.errorPx)

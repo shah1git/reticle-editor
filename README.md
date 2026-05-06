@@ -52,11 +52,12 @@ src/
 │
 ├── utils/
 │   ├── fileIO.ts              # Сохранение/загрузка JSON (с обратной совместимостью)
-│   └── exportPng.ts           # Экспорт сетки как PNG с точными пиксельными координатами
+│   ├── exportPng.ts           # Экспорт сетки как PNG с точными пиксельными координатами
+│   └── describeReticle.ts     # Локализованное текстовое описание текущей сетки и прицела
 │
 └── components/
     ├── layout/
-    │   ├── TopBar.tsx          # Шапка: логотип, кнопки Открыть/Сохранить/Экспорт
+    │   ├── TopBar.tsx          # Шапка: логотип, кнопки Открыть/Сохранить/Описание/Экспорт
     │   ├── LeftPanel.tsx       # Левая колонка (300px, scroll): настройки сетки
     │   ├── Canvas.tsx          # Центр (flex:1): SVG-canvas с zoom/pan, grid, reticle, кнопки кратности
     │   ├── RightPanel.tsx      # Правая колонка (380px): таблица растеризации + сводка
@@ -83,7 +84,8 @@ src/
         ├── CheckboxInput.tsx   # Чекбокс
         ├── SelectInput.tsx     # Выпадающий список
         ├── Section.tsx         # Сворачиваемая секция с заголовком и тултипом
-        └── Tooltip.tsx         # Тултип «?» — portal в body, position:fixed
+        ├── Tooltip.tsx         # Тултип «?» — portal в body, position:fixed
+        └── DescribeModal.tsx   # Модал «Описание сетки» с кнопкой «Скопировать»
 ```
 
 ## Модель данных
@@ -99,6 +101,7 @@ interface Wing {
   dots: {
     enabled: boolean      // Показывать точки-метки
     spacing: number       // Интервал между метками в MRAD
+    maxDots: number       // Лимит точек на крыле; 0 = без лимита
   }
 }
 ```

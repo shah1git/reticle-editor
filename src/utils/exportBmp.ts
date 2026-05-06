@@ -1,7 +1,7 @@
 import type { ScopeProfile } from '../types/scope'
 import type { Reticle } from '../types/reticle'
 import { calcPixelsPerMrad, snapToPixel } from '../math/optics'
-import { rasterize } from '../math/rasterization'
+import { rasterize, effectiveDotCount } from '../math/rasterization'
 
 export function exportBmp(scope: ScopeProfile, reticle: Reticle): void {
   const width = scope.displayResX
@@ -62,8 +62,8 @@ export function exportBmp(scope: ScopeProfile, reticle: Reticle): void {
       }
     }
 
-    if (wing.dots.enabled && wing.dots.spacing > 0) {
-      const count = Math.floor(wing.length / wing.dots.spacing)
+    {
+      const count = effectiveDotCount(wing)
       if (count > 0) {
         const marks = rasterize(reticle.rasterization, wing.dots.spacing, axisPpm, count)
         const wingDotRadiusPx = Math.max(1, Math.round(wing.dotSize / 2))

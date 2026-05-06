@@ -34,7 +34,7 @@ export default function MobileLayout({
 
   return (
     <div className={styles.layout}>
-      <TopBar scope={scope} reticle={reticle} setScope={setScope} setReticle={setReticle} />
+      <TopBar scope={scope} reticle={reticle} setScope={setScope} setReticle={setReticle} ppm={ppm} magnification={magnification} />
 
       <div className={styles.content}>
         {activeTab === 'settings' && (

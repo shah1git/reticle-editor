@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import type { Reticle } from '../../types/reticle'
 import type { PixelsPerMrad } from '../../math/optics'
 import type { WingKey } from '../../App'
-import { rasterize } from '../../math/rasterization'
+import { rasterize, effectiveDotCount } from '../../math/rasterization'
 import styles from './SummaryCards.module.css'
 
 interface Props {
@@ -28,10 +28,9 @@ export default function SummaryCards({ ppm, reticle }: Props) {
 
     for (const key of ['up', 'down', 'left', 'right'] as const) {
       const wing = reticle.wings[key]
-      if (!wing.enabled || wing.length <= 0 || !wing.dots.enabled || wing.dots.spacing <= 0) continue
-      const axisPpm = (key === 'up' || key === 'down') ? ppm.v : ppm.h
-      const count = Math.floor(wing.length / wing.dots.spacing)
+      const count = effectiveDotCount(wing)
       if (count <= 0) continue
+      const axisPpm = (key === 'up' || key === 'down') ? ppm.v : ppm.h
       const marks = rasterize(reticle.rasterization, wing.dots.spacing, axisPpm, count)
       totalMarks += marks.length
       for (const m of marks) {

@@ -1,12 +1,14 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 declare const __APP_VERSION__: string
 import type { ScopeProfile } from '../../types/scope'
 import type { Reticle } from '../../types/reticle'
+import type { PixelsPerMrad } from '../../math/optics'
 import { saveToJson, loadFromJson } from '../../utils/fileIO'
 import { exportPng } from '../../utils/exportPng'
 import { exportBmp } from '../../utils/exportBmp'
+import DescribeModal from '../ui/DescribeModal'
 import LanguageSwitcher from './LanguageSwitcher'
 import styles from './TopBar.module.css'
 
@@ -15,11 +17,14 @@ interface Props {
   reticle: Reticle
   setScope: (s: ScopeProfile) => void
   setReticle: (r: Reticle) => void
+  ppm: PixelsPerMrad
+  magnification: number
 }
 
-export default function TopBar({ scope, reticle, setScope, setReticle }: Props) {
+export default function TopBar({ scope, reticle, setScope, setReticle, ppm, magnification }: Props) {
   const { t } = useTranslation()
   const fileRef = useRef<HTMLInputElement>(null)
+  const [describeOpen, setDescribeOpen] = useState(false)
 
   const handleLoad = () => fileRef.current?.click()
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,6 +52,10 @@ export default function TopBar({ scope, reticle, setScope, setReticle }: Props) 
           <span className={styles.btnText}>{t('topbar.save')}</span>
           <span className={styles.btnIcon}>{'\ud83d\udcbe'}</span>
         </button>
+        <button className={styles.btn} onClick={() => setDescribeOpen(true)} title={t('describe.title')}>
+          <span className={styles.btnText}>{t('topbar.describe')}</span>
+          <span className={styles.btnIcon}>{'\ud83d\udccb'}</span>
+        </button>
         <button className={styles.btnAccent} onClick={() => exportPng(scope, reticle)}>
           <span className={styles.btnText}>{t('topbar.exportPng')}</span>
           <span className={styles.btnIcon}>{'\u2b07'}</span>
@@ -63,6 +72,15 @@ export default function TopBar({ scope, reticle, setScope, setReticle }: Props) 
           onChange={handleFileChange}
         />
       </div>
+      {describeOpen && (
+        <DescribeModal
+          scope={scope}
+          reticle={reticle}
+          ppm={ppm}
+          magnification={magnification}
+          onClose={() => setDescribeOpen(false)}
+        />
+      )}
     </header>
   )
 }

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import type { Reticle } from '../../types/reticle'
 import type { RasterStrategy } from '../../types/rasterization'
 import type { PixelsPerMrad } from '../../math/optics'
-import { rasterize } from '../../math/rasterization'
+import { rasterize, effectiveDotCount } from '../../math/rasterization'
 import Tooltip from '../ui/Tooltip'
 import styles from './StrategyComparison.module.css'
 
@@ -56,10 +56,9 @@ function getActiveWings(reticle: Reticle, ppm: PixelsPerMrad) {
 
   for (const key of ['up', 'down', 'left', 'right'] as const) {
     const wing = reticle.wings[key]
-    if (!wing.enabled || wing.length <= 0 || !wing.dots.enabled || wing.dots.spacing <= 0) continue
-    const axisPpm = (key === 'up' || key === 'down') ? ppm.v : ppm.h
-    const count = Math.floor(wing.length / wing.dots.spacing)
+    const count = effectiveDotCount(wing)
     if (count <= 0) continue
+    const axisPpm = (key === 'up' || key === 'down') ? ppm.v : ppm.h
     wings.push({ key, axisPpm, count, spacing: wing.dots.spacing, length: wing.length })
     info.push(`${WING_ARROWS[key]}${wing.length}\u00d7${wing.dots.spacing}`)
     totalMarks += count
