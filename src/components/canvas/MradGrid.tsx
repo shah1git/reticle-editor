@@ -38,7 +38,8 @@ export default function MradGrid({ width, height, zoom, panX, panY }: Props) {
 
     // Vertical lines
     for (let mrad = startH; mrad <= endH; mrad += minorStep) {
-      const x = cx + mrad * zoom
+      const xExact = cx + mrad * zoom
+      const x = Math.round(xExact) + 0.5  // crisp 1px stroke at integer screen position
       const isZero = Math.abs(mrad) < 0.001
       const isMajor = Math.abs(mrad % majorStep) < 0.001
       const opacity = isZero ? 0.25 : isMajor ? 0.15 : 0.06
@@ -73,7 +74,8 @@ export default function MradGrid({ width, height, zoom, panX, panY }: Props) {
 
     // Horizontal lines
     for (let mrad = startV; mrad <= endV; mrad += minorStep) {
-      const y = cy + mrad * zoom
+      const yExact = cy + mrad * zoom
+      const y = Math.round(yExact) + 0.5
       const isZero = Math.abs(mrad) < 0.001
       const isMajor = Math.abs(mrad % majorStep) < 0.001
       const opacity = isZero ? 0.25 : isMajor ? 0.15 : 0.06
