@@ -25,6 +25,11 @@ const loadState = () => {
     if (saved) {
       const parsed = JSON.parse(saved)
       const reticle = { ...defaultReticle, ...parsed.reticle } as Reticle
+      // Migrate centerDot.radius (old: radius in MRAD) → centerDot.diameter (new: diameter in MRAD)
+      const cd = reticle.centerDot as { radius?: number; diameter?: number } | undefined
+      if (cd && cd.diameter == null) {
+        reticle.centerDot = { diameter: cd.radius != null ? cd.radius * 2 : defaultReticle.centerDot.diameter }
+      }
       // Migrate older state that lacks the per-wing maxDots cap
       for (const k of ['up', 'down', 'left', 'right'] as const) {
         const w = reticle.wings?.[k]

@@ -110,7 +110,7 @@ interface Wing {
 
 ```typescript
 interface Reticle {
-  centerDot: { radius: number }  // Радиус центральной точки (MRAD)
+  centerDot: { diameter: number } // Диаметр центральной точки (MRAD); привязан к целому числу пикселей
   wings: { up, down, left, right: Wing }
   color: string                  // Цвет сетки (#hex)
   rasterization: 'independent' | 'fixed_step' | 'bresenham'
@@ -185,7 +185,7 @@ interface Reticle {
 - `reticle` — полная конфигурация сетки (включая dotSize)
 - `rasterization` — готовые координаты меток для всех 4 крыльев
 
-Обратная совместимость: при загрузке старого формата с `dots.radius` (MRAD) автоматически пересчитывается в `dotSize` (пиксели).
+Обратная совместимость: при загрузке старого формата с `dots.radius` (MRAD) автоматически пересчитывается в `dotSize` (пиксели). Старое поле `centerDot.radius` (MRAD) автоматически переводится в `centerDot.diameter = radius × 2`.
 
 ## Деплой
 

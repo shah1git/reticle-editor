@@ -12,7 +12,7 @@ export interface Wing {
 
 export interface Reticle {
   centerDot: {
-    radius: number  // MRAD, snapped to whole pixels via snapToPixel
+    diameter: number  // MRAD; snapped so diameter * ppmMin is a whole pixel count
   }
   wings: {
     up: Wing

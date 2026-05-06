@@ -23,15 +23,15 @@ export function exportBmp(scope: ScopeProfile, reticle: Reticle): void {
   const cyPx = height / 2
   const color = reticle.color
 
-  // Center dot
-  const dotRadiusMrad = snapToPixel(reticle.centerDot.radius, ppmMin)
-  const dotRadiusPx = Math.round(dotRadiusMrad * ppmMin)
-  if (dotRadiusPx > 0) {
-    ctx.beginPath()
-    ctx.arc(cxPx, cyPx, dotRadiusPx, 0, Math.PI * 2)
+  // Center dot — pixel-perfect square of dotDiameterPx × dotDiameterPx
+  const dotDiameterMrad = snapToPixel(reticle.centerDot.diameter, ppmMin)
+  const dotDiameterPx = Math.round(dotDiameterMrad * ppmMin)
+  if (dotDiameterPx > 0) {
+    const off = Math.floor(dotDiameterPx / 2)
     ctx.fillStyle = color
-    ctx.fill()
+    ctx.fillRect(Math.round(cxPx) - off, Math.round(cyPx) - off, dotDiameterPx, dotDiameterPx)
   }
+  const gapPxBase = dotDiameterPx / 2
 
   // Wings
   const dirs = ['up', 'down', 'left', 'right'] as const
@@ -42,7 +42,7 @@ export function exportBmp(scope: ScopeProfile, reticle: Reticle): void {
     const dx = dir === 'left' ? -1 : dir === 'right' ? 1 : 0
     const dy = dir === 'down' ? 1 : dir === 'up' ? -1 : 0
     const axisPpm = dy !== 0 ? ppm.v : ppm.h
-    const gapPx = dotRadiusPx
+    const gapPx = gapPxBase
 
     const lengthPx = Math.round(wing.length * axisPpm)
     ctx.fillStyle = color
@@ -66,16 +66,14 @@ export function exportBmp(scope: ScopeProfile, reticle: Reticle): void {
       const count = effectiveDotCount(wing)
       if (count > 0) {
         const marks = rasterize(reticle.rasterization, wing.dots.spacing, axisPpm, count)
-        const wingDotRadiusPx = Math.max(1, Math.round(wing.dotSize / 2))
-
+        const D = wing.dotSize
+        const off = Math.floor(D / 2)
+        ctx.fillStyle = color
         for (const mark of marks) {
           const posPx = gapPx + mark.actualPx
-          const dotX = cxPx + posPx * dx
-          const dotY = cyPx + posPx * dy
-          ctx.beginPath()
-          ctx.arc(dotX, dotY, wingDotRadiusPx, 0, Math.PI * 2)
-          ctx.fillStyle = color
-          ctx.fill()
+          const dotX = Math.round(cxPx + posPx * dx)
+          const dotY = Math.round(cyPx + posPx * dy)
+          ctx.fillRect(dotX - off, dotY - off, D, D)
         }
       }
     }

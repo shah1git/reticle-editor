@@ -61,6 +61,11 @@ export function loadFromJson(
     if (data.scopeProfile) setScope(data.scopeProfile)
     if (data.reticle) {
       const r = data.reticle as any
+      // Backward compat: centerDot.radius (MRAD) → centerDot.diameter (MRAD = radius × 2)
+      if (r.centerDot && r.centerDot.diameter == null && r.centerDot.radius != null) {
+        r.centerDot.diameter = r.centerDot.radius * 2
+        delete r.centerDot.radius
+      }
       // Backward compat: convert old dots.radius to new dotSize
       for (const key of ['up', 'down', 'left', 'right']) {
         const w = r.wings?.[key]
