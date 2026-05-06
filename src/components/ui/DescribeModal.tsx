@@ -1,16 +1,42 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
+import i18n from '../../i18n'
+import type { ScopeProfile } from '../../types/scope'
+import type { Reticle } from '../../types/reticle'
+import type { PixelsPerMrad } from '../../math/optics'
+import { describeReticle } from '../../utils/describeReticle'
 import styles from './DescribeModal.module.css'
 
 interface Props {
-  text: string
+  scope: ScopeProfile
+  reticle: Reticle
+  ppm: PixelsPerMrad
+  magnification: number
   onClose: () => void
 }
 
-export default function DescribeModal({ text, onClose }: Props) {
+const LANGS = ['ru', 'en', 'zh'] as const
+type Lang = typeof LANGS[number]
+
+const NATIVE_NAME: Record<Lang, string> = {
+  ru: 'Русский',
+  en: 'English',
+  zh: '中文',
+}
+
+export default function DescribeModal({ scope, reticle, ppm, magnification, onClose }: Props) {
   const { t } = useTranslation()
+  const [viewLang, setViewLang] = useState<Lang>(() => {
+    const cur = (i18n.language || 'en').split('-')[0]
+    return (LANGS as readonly string[]).includes(cur) ? (cur as Lang) : 'en'
+  })
   const [copied, setCopied] = useState(false)
+
+  const text = useMemo(() => {
+    const localT = i18n.getFixedT(viewLang)
+    return describeReticle(scope, reticle, ppm, magnification, localT)
+  }, [viewLang, scope, reticle, ppm, magnification])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -35,6 +61,8 @@ export default function DescribeModal({ text, onClose }: Props) {
     setTimeout(() => setCopied(false), 1500)
   }
 
+  const otherLangs = LANGS.filter((l) => l !== viewLang)
+
   return createPortal(
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
@@ -45,6 +73,15 @@ export default function DescribeModal({ text, onClose }: Props) {
           <pre className={styles.text}>{text}</pre>
         </div>
         <div className={styles.footer}>
+          {otherLangs.map((lng) => (
+            <button
+              key={lng}
+              className={styles.btn}
+              onClick={() => setViewLang(lng)}
+            >
+              {t('describe.translateTo', { lang: NATIVE_NAME[lng] })}
+            </button>
+          ))}
           <button className={styles.btnAccent} onClick={handleCopy}>
             {copied ? t('describe.copied') : t('describe.copy')}
           </button>

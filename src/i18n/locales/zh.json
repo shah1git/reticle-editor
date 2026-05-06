@@ -12,6 +12,7 @@
     "copy": "\u590d\u5236",
     "copied": "\u5df2\u590d\u5236",
     "close": "\u5173\u95ed",
+    "translateTo": "\ud83c\udf10 \u7ffb\u8bd1\uff1a{{lang}}",
     "scope": {
       "header": "\u7784\u51c6\u955c",
       "name": "\u540d\u79f0\uff1a{{name}}",

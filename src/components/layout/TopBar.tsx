@@ -8,7 +8,6 @@ import type { PixelsPerMrad } from '../../math/optics'
 import { saveToJson, loadFromJson } from '../../utils/fileIO'
 import { exportPng } from '../../utils/exportPng'
 import { exportBmp } from '../../utils/exportBmp'
-import { describeReticle } from '../../utils/describeReticle'
 import DescribeModal from '../ui/DescribeModal'
 import LanguageSwitcher from './LanguageSwitcher'
 import styles from './TopBar.module.css'
@@ -25,11 +24,7 @@ interface Props {
 export default function TopBar({ scope, reticle, setScope, setReticle, ppm, magnification }: Props) {
   const { t } = useTranslation()
   const fileRef = useRef<HTMLInputElement>(null)
-  const [describeText, setDescribeText] = useState<string | null>(null)
-
-  const handleDescribe = () => {
-    setDescribeText(describeReticle(scope, reticle, ppm, magnification, t))
-  }
+  const [describeOpen, setDescribeOpen] = useState(false)
 
   const handleLoad = () => fileRef.current?.click()
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +52,7 @@ export default function TopBar({ scope, reticle, setScope, setReticle, ppm, magn
           <span className={styles.btnText}>{t('topbar.save')}</span>
           <span className={styles.btnIcon}>{'\ud83d\udcbe'}</span>
         </button>
-        <button className={styles.btn} onClick={handleDescribe} title={t('describe.title')}>
+        <button className={styles.btn} onClick={() => setDescribeOpen(true)} title={t('describe.title')}>
           <span className={styles.btnText}>{t('topbar.describe')}</span>
           <span className={styles.btnIcon}>{'\ud83d\udccb'}</span>
         </button>
@@ -77,8 +72,14 @@ export default function TopBar({ scope, reticle, setScope, setReticle, ppm, magn
           onChange={handleFileChange}
         />
       </div>
-      {describeText !== null && (
-        <DescribeModal text={describeText} onClose={() => setDescribeText(null)} />
+      {describeOpen && (
+        <DescribeModal
+          scope={scope}
+          reticle={reticle}
+          ppm={ppm}
+          magnification={magnification}
+          onClose={() => setDescribeOpen(false)}
+        />
       )}
     </header>
   )

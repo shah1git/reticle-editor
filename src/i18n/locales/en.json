@@ -12,6 +12,7 @@
     "copy": "Copy",
     "copied": "Copied",
     "close": "Close",
+    "translateTo": "🌐 Translate: {{lang}}",
     "scope": {
       "header": "SCOPE",
       "name": "Name: {{name}}",
