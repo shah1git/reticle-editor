@@ -97,11 +97,12 @@ interface Wing {
   enabled: boolean        // Крыло включено/выключено
   length: number          // Длина крыла в MRAD
   lineThickness: number   // Толщина линии в MRAD (0 = только точки)
-  dotSize: number         // Диаметр точки-метки в пикселях (целое ≥ 1)
   dots: {
     enabled: boolean      // Показывать точки-метки
     spacing: number       // Интервал между метками в MRAD
     maxDots: number       // Лимит точек на крыле; 0 = без лимита
+    kind: 'pair'          // Форма метки. Сейчас 'pair' = пара пикселей
+                          // перпендикулярно оси крыла (1 + 1).
   }
 }
 ```
@@ -110,7 +111,7 @@ interface Wing {
 
 ```typescript
 interface Reticle {
-  centerDot: { diameter: number } // Диаметр центральной точки (MRAD); привязан к целому числу пикселей
+  centerDot: { kind: 'square4' }  // Форма центральной точки. Сейчас один вариант — квадрат 4×4 пикс.
   wings: { up, down, left, right: Wing }
   color: string                  // Цвет сетки (#hex)
   rasterization: 'independent' | 'fixed_step' | 'bresenham'
@@ -182,10 +183,10 @@ interface Reticle {
 При сохранении создаётся файл с полями:
 - `version: 1`, `unit: "MRAD"`
 - `scopeProfile` — полный профиль прицела
-- `reticle` — полная конфигурация сетки (включая dotSize)
+- `reticle` — полная конфигурация сетки (формы — `centerDot.kind` и `wings.*.dots.kind`)
 - `rasterization` — готовые координаты меток для всех 4 крыльев
 
-Обратная совместимость: при загрузке старого формата с `dots.radius` (MRAD) автоматически пересчитывается в `dotSize` (пиксели). Старое поле `centerDot.radius` (MRAD) автоматически переводится в `centerDot.diameter = radius × 2`.
+Обратная совместимость: старые поля `centerDot.radius` / `centerDot.diameter` и `wing.dotSize` / `wing.dots.radius` при загрузке отбрасываются, а формы переводятся в актуальные варианты (`square4` для центра, `pair` для меток крыла).
 
 ## Деплой
 

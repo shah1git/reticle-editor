@@ -22,7 +22,7 @@ export default function LeftPanel({ reticle, setReticle, ppm, activeWing, setAct
   return (
     <aside className={styles.panel}>
       <Section title={t('leftPanel.reticle')} collapsible={false}>
-        <CenterDotConfig reticle={reticle} setReticle={setReticle} ppm={ppm} />
+        <CenterDotConfig reticle={reticle} setReticle={setReticle} />
       </Section>
 
       <WingEditor

@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next'
-import type { Reticle, Wing } from '../../types/reticle'
+import type { Reticle, Wing, WingDotKind } from '../../types/reticle'
 import type { PixelsPerMrad } from '../../math/optics'
 import type { WingKey } from '../../App'
 import NumberInput from '../ui/NumberInput'
 import CheckboxInput from '../ui/CheckboxInput'
+import SelectInput from '../ui/SelectInput'
 import Section from '../ui/Section'
-import Tooltip from '../ui/Tooltip'
 import { effectiveDotCount } from '../../math/rasterization'
 import styles from './WingEditor.module.css'
 
@@ -17,10 +17,13 @@ interface Props {
   setActiveWing: (w: WingKey) => void
 }
 
+const WING_DOT_KINDS: WingDotKind[] = ['pair']
+
 export default function WingEditor({ reticle, setReticle, ppm, activeWing, setActiveWing }: Props) {
   const { t } = useTranslation()
   const wing = reticle.wings[activeWing]
   const axisPpm = (activeWing === 'up' || activeWing === 'down') ? ppm.v : ppm.h
+  const isHorizontal = activeWing === 'left' || activeWing === 'right'
 
   const wingLabels: Record<WingKey, string> = {
     up: t('wings.up'),
@@ -43,9 +46,13 @@ export default function WingEditor({ reticle, setReticle, ppm, activeWing, setAc
     updateWing({ dots: { ...wing.dots, ...patch } })
   }
 
-  const dotSizeMrad = wing.dotSize / axisPpm
   const naturalDotCount = wing.dots.spacing > 0 ? Math.floor(wing.length / wing.dots.spacing) : 0
   const effectiveCount = effectiveDotCount(wing)
+
+  const dotKindOptions = WING_DOT_KINDS.map(k => ({
+    value: k,
+    label: t(`wings.dotKindLabel.${isHorizontal ? 'h' : 'v'}.${k}`),
+  }))
 
   return (
     <Section title={t('wings.title')} collapsible={false} tooltip={t('wings.tooltip')}>
@@ -105,31 +112,12 @@ export default function WingEditor({ reticle, setReticle, ppm, activeWing, setAc
           />
           {wing.dots.enabled && (
             <>
-              <div className={styles.dotSizeField}>
-                <div className={styles.dotSizeLabelRow}>
-                  <span className={styles.dotSizeLabel}>{t('wings.dotSize')}</span>
-                  <Tooltip text={t('wings.dotSizeHint', { size: wing.dotSize, mrad: dotSizeMrad.toFixed(2) })} />
-                </div>
-                <div className={styles.dotSizeInputRow}>
-                  <input
-                    type="number"
-                    className={styles.dotSizeInput}
-                    value={wing.dotSize}
-                    min={1}
-                    step={1}
-                    onChange={e => {
-                      const v = parseInt(e.target.value)
-                      if (!isNaN(v) && v >= 1) updateWing({ dotSize: v })
-                    }}
-                    onBlur={e => {
-                      const v = parseInt(e.target.value)
-                      if (isNaN(v) || v < 1) updateWing({ dotSize: 2 })
-                    }}
-                  />
-                  <span className={styles.dotSizeUnit}>{t('units.px')}</span>
-                </div>
-                <div className={styles.dotSizeMrad}>= {dotSizeMrad.toFixed(2)} MRAD</div>
-              </div>
+              <SelectInput
+                label={t('wings.dotKindField')}
+                value={wing.dots.kind}
+                onChange={v => updateDots({ kind: v as WingDotKind })}
+                options={dotKindOptions}
+              />
               <NumberInput
                 label={t('wings.interval')}
                 value={wing.dots.spacing}

@@ -36,7 +36,7 @@ function describeWing(
   const axisPpm = key === 'up' || key === 'down' ? ppm.v : ppm.h
   const lengthPx = Math.round(wing.length * axisPpm)
   const thicknessPx = Math.round(wing.lineThickness * axisPpm)
-  const dotSizeMrad = wing.dotSize / axisPpm
+  const isHorizontal = key === 'left' || key === 'right'
 
   lines.push(header)
   lines.push('  ' + t('describe.wing.length', { mrad: fmt(wing.length), px: lengthPx }))
@@ -45,12 +45,15 @@ function describeWing(
   } else {
     lines.push('  ' + t('describe.wing.noLine'))
   }
-  lines.push('  ' + t('describe.wing.dotSize', { px: wing.dotSize, mrad: fmt(dotSizeMrad, 3) }))
 
   if (!wing.dots.enabled || wing.dots.spacing <= 0) {
     lines.push('  ' + t('describe.wing.dotsDisabled'))
     return lines
   }
+
+  lines.push('  ' + t('describe.wing.dotKind', {
+    label: t(`wings.dotKindLabel.${isHorizontal ? 'h' : 'v'}.${wing.dots.kind}`),
+  }))
 
   const spacingPx = wing.dots.spacing * axisPpm
   const naturalCount = Math.floor(wing.length / wing.dots.spacing)
@@ -124,16 +127,9 @@ export function describeReticle(
   lines.push('  ' + t('describe.reticle.rasterization', {
     strategy: t(reticle.rasterization === 'independent' ? 'strategyFull.independentLabel' : 'strategyFull.fixedStepLabel'),
   }))
-  if (reticle.centerDot.diameter > 0) {
-    const ppmMin = Math.min(ppm.h, ppm.v)
-    const centerDiameterPx = Math.round(reticle.centerDot.diameter * ppmMin)
-    lines.push('  ' + t('describe.reticle.centerDot', {
-      mradDiameter: fmt(reticle.centerDot.diameter, 3),
-      pxDiameter: centerDiameterPx,
-    }))
-  } else {
-    lines.push('  ' + t('describe.reticle.centerDotDisabled'))
-  }
+  lines.push('  ' + t('describe.reticle.centerDot', {
+    label: t(`centerDot.kindLabel.${reticle.centerDot.kind}`),
+  }))
   lines.push('')
 
   // Wings
