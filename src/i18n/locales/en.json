@@ -1,7 +1,8 @@
 {
   "canvas": {
     "pixelGrid": "Pixel grid",
-    "pixelScaleSuffix": "({{ppm}} px/MRAD)"
+    "pixelScaleSuffix": "({{ppm}} px/MRAD)",
+    "refCircle": "1 m @ 100 m"
   },
   "topbar": {
     "title": "RETICLE EDITOR",

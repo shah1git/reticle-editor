@@ -1,7 +1,8 @@
 {
   "canvas": {
     "pixelGrid": "像素栅格",
-    "pixelScaleSuffix": "({{ppm}} px/MRAD)"
+    "pixelScaleSuffix": "({{ppm}} px/MRAD)",
+    "refCircle": "100 米处 1 米"
   },
   "topbar": {
     "title": "\u5206\u5212\u677f\u7f16\u8f91\u5668",
