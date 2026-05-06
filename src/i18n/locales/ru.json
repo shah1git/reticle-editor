@@ -1,7 +1,8 @@
 {
   "canvas": {
     "pixelGrid": "Сетка пикселей",
-    "pixelScaleSuffix": "({{ppm}} px/MRAD)"
+    "pixelScaleSuffix": "({{ppm}} px/MRAD)",
+    "refCircle": "1 м @ 100 м"
   },
   "topbar": {
     "title": "\u0420\u0415\u0414\u0410\u041a\u0422\u041e\u0420 \u0421\u0415\u0422\u041e\u041a",

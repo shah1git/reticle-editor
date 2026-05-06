@@ -9,6 +9,7 @@ import { findBestStrategy } from '../../math/bestStrategy'
 import { useCanvasInteraction } from '../../hooks/useCanvasInteraction'
 import MradGrid from '../canvas/MradGrid'
 import PixelGrid from '../canvas/PixelGrid'
+import ReferenceCircle from '../canvas/ReferenceCircle'
 import ReticleRenderer from '../canvas/ReticleRenderer'
 import DotTooltip from '../canvas/DotTooltip'
 import StrategyComparison from '../table/StrategyComparison'
@@ -38,6 +39,7 @@ export default function Canvas({ scope, reticle, ppm, magnification, setMagnific
   const [size, setSize] = useState({ width: 800, height: 600 })
   const [sizeReady, setSizeReady] = useState(false)
   const [pixelGridOn, setPixelGridOn] = useState(true)
+  const [refCircleOn, setRefCircleOn] = useState(false)
 
   // Use ppm.h as the canvas axis ppm. For square-pixel scopes (the typical
   // case) ppm.h == ppm.v. For non-square pixels we accept a small distortion
@@ -167,6 +169,9 @@ export default function Canvas({ scope, reticle, ppm, magnification, setMagnific
           magnification={magnification}
           focalPlane={reticle.focalPlane}
         />
+        {refCircleOn && (
+          <ReferenceCircle cx={cx} cy={cy} radiusMrad={5} zoom={transform.zoom} />
+        )}
       </svg>
 
       <div className={styles.scopeInfo}>
@@ -204,6 +209,10 @@ export default function Canvas({ scope, reticle, ppm, magnification, setMagnific
         <label className={styles.gridToggle}>
           <input type="checkbox" checked={pixelGridOn} onChange={e => setPixelGridOn(e.target.checked)} />
           {t('canvas.pixelGrid')}
+        </label>
+        <label className={styles.gridToggle}>
+          <input type="checkbox" checked={refCircleOn} onChange={e => setRefCircleOn(e.target.checked)} />
+          {t('canvas.refCircle')}
         </label>
       </div>
       <div className={styles.controls}>
