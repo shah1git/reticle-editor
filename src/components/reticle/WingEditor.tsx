@@ -99,17 +99,6 @@ export default function WingEditor({ reticle, setReticle, ppm, activeWing, setAc
             unit="MRAD"
             hint={t('wings.lengthHint', { length: wing.length.toFixed(1), spacing: wing.dots.spacing.toFixed(1), count: effectiveCount })}
           />
-          <NumberInput
-            label={t('wings.lineThickness')}
-            value={wing.lineThickness}
-            onChange={v => updateWing({ lineThickness: v })}
-            min={0}
-            defaultValue={0.1}
-            step={0.05}
-            pxValue={wing.lineThickness * axisPpm}
-            unit="MRAD"
-            hint={t('wings.lineThicknessHint')}
-          />
           {wing.dots.enabled && (
             <>
               <SelectInput

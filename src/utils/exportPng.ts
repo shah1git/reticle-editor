@@ -36,7 +36,6 @@ interface WingStats {
   axisPpm: number
   spacing: number
   length: number
-  lineThickness: number
 }
 
 function getWingStats(reticle: Reticle, ppm: { h: number; v: number }): WingStats[] {
@@ -66,7 +65,6 @@ function getWingStats(reticle: Reticle, ppm: { h: number; v: number }): WingStat
       marks, axisPpm,
       spacing: wing.dots.spacing,
       length: wing.length,
-      lineThickness: wing.lineThickness,
     })
   }
   return result
@@ -179,7 +177,6 @@ function drawInfoPanel(ctx: CanvasRenderingContext2D, x0: number, y0: number, sc
     y += LINE_H
 
     label(t('export.length'), y); value(`${ws.length} ${t('units.mrad')}`, valX, y); y += LINE_H
-    label(t('export.lineThickness'), y); value(`${ws.lineThickness} ${t('units.mrad')}`, valX, y); y += LINE_H
     label(t('export.interval'), y); value(`${ws.spacing} ${t('units.mrad')}`, valX, y); y += LINE_H
     label(t('export.pxPerMradAxis'), y); value(`${ws.axisPpm.toFixed(3)}`, valX, y, COL_ACCENT); y += LINE_H
     label(t('export.marks'), y); value(`${ws.count}`, valX, y); y += LINE_H
@@ -345,27 +342,6 @@ export function exportPng(scope: ScopeProfile, reticle: Reticle): void {
     const dx = dir === 'left' ? -1 : dir === 'right' ? 1 : 0
     const dy = dir === 'down' ? 1 : dir === 'up' ? -1 : 0
     const axisPpm = dy !== 0 ? ppm.v : ppm.h
-
-    const lengthPx = Math.round(wing.length * axisPpm)
-    const lineThicknessPx = Math.max(0, Math.round(wing.lineThickness * axisPpm))
-    ctx.fillStyle = color
-
-    if (lineThicknessPx > 0 && lengthPx > 0) {
-      const halfThick = Math.floor(lineThicknessPx / 2)
-      if (dx !== 0) {
-        const startX = cxPx + gapPxBase * dx
-        const endX = cxPx + (gapPxBase + lengthPx) * dx
-        const xMin = Math.min(startX, endX)
-        const width = Math.abs(endX - startX)
-        ctx.fillRect(xMin, cyPx - halfThick, width, lineThicknessPx)
-      } else {
-        const startY = cyPx + gapPxBase * dy
-        const endY = cyPx + (gapPxBase + lengthPx) * dy
-        const yMin = Math.min(startY, endY)
-        const height = Math.abs(endY - startY)
-        ctx.fillRect(cxPx - halfThick, yMin, lineThicknessPx, height)
-      }
-    }
 
     {
       const count = effectiveDotCount(wing)

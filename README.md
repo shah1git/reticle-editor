@@ -95,8 +95,9 @@ src/
 ```typescript
 interface Wing {
   enabled: boolean        // Крыло включено/выключено
-  length: number          // Длина крыла в MRAD
-  lineThickness: number   // Толщина линии в MRAD (0 = только точки)
+  length: number          // Длина крыла в MRAD — на каком радиусе ставить последнюю метку
+  // Никакой «линии крыла» нет: на дисплее существуют только пиксели.
+  // Если нужна сплошная линия — берётся плотный шаг меток в spacing.
   dots: {
     enabled: boolean      // Показывать точки-метки
     spacing: number       // Интервал между метками в MRAD

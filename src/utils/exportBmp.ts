@@ -41,27 +41,6 @@ export function exportBmp(scope: ScopeProfile, reticle: Reticle): void {
     const dy = dir === 'down' ? 1 : dir === 'up' ? -1 : 0
     const axisPpm = dy !== 0 ? ppm.v : ppm.h
 
-    const lengthPx = Math.round(wing.length * axisPpm)
-    const lineThicknessPx = Math.max(0, Math.round(wing.lineThickness * axisPpm))
-    ctx.fillStyle = color
-
-    if (lineThicknessPx > 0 && lengthPx > 0) {
-      const halfThick = Math.floor(lineThicknessPx / 2)
-      if (dx !== 0) {
-        const startX = cxPx + gapPxBase * dx
-        const endX = cxPx + (gapPxBase + lengthPx) * dx
-        const xMin = Math.min(startX, endX)
-        const lineW = Math.abs(endX - startX)
-        ctx.fillRect(xMin, cyPx - halfThick, lineW, lineThicknessPx)
-      } else {
-        const startY = cyPx + gapPxBase * dy
-        const endY = cyPx + (gapPxBase + lengthPx) * dy
-        const yMin = Math.min(startY, endY)
-        const lineH = Math.abs(endY - startY)
-        ctx.fillRect(cxPx - halfThick, yMin, lineThicknessPx, lineH)
-      }
-    }
-
     {
       const count = effectiveDotCount(wing)
       if (count > 0) {
