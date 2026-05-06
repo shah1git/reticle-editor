@@ -40,7 +40,8 @@
       "sfp": "SFP\uff08\u540e\u7f6e\uff0c\u5206\u5212\u677f\u56fa\u5b9a\uff09",
       "magnification": "\u500d\u7387\uff1a\u00d7{{value}}",
       "rasterization": "\u5149\u6805\u5316\uff1a{{strategy}}",
-      "centerDot": "\u4e2d\u5fc3\u70b9\uff1a{{label}}"
+      "centerDot": "\u4e2d\u5fc3\u70b9\uff1a{{label}}",
+      "centerPixels": "\u6807\u8bb0\u5927\u5c0f\uff1a{{count}} \u50cf\u7d20"
     },
     "wing": {
       "headerUp": "\u2191 \u4e0a\u7ffc",
@@ -49,6 +50,7 @@
       "headerRight": "\u2192 \u53f3\u7ffc",
       "disabled": "\u5df2\u5173\u95ed",
       "dotKind": "\u6807\u8bb0\u5f62\u72b6\uff1a{{label}}",
+      "markPixels": "\u6807\u8bb0\u5927\u5c0f\uff1a{{count}} \u50cf\u7d20",
       "dotsDisabled": "\u6b64\u7ffc\u523b\u5ea6\u70b9\u5df2\u5173\u95ed",
       "spacing": "\u523b\u5ea6\u70b9\u95f4\u8ddd\uff1a{{mrad}} \u5bc6\u4f4d\uff08{{px}} \u50cf\u7d20\uff09",
       "count": "\u523b\u5ea6\u70b9\u6570\u91cf\uff1a{{count}}",

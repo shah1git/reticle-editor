@@ -19,6 +19,13 @@ export interface PixelRect {
   h: number
 }
 
+/** Total number of firmware pixels covered by a list of pixel rectangles. */
+export function pixelCount(rects: PixelRect[]): number {
+  let total = 0
+  for (const r of rects) total += r.w * r.h
+  return total
+}
+
 /** Pixel rectangles for the center mark, anchored at the reticle center. */
 export function centerMarkPixels(kind: CenterMarkKind): PixelRect[] {
   switch (kind) {
