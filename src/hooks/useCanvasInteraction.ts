@@ -10,12 +10,20 @@ const MIN_ZOOM = 2
 const MAX_ZOOM = 200
 const ZOOM_FACTOR = 1.1
 
-export function useCanvasInteraction() {
+interface Options {
+  /** Snap a candidate zoom value to an allowed value (e.g. integer pixel-scale). */
+  snapZoom?: (z: number) => number
+}
+
+export function useCanvasInteraction(opts: Options = {}) {
   const [transform, setTransform] = useState<CanvasTransform>({
     zoom: 30,
     panX: 0,
     panY: 0,
   })
+
+  const snapRef = useRef(opts.snapZoom)
+  snapRef.current = opts.snapZoom
 
   const isPanning = useRef(false)
   const lastMouse = useRef({ x: 0, y: 0 })
@@ -28,7 +36,18 @@ export function useCanvasInteraction() {
 
     setTransform(prev => {
       const factor = e.deltaY < 0 ? ZOOM_FACTOR : 1 / ZOOM_FACTOR
-      const newZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, prev.zoom * factor))
+      let newZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, prev.zoom * factor))
+      const snap = snapRef.current
+      if (snap) {
+        const snapped = snap(newZoom)
+        // Avoid getting stuck at the same snap value: if snap clamped us back
+        // to the previous zoom, force one step in the wheel direction.
+        if (Math.abs(snapped - prev.zoom) < 1e-6) {
+          newZoom = snap(e.deltaY < 0 ? prev.zoom * 1.5 : prev.zoom / 1.5)
+        } else {
+          newZoom = snapped
+        }
+      }
       const scale = newZoom / prev.zoom
 
       return {

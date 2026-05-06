@@ -1,4 +1,8 @@
 {
+  "canvas": {
+    "pixelGrid": "Pixel grid",
+    "pixelScaleSuffix": "({{ppm}} px/MRAD)"
+  },
   "topbar": {
     "title": "RETICLE EDITOR",
     "open": "\u2191 Open",

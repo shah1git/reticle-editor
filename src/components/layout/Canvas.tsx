@@ -8,6 +8,7 @@ import { getFovMrad } from '../../math/optics'
 import { findBestStrategy } from '../../math/bestStrategy'
 import { useCanvasInteraction } from '../../hooks/useCanvasInteraction'
 import MradGrid from '../canvas/MradGrid'
+import PixelGrid from '../canvas/PixelGrid'
 import ReticleRenderer from '../canvas/ReticleRenderer'
 import DotTooltip from '../canvas/DotTooltip'
 import StrategyComparison from '../table/StrategyComparison'
@@ -28,12 +29,27 @@ const strategyTransKeys: Record<string, string> = {
 
 const MAG_PRESETS = [1, 2, 3, 4, 5, 6, 7, 8]
 
+const MIN_SCALE = 1
+const MAX_SCALE = 32
+
 export default function Canvas({ scope, reticle, ppm, magnification, setMagnification }: Props) {
   const { t } = useTranslation()
   const containerRef = useRef<HTMLDivElement>(null)
   const [size, setSize] = useState({ width: 800, height: 600 })
   const [sizeReady, setSizeReady] = useState(false)
-  const { transform, handlers, setTransform } = useCanvasInteraction()
+  const [pixelGridOn, setPixelGridOn] = useState(true)
+
+  // Use ppm.h as the canvas axis ppm. For square-pixel scopes (the typical
+  // case) ppm.h == ppm.v. For non-square pixels we accept a small distortion
+  // along Y rather than splitting the canvas into two scales.
+  const axisPpm = Math.max(0.0001, ppm.h)
+
+  const snapZoom = useCallback((z: number) => {
+    const scale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, Math.round(z / axisPpm)))
+    return scale * axisPpm
+  }, [axisPpm])
+
+  const { transform, handlers, setTransform } = useCanvasInteraction({ snapZoom })
   const fov = useMemo(() => getFovMrad(scope), [scope])
   const [dotHover, setDotHover] = useState<DotHoverInfo | null>(null)
   const bestStrategy = useMemo(() => findBestStrategy(reticle, ppm), [reticle, ppm])
@@ -56,42 +72,58 @@ export default function Canvas({ scope, reticle, ppm, magnification, setMagnific
     return () => ro.disconnect()
   }, [])
 
+  const fitScale = useCallback((effFov: { h: number; v: number }, sz: { width: number; height: number }) => {
+    if (effFov.h <= 0 || effFov.v <= 0) return MIN_SCALE
+    const zoomH = sz.width / effFov.h
+    const zoomV = sz.height / effFov.v
+    const zoomMrad = Math.min(zoomH, zoomV)
+    return Math.max(MIN_SCALE, Math.min(MAX_SCALE, Math.floor(zoomMrad / axisPpm)))
+  }, [axisPpm])
+
   // Auto-fit when FOV changes (scope params or magnification)
   const lastFovKey = useRef('')
   useEffect(() => {
     if (!sizeReady) return
-    const key = `${effectiveFov.h}:${effectiveFov.v}`
+    const key = `${effectiveFov.h}:${effectiveFov.v}:${axisPpm}`
     if (lastFovKey.current === key) return
     lastFovKey.current = key
-    const zoomH = size.width / effectiveFov.h
-    const zoomV = size.height / effectiveFov.v
-    setTransform({ zoom: Math.min(zoomH, zoomV), panX: 0, panY: 0 })
-  }, [sizeReady, effectiveFov, size, setTransform])
+    const scale = fitScale(effectiveFov, size)
+    setTransform({ zoom: scale * axisPpm, panX: 0, panY: 0 })
+  }, [sizeReady, effectiveFov, size, setTransform, axisPpm, fitScale])
 
-  const cx = size.width / 2 + transform.panX
-  const cy = size.height / 2 + transform.panY
+  const pixelScale = Math.max(MIN_SCALE, Math.round(transform.zoom / axisPpm))
+  const screenScale = pixelScale * magnification
+  const cx = Math.round(size.width / 2 + transform.panX)
+  const cy = Math.round(size.height / 2 + transform.panY)
 
   const visibleW = size.width / transform.zoom
   const visibleH = size.height / transform.zoom
   const fovPct = effectiveFov.h > 0 ? (visibleW / effectiveFov.h) * 100 : 0
 
   const handleFitFov = useCallback(() => {
-    const zoomH = size.width / effectiveFov.h
-    const zoomV = size.height / effectiveFov.v
-    setTransform({ zoom: Math.min(zoomH, zoomV), panX: 0, panY: 0 })
-  }, [size, effectiveFov, setTransform])
+    const scale = fitScale(effectiveFov, size)
+    setTransform({ zoom: scale * axisPpm, panX: 0, panY: 0 })
+  }, [size, effectiveFov, setTransform, axisPpm, fitScale])
 
   const handleReset = useCallback(() => {
-    setTransform({ zoom: 30, panX: 0, panY: 0 })
-  }, [setTransform])
+    setTransform({ zoom: 4 * axisPpm, panX: 0, panY: 0 })
+  }, [setTransform, axisPpm])
 
   const handleZoomIn = useCallback(() => {
-    setTransform(prev => ({ ...prev, zoom: Math.min(200, prev.zoom * 1.1) }))
-  }, [setTransform])
+    setTransform(prev => {
+      const cur = Math.round(prev.zoom / axisPpm)
+      const next = Math.min(MAX_SCALE, cur + 1)
+      return { ...prev, zoom: next * axisPpm }
+    })
+  }, [setTransform, axisPpm])
 
   const handleZoomOut = useCallback(() => {
-    setTransform(prev => ({ ...prev, zoom: Math.max(2, prev.zoom / 1.1) }))
-  }, [setTransform])
+    setTransform(prev => {
+      const cur = Math.round(prev.zoom / axisPpm)
+      const next = Math.max(MIN_SCALE, cur - 1)
+      return { ...prev, zoom: next * axisPpm }
+    })
+  }, [setTransform, axisPpm])
 
   const handlePan = useCallback((dx: number, dy: number) => {
     setTransform(prev => ({ ...prev, panX: prev.panX + dx, panY: prev.panY + dy }))
@@ -116,12 +148,21 @@ export default function Canvas({ scope, reticle, ppm, magnification, setMagnific
           panX={transform.panX}
           panY={transform.panY}
         />
+        {pixelGridOn && (
+          <PixelGrid
+            width={size.width}
+            height={size.height}
+            screenScale={screenScale}
+            cx={cx}
+            cy={cy}
+          />
+        )}
         <ReticleRenderer
           reticle={reticle}
           ppm={ppm}
           cx={cx}
           cy={cy}
-          zoom={transform.zoom}
+          pixelScale={pixelScale}
           onDotHover={setDotHover}
           magnification={magnification}
           focalPlane={reticle.focalPlane}
@@ -131,24 +172,24 @@ export default function Canvas({ scope, reticle, ppm, magnification, setMagnific
       <div className={styles.scopeInfo}>
         <div className={styles.scopeName}>{scope.name}</div>
         {scope.type === 'digital' ? (
-          <div>{scope.sensorResX}{'\u00d7'}{scope.sensorResY} {'\u2192'} {scope.displayResX}{'\u00d7'}{scope.displayResY} | F{scope.lensFL} | {scope.pixelPitch}{'\u03bc'}m</div>
+          <div>{scope.sensorResX}{'×'}{scope.sensorResY} {'→'} {scope.displayResX}{'×'}{scope.displayResY} | F{scope.lensFL} | {scope.pixelPitch}{'μ'}m</div>
         ) : (
-          <div>{scope.displayResX}{'\u00d7'}{scope.displayResY} | FOV {scope.fovDegrees}{'\u00b0'}</div>
+          <div>{scope.displayResX}{'×'}{scope.displayResY} | FOV {scope.fovDegrees}{'°'}</div>
         )}
-        <div>{t('scopePanel.oneMrad', { value: ppm.h.toFixed(1) })} {reticle.focalPlane.toUpperCase()} {magnification > 1 ? `${magnification}\u00d7` : ''}</div>
-        <div>FOV: {effectiveFov.h.toFixed(0)} {'\u00d7'} {effectiveFov.v.toFixed(0)} MRAD</div>
+        <div>{t('scopePanel.oneMrad', { value: ppm.h.toFixed(1) })} {reticle.focalPlane.toUpperCase()} {magnification > 1 ? `${magnification}×` : ''}</div>
+        <div>FOV: {effectiveFov.h.toFixed(0)} {'×'} {effectiveFov.v.toFixed(0)} MRAD</div>
         {isOptimal ? (
-          <div className={styles.roundingLine}>{t('toolbar.rounding')} {t(strategyTransKeys[reticle.rasterization])} <span className={styles.roundingCheck}>{'\u2713'}</span></div>
+          <div className={styles.roundingLine}>{t('toolbar.rounding')} {t(strategyTransKeys[reticle.rasterization])} <span className={styles.roundingCheck}>{'✓'}</span></div>
         ) : (
           <>
             <div className={styles.roundingLine}>{t('toolbar.rounding')} {t(strategyTransKeys[reticle.rasterization])}</div>
-            <div className={styles.roundingOptimal}>{t('toolbar.recommended')}: {t(strategyTransKeys[bestStrategy.best])} ({'\u00b1'}{bestStrategy.bestMaxError.toFixed(2)} {t('units.px')})</div>
+            <div className={styles.roundingOptimal}>{t('toolbar.recommended')}: {t(strategyTransKeys[bestStrategy.best])} ({'±'}{bestStrategy.bestMaxError.toFixed(2)} {t('units.px')})</div>
           </>
         )}
         <div className={styles.legendRow}>
           <span className={styles.legendLabel}>0</span>
           <span className={styles.gradient} />
-          <span className={styles.legendLabel}>{'\u00b1'}0.5{t('units.px')}</span>
+          <span className={styles.legendLabel}>{'±'}0.5{t('units.px')}</span>
         </div>
       </div>
 
@@ -158,8 +199,12 @@ export default function Canvas({ scope, reticle, ppm, magnification, setMagnific
 
       <div className={styles.hint}>
         <span className={styles.zoomLabel}>
-          {transform.zoom.toFixed(1)} {t('units.px')}/MRAD {'\u00b7'} {visibleW.toFixed(1)} {'\u00d7'} {visibleH.toFixed(1)} / {effectiveFov.h.toFixed(0)} {'\u00d7'} {effectiveFov.v.toFixed(0)} MRAD ({fovPct.toFixed(0)}%)
+          {pixelScale}{'×'} {t('canvas.pixelScaleSuffix', { ppm: transform.zoom.toFixed(0) })} {'·'} {visibleW.toFixed(1)} {'×'} {visibleH.toFixed(1)} / {effectiveFov.h.toFixed(0)} {'×'} {effectiveFov.v.toFixed(0)} MRAD ({fovPct.toFixed(0)}%)
         </span>
+        <label className={styles.gridToggle}>
+          <input type="checkbox" checked={pixelGridOn} onChange={e => setPixelGridOn(e.target.checked)} />
+          {t('canvas.pixelGrid')}
+        </label>
       </div>
       <div className={styles.controls}>
         <div className={styles.magBtns}>
@@ -169,22 +214,22 @@ export default function Canvas({ scope, reticle, ppm, magnification, setMagnific
               className={`${styles.magBtn} ${magnification === m ? styles.magBtnActive : ''}`}
               onClick={() => setMagnification(m)}
             >
-              {m}{'\u00d7'}
+              {m}{'×'}
             </button>
           ))}
         </div>
         <div className={styles.zoomControls}>
           <button className={styles.ctrlBtn} onClick={handleZoomIn}>+</button>
-          <button className={styles.ctrlBtn} onClick={handleZoomOut}>{'\u2212'}</button>
+          <button className={styles.ctrlBtn} onClick={handleZoomOut}>{'−'}</button>
         </div>
         <div className={styles.panControls}>
-          <button className={styles.ctrlBtn} onClick={() => handlePan(0, 80)}>{'\u2191'}</button>
+          <button className={styles.ctrlBtn} onClick={() => handlePan(0, 80)}>{'↑'}</button>
           <div className={styles.panRow}>
-            <button className={styles.ctrlBtn} onClick={() => handlePan(80, 0)}>{'\u2190'}</button>
-            <button className={styles.ctrlBtn} onClick={handleCenter}>{'\u2299'}</button>
-            <button className={styles.ctrlBtn} onClick={() => handlePan(-80, 0)}>{'\u2192'}</button>
+            <button className={styles.ctrlBtn} onClick={() => handlePan(80, 0)}>{'←'}</button>
+            <button className={styles.ctrlBtn} onClick={handleCenter}>{'⊙'}</button>
+            <button className={styles.ctrlBtn} onClick={() => handlePan(-80, 0)}>{'→'}</button>
           </div>
-          <button className={styles.ctrlBtn} onClick={() => handlePan(0, -80)}>{'\u2193'}</button>
+          <button className={styles.ctrlBtn} onClick={() => handlePan(0, -80)}>{'↓'}</button>
         </div>
         <div className={styles.actionBtns}>
           <button className={styles.fitBtn} onClick={handleReset}>Reset</button>
