@@ -99,6 +99,15 @@ export function describeReticle(
   }
   lines.push('  ' + t('describe.scope.display', { w: scope.displayResX, h: scope.displayResY }))
   lines.push('  ' + t('describe.scope.ppm', { h: fmt(ppm.h, 3), v: fmt(ppm.v, 3) }))
+  // 1 пиксель в MRAD и в миллиметрах на 100 м (1 MRAD ≈ 100 мм / 100 м).
+  const pxMradH = ppm.h > 0 ? 1 / ppm.h : 0
+  const pxMradV = ppm.v > 0 ? 1 / ppm.v : 0
+  lines.push('  ' + t('describe.scope.onePixel', {
+    mradH: fmt(pxMradH, 4),
+    mradV: fmt(pxMradV, 4),
+    mmH: fmt(pxMradH * 100, 2),
+    mmV: fmt(pxMradV * 100, 2),
+  }))
   const fov = getFovMrad(scope)
   lines.push('  ' + t('describe.scope.fovMrad', { h: fmt(fov.h, 2), v: fmt(fov.v, 2) }))
   if (!isSquarePixelRatio(ppm)) {
