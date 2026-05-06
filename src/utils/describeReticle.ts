@@ -6,6 +6,10 @@ import { getFovMrad, isSquarePixelRatio } from '../math/optics'
 import { rasterize, effectiveDotCount } from '../math/rasterization'
 import type { WingKey } from '../App'
 
+declare const __APP_VERSION__: string
+
+const PROJECT_URL = 'https://shah1git.github.io/reticle-editor/'
+
 const fmt = (n: number, digits = 2): string => {
   if (!Number.isFinite(n)) return '—'
   if (Number.isInteger(n)) return String(n)
@@ -146,6 +150,11 @@ export function describeReticle(
   lines.push(t('describe.summary.header'))
   lines.push('  ' + t('describe.summary.totalMarks', { count: totalMarks }))
   lines.push('  ' + t('describe.summary.maxError', { px: fmt(globalMaxErr, 2) }))
+
+  // Footer — project attribution
+  lines.push('')
+  lines.push('—')
+  lines.push(t('describe.footer', { version: __APP_VERSION__, url: PROJECT_URL }))
 
   return lines.join('\n')
 }

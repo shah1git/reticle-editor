@@ -59,7 +59,8 @@
       "header": "SUMMARY",
       "totalMarks": "Total marks: {{count}}",
       "maxError": "Overall max error: \u00b1{{px}} px"
-    }
+    },
+    "footer": "Made in Reticle Editor v{{version}} \u00b7 {{url}}"
   },
   "toolbar": {
     "scope": "SCOPE:",

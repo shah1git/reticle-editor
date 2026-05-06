@@ -59,7 +59,8 @@
       "header": "\u6c47\u603b",
       "totalMarks": "\u603b\u523b\u5ea6\u70b9\u6570\uff1a{{count}}",
       "maxError": "\u6574\u4f53\u6700\u5927\u8bef\u5dee\uff1a\u00b1{{px}} \u50cf\u7d20"
-    }
+    },
+    "footer": "\u7531 Reticle Editor v{{version}} \u751f\u6210 \u00b7 {{url}}"
   },
   "toolbar": {
     "scope": "\u7784\u51c6\u955c\uff1a",
