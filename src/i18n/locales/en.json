@@ -39,8 +39,7 @@
       "sfp": "SFP (second, reticle fixed)",
       "magnification": "Magnification: \u00d7{{value}}",
       "rasterization": "Rasterization: {{strategy}}",
-      "centerDot": "Center dot: diameter {{mradDiameter}} MRAD = {{pxDiameter}} px",
-      "centerDotDisabled": "Center dot disabled"
+      "centerDot": "Center dot: {{label}}"
     },
     "wing": {
       "headerUp": "\u2191 UP WING",
@@ -51,7 +50,7 @@
       "length": "Length: {{mrad}} MRAD ({{px}} px)",
       "lineThickness": "Line thickness: {{mrad}} MRAD ({{px}} px)",
       "noLine": "Line not drawn (dots only)",
-      "dotSize": "Dot size: {{px}} px ({{mrad}} MRAD)",
+      "dotKind": "Mark shape: {{label}}",
       "dotsDisabled": "Dots on this wing disabled",
       "spacing": "Spacing between dots: {{mrad}} MRAD ({{px}} px)",
       "count": "Dot count: {{count}}",
@@ -89,9 +88,11 @@
   },
   "centerDot": {
     "title": "\u25cf CENTER DOT",
-    "tooltip": "Aiming point at the center of the reticle. Diameter is set in MRAD and snapped to a whole number of pixels. Directly comparable with a wing's \"dot size\"",
-    "diameterLabel": "Diameter",
-    "diameterHint": "Center-dot diameter in MRAD. The value is snapped so that the resulting pixel diameter is a whole number. This is the same quantity as a wing's \"dot size\", so a center dot of N pixels is exactly N times wider than a wing dot of 1 pixel."
+    "tooltip": "Aiming dot at the reticle center. One variant available for now \u2014 a 4\u00d74-pixel square. More shapes can be added later.",
+    "kindField": "Shape",
+    "kindLabel": {
+      "square4": "4\u00d74 px square"
+    }
   },
   "wings": {
     "title": "WINGS",
@@ -107,8 +108,15 @@
     "lengthHint": "How far the wing extends from the center dot. 1 MRAD \u2248 10 cm at 100 m, \u2248 1 m at 1 km.\n\nWith length {{length}} and interval {{spacing}}, the wing fits {{count}} marks. At 0 the wing is hidden.",
     "lineThickness": "Line thickness",
     "lineThicknessHint": "Wing line thickness in MRAD. Thin line (0.05\u20130.1) covers less of the target, thick (0.2+) is more visible on noisy images.\n\nValue 0 is allowed \u2014 no line is drawn, only dot marks remain (if enabled). Useful when you need only a scale without a guide line.",
-    "dotSize": "DOT SIZE",
-    "dotSizeHint": "Diameter of each dot mark in pixels. Set directly \u2014 without conversion from MRAD. Each wing can have its own size.\n\n1 px \u2014 minimum dot, may be hard to see. 2\u20133 px \u2014 clearly visible mark. 4+ px \u2014 large, for low resolutions.\n\nCurrent size {{size}} px = {{mrad}} MRAD on this axis.",
+    "dotKindField": "Mark shape",
+    "dotKindLabel": {
+      "h": {
+        "pair": "Pair: one pixel above the axis, one below"
+      },
+      "v": {
+        "pair": "Pair: one pixel left of the axis, one right"
+      }
+    },
     "interval": "Interval",
     "intervalHint": "Distance between adjacent dot marks on the wing in MRAD. Determines how frequently the scale divisions are placed.\n\nWith interval 1.0 and length {{length}}, there will be {{count}} dots. Mark count = length \u00f7 interval (fractions are discarded).\n\nThis parameter creates the rasterization problem: interval \u00d7 pixels per MRAD is almost never a whole number of pixels.",
     "maxDots": "Max dots",

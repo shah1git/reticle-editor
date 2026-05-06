@@ -25,17 +25,25 @@ const loadState = () => {
     if (saved) {
       const parsed = JSON.parse(saved)
       const reticle = { ...defaultReticle, ...parsed.reticle } as Reticle
-      // Migrate centerDot.radius (old: radius in MRAD) → centerDot.diameter (new: diameter in MRAD)
-      const cd = reticle.centerDot as { radius?: number; diameter?: number } | undefined
-      if (cd && cd.diameter == null) {
-        reticle.centerDot = { diameter: cd.radius != null ? cd.radius * 2 : defaultReticle.centerDot.diameter }
+      // Migrate to kind-based shape variants. Older states stored
+      // centerDot.radius / centerDot.diameter and wing.dotSize — those are
+      // dropped now; we keep the user's reticle layout and snap shapes to
+      // the only currently available variants ('square4' and 'pair').
+      const cd = reticle.centerDot as { kind?: string; radius?: number; diameter?: number } | undefined
+      if (!cd || cd.kind !== 'square4') {
+        reticle.centerDot = { kind: 'square4' }
       }
-      // Migrate older state that lacks the per-wing maxDots cap
       for (const k of ['up', 'down', 'left', 'right'] as const) {
-        const w = reticle.wings?.[k]
-        if (w && (w.dots == null || (w.dots as { maxDots?: number }).maxDots == null)) {
-          w.dots = { ...w.dots, maxDots: 0 }
+        const w = reticle.wings?.[k] as { dots?: { kind?: string; maxDots?: number; enabled?: boolean; spacing?: number }; dotSize?: number } | undefined
+        if (!w) continue
+        if (w.dots == null || w.dots.maxDots == null) {
+          w.dots = { enabled: true, spacing: 1, ...(w.dots ?? {}), maxDots: 0 } as typeof w.dots
         }
+        if (w.dots && w.dots.kind !== 'pair') {
+          w.dots.kind = 'pair'
+        }
+        // dotSize was a separate field — drop it; new mark sizing is variant-driven
+        if ('dotSize' in w) delete (w as Record<string, unknown>).dotSize
       }
       return {
         scope: { ...defaultScope, ...parsed.scope },

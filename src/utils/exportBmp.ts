@@ -1,13 +1,13 @@
 import type { ScopeProfile } from '../types/scope'
 import type { Reticle } from '../types/reticle'
-import { calcPixelsPerMrad, snapToPixel } from '../math/optics'
+import { calcPixelsPerMrad } from '../math/optics'
 import { rasterize, effectiveDotCount } from '../math/rasterization'
+import { centerMarkPixels, centerMarkHalfExtent, wingDotPixels } from '../math/shapes'
 
 export function exportBmp(scope: ScopeProfile, reticle: Reticle): void {
   const width = scope.displayResX
   const height = scope.displayResY
   const ppm = calcPixelsPerMrad(scope)
-  const ppmMin = Math.min(ppm.h, ppm.v)
 
   // 1. Create canvas and render reticle (no info panel, single-color marks)
   const canvas = document.createElement('canvas')
@@ -19,19 +19,17 @@ export function exportBmp(scope: ScopeProfile, reticle: Reticle): void {
   ctx.fillStyle = '#000000'
   ctx.fillRect(0, 0, width, height)
 
-  const cxPx = width / 2
-  const cyPx = height / 2
+  const cxPx = Math.round(width / 2)
+  const cyPx = Math.round(height / 2)
   const color = reticle.color
 
-  // Center dot — pixel-perfect square of dotDiameterPx × dotDiameterPx
-  const dotDiameterMrad = snapToPixel(reticle.centerDot.diameter, ppmMin)
-  const dotDiameterPx = Math.round(dotDiameterMrad * ppmMin)
-  if (dotDiameterPx > 0) {
-    const off = Math.floor(dotDiameterPx / 2)
-    ctx.fillStyle = color
-    ctx.fillRect(Math.round(cxPx) - off, Math.round(cyPx) - off, dotDiameterPx, dotDiameterPx)
+  // Center mark — variant-driven, pixel-perfect
+  const centerPx = centerMarkPixels(reticle.centerDot.kind)
+  ctx.fillStyle = color
+  for (const p of centerPx) {
+    ctx.fillRect(cxPx + p.x, cyPx + p.y, p.w, p.h)
   }
-  const gapPxBase = dotDiameterPx / 2
+  const gapPxBase = centerMarkHalfExtent(reticle.centerDot.kind)
 
   // Wings
   const dirs = ['up', 'down', 'left', 'right'] as const
@@ -42,23 +40,25 @@ export function exportBmp(scope: ScopeProfile, reticle: Reticle): void {
     const dx = dir === 'left' ? -1 : dir === 'right' ? 1 : 0
     const dy = dir === 'down' ? 1 : dir === 'up' ? -1 : 0
     const axisPpm = dy !== 0 ? ppm.v : ppm.h
-    const gapPx = gapPxBase
 
     const lengthPx = Math.round(wing.length * axisPpm)
+    const lineThicknessPx = Math.max(0, Math.round(wing.lineThickness * axisPpm))
     ctx.fillStyle = color
 
-    if (wing.lineThickness > 0) {
-      const thickPx = Math.max(1, Math.round(wing.lineThickness * axisPpm))
-      const halfThick = thickPx / 2
+    if (lineThicknessPx > 0 && lengthPx > 0) {
+      const halfThick = Math.floor(lineThicknessPx / 2)
       if (dx !== 0) {
-        const startX = cxPx + gapPx * dx
-        const endX = cxPx + (gapPx + lengthPx) * dx
+        const startX = cxPx + gapPxBase * dx
+        const endX = cxPx + (gapPxBase + lengthPx) * dx
         const xMin = Math.min(startX, endX)
         const lineW = Math.abs(endX - startX)
-        ctx.fillRect(xMin, cyPx - halfThick, lineW, thickPx)
+        ctx.fillRect(xMin, cyPx - halfThick, lineW, lineThicknessPx)
       } else {
-        const startY = cyPx + gapPx * dy
-        ctx.fillRect(cxPx - halfThick, startY, thickPx, Math.abs(lengthPx * dy))
+        const startY = cyPx + gapPxBase * dy
+        const endY = cyPx + (gapPxBase + lengthPx) * dy
+        const yMin = Math.min(startY, endY)
+        const lineH = Math.abs(endY - startY)
+        ctx.fillRect(cxPx - halfThick, yMin, lineThicknessPx, lineH)
       }
     }
 
@@ -66,14 +66,16 @@ export function exportBmp(scope: ScopeProfile, reticle: Reticle): void {
       const count = effectiveDotCount(wing)
       if (count > 0) {
         const marks = rasterize(reticle.rasterization, wing.dots.spacing, axisPpm, count)
-        const D = wing.dotSize
-        const off = Math.floor(D / 2)
+        const axisAlong: 'h' | 'v' = (dx !== 0) ? 'h' : 'v'
+        const dotPx = wingDotPixels(wing.dots.kind, axisAlong, lineThicknessPx)
         ctx.fillStyle = color
         for (const mark of marks) {
-          const posPx = gapPx + mark.actualPx
-          const dotX = Math.round(cxPx + posPx * dx)
-          const dotY = Math.round(cyPx + posPx * dy)
-          ctx.fillRect(dotX - off, dotY - off, D, D)
+          const posPx = gapPxBase + mark.actualPx
+          const dotX = cxPx + posPx * dx
+          const dotY = cyPx + posPx * dy
+          for (const p of dotPx) {
+            ctx.fillRect(dotX + p.x, dotY + p.y, p.w, p.h)
+          }
         }
       }
     }

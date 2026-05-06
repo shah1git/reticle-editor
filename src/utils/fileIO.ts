@@ -61,32 +61,17 @@ export function loadFromJson(
     if (data.scopeProfile) setScope(data.scopeProfile)
     if (data.reticle) {
       const r = data.reticle as any
-      // Backward compat: centerDot.radius (MRAD) → centerDot.diameter (MRAD = radius × 2)
-      if (r.centerDot && r.centerDot.diameter == null && r.centerDot.radius != null) {
-        r.centerDot.diameter = r.centerDot.radius * 2
-        delete r.centerDot.radius
-      }
-      // Backward compat: convert old dots.radius to new dotSize
+      // Migrate to kind-based shape variants. Old centerDot.radius and
+      // centerDot.diameter are dropped; we keep the only available shape.
+      r.centerDot = { kind: 'square4' }
       for (const key of ['up', 'down', 'left', 'right']) {
         const w = r.wings?.[key]
         if (!w) continue
-        if (w.dots && w.dots.maxDots == null) {
-          w.dots.maxDots = 0
-        }
-        if (w.dotSize == null) {
-          // Old format had dots.radius in MRAD — convert to pixel diameter
-          if (w.dots?.radius != null) {
-            const ppm = data.scopeProfile ? calcPixelsPerMrad(data.scopeProfile) : { h: 7.78, v: 7.78 }
-            const axisPpm = (key === 'up' || key === 'down') ? ppm.v : ppm.h
-            w.dotSize = Math.max(1, Math.round(w.dots.radius * axisPpm * 2))
-          } else {
-            w.dotSize = 2
-          }
-        }
-        // Clean up old radius field
-        if (w.dots?.radius != null) {
-          delete w.dots.radius
-        }
+        if (!w.dots) w.dots = { enabled: true, spacing: 1, maxDots: 0, kind: 'pair' }
+        if (w.dots.maxDots == null) w.dots.maxDots = 0
+        w.dots.kind = 'pair'
+        if (w.dots.radius != null) delete w.dots.radius
+        if ('dotSize' in w) delete w.dotSize
       }
       setReticle(r as Reticle)
     }

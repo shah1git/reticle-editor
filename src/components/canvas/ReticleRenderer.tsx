@@ -4,6 +4,7 @@ import type { PixelsPerMrad } from '../../math/optics'
 import type { RasterMark } from '../../types/rasterization'
 import type { DotHoverInfo } from '../../types/dotTooltip'
 import { rasterize, effectiveDotCount } from '../../math/rasterization'
+import { centerMarkPixels, centerMarkHalfExtent, wingDotPixels } from '../../math/shapes'
 import { errorToColor } from '../../math/errorColor'
 
 interface Props {
@@ -32,10 +33,10 @@ interface WingRenderData {
   axisPpm: number
   /** Image-pixel offset (firmware) from center to inner edge of the wing line. */
   gapPx: number
+  /** Wing line thickness in firmware-px (for hover positioning of bracket marks). */
+  lineThicknessPx: number
   dx: number
   dy: number
-  /** Wing dot diameter in firmware image-pixels (integer ≥ 0). */
-  dotDiameterPx: number
 }
 
 export default function ReticleRenderer({ reticle, ppm, cx, cy, pixelScale, onDotHover, magnification = 1, focalPlane = 'ffp' }: Props) {
@@ -51,26 +52,24 @@ export default function ReticleRenderer({ reticle, ppm, cx, cy, pixelScale, onDo
 
     // Firmware-scale ppm (without FFP magnification).
     const firmwarePpm = { h: ppm.h / visualMag, v: ppm.v / visualMag }
-    const firmwarePpmMin = Math.min(firmwarePpm.h, firmwarePpm.v)
 
-    // Center dot — diameter in firmware image-pixels, snapped to whole pixels.
-    const centerDiameterPx = Math.max(0, Math.round(reticle.centerDot.diameter * firmwarePpmMin))
-    const centerHalf = Math.floor(centerDiameterPx / 2)
-    if (centerDiameterPx > 0) {
+    // Center mark — fixed 4×4 (or other future variants), pixel-perfect.
+    const centerPixels = centerMarkPixels(reticle.centerDot.kind)
+    for (const [i, p] of centerPixels.entries()) {
       rects.push(
         <rect
-          key="center-dot"
-          x={cx - centerHalf * screenScale}
-          y={cy - centerHalf * screenScale}
-          width={centerDiameterPx * screenScale}
-          height={centerDiameterPx * screenScale}
+          key={`center-${i}`}
+          x={cx + p.x * screenScale}
+          y={cy + p.y * screenScale}
+          width={p.w * screenScale}
+          height={p.h * screenScale}
           fill={color}
           shapeRendering="crispEdges"
         />
       )
     }
-    // Gap from canvas center to inner edge of wing line, in firmware image-px.
-    const gapPxBase = Math.ceil(centerDiameterPx / 2)
+    // Gap from center to inner edge of wing line, in firmware-image-px.
+    const gapPxBase = centerMarkHalfExtent(reticle.centerDot.kind)
 
     // Wings
     const dirs: Dir[] = ['up', 'down', 'left', 'right']
@@ -124,12 +123,11 @@ export default function ReticleRenderer({ reticle, ppm, cx, cy, pixelScale, onDo
         }
       }
 
-      // Marks: rasterize at the effective ppm (FFP simulates accumulated error
-      // at higher magnification). Their actualPx are in effective-image-pixels.
+      // Marks: rasterize at the effective ppm. actualPx in effective image-pixels.
       const dotCount = effectiveDotCount(wing)
       if (dotCount > 0) {
         const marks = rasterize(reticle.rasterization, wing.dots.spacing, effectiveAxisPpm, dotCount)
-        wings.push({ dir, marks, axisPpm: effectiveAxisPpm, gapPx: gapPxBase, dx, dy, dotDiameterPx: wing.dotSize })
+        wings.push({ dir, marks, axisPpm: effectiveAxisPpm, gapPx: gapPxBase, lineThicknessPx, dx, dy })
       }
     }
 
@@ -188,32 +186,34 @@ export default function ReticleRenderer({ reticle, ppm, cx, cy, pixelScale, onDo
   return (
     <>
       {rects}
-      {wings.map(w =>
-        w.marks.map(mark => {
+      {wings.map(w => {
+        const dotKind = reticle.wings[w.dir].dots.kind
+        const axisAlong: 'h' | 'v' = (w.dir === 'left' || w.dir === 'right') ? 'h' : 'v'
+        const pixels = wingDotPixels(dotKind, axisAlong, w.lineThicknessPx)
+        return w.marks.map(mark => {
           // mark.actualPx is in effective-image-pixels → screen via pixelScale.
           // Gap is in firmware-image-pixels → screen via screenScale.
           const gapScreen = w.gapPx * screenScale
-          const screenX = cx + (gapScreen + mark.actualPx * pixelScale) * w.dx
-          const screenY = cy + (gapScreen + mark.actualPx * pixelScale) * w.dy
-          const D = w.dotDiameterPx
-          const dotScreen = D * screenScale
-          const half = Math.floor(D / 2) * screenScale
-          const visibleD = Math.max(dotScreen, 1)
-          const hitR = Math.max(visibleD / 2, 5)
+          const screenAnchorX = cx + (gapScreen + mark.actualPx * pixelScale) * w.dx
+          const screenAnchorY = cy + (gapScreen + mark.actualPx * pixelScale) * w.dy
+          const fill = errorToColor(mark.errorPx)
           return (
             <g key={`dot-${w.dir}-${mark.index}`}>
-              <rect
-                x={screenX - half}
-                y={screenY - half}
-                width={dotScreen}
-                height={dotScreen}
-                fill={errorToColor(mark.errorPx)}
-                shapeRendering="crispEdges"
-              />
+              {pixels.map((p, i) => (
+                <rect
+                  key={i}
+                  x={screenAnchorX + p.x * screenScale}
+                  y={screenAnchorY + p.y * screenScale}
+                  width={p.w * screenScale}
+                  height={p.h * screenScale}
+                  fill={fill}
+                  shapeRendering="crispEdges"
+                />
+              ))}
               <circle
-                cx={screenX}
-                cy={screenY}
-                r={hitR}
+                cx={screenAnchorX}
+                cy={screenAnchorY}
+                r={Math.max(screenScale * 2, 6)}
                 fill="transparent"
                 style={{ cursor: 'pointer' }}
                 onMouseEnter={e => handleDotEnter(e, w.dir, mark, w.marks, wings)}
@@ -222,7 +222,7 @@ export default function ReticleRenderer({ reticle, ppm, cx, cy, pixelScale, onDo
             </g>
           )
         })
-      )}
+      })}
     </>
   )
 }
