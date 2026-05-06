@@ -40,8 +40,7 @@
       "sfp": "SFP (second, reticle fixed)",
       "magnification": "Magnification: \u00d7{{value}}",
       "rasterization": "Rasterization: {{strategy}}",
-      "centerDot": "Center dot: {{label}}",
-      "centerPixels": "Lit pixels: {{count}}"
+      "centerDot": "Center dot: {{label}}"
     },
     "wing": {
       "headerUp": "\u2191 UP WING",
@@ -50,7 +49,6 @@
       "headerRight": "\u2192 RIGHT WING",
       "disabled": "disabled",
       "dotKind": "Mark shape: {{label}}",
-      "markPixels": "Lit pixels: {{count}}",
       "dotsDisabled": "Dots on this wing disabled",
       "spacing": "Spacing between dots: {{mrad}} MRAD ({{px}} px)",
       "count": "Dot count: {{count}}",

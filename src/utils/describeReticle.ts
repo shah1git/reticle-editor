@@ -4,7 +4,6 @@ import type { Reticle, Wing } from '../types/reticle'
 import type { PixelsPerMrad } from '../math/optics'
 import { getFovMrad, isSquarePixelRatio } from '../math/optics'
 import { rasterize, effectiveDotCount } from '../math/rasterization'
-import { centerMarkPixels, wingDotPixels, pixelCount } from '../math/shapes'
 import type { WingKey } from '../App'
 
 declare const __APP_VERSION__: string
@@ -50,9 +49,6 @@ function describeWing(
 
   lines.push('  ' + t('describe.wing.dotKind', {
     label: t(`wings.dotKindLabel.${isHorizontal ? 'h' : 'v'}.${wing.dots.kind}`),
-  }))
-  lines.push('  ' + t('describe.wing.markPixels', {
-    count: pixelCount(wingDotPixels(wing.dots.kind, isHorizontal ? 'h' : 'v')),
   }))
 
   const spacingPx = wing.dots.spacing * axisPpm
@@ -133,9 +129,6 @@ export function describeReticle(
   }))
   lines.push('  ' + t('describe.reticle.centerDot', {
     label: t(`centerDot.kindLabel.${reticle.centerDot.kind}`),
-  }))
-  lines.push('  ' + t('describe.reticle.centerPixels', {
-    count: pixelCount(centerMarkPixels(reticle.centerDot.kind)),
   }))
   lines.push('')
 
