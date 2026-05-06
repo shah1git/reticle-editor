@@ -124,10 +124,11 @@ export function describeReticle(
   lines.push('  ' + t('describe.reticle.rasterization', {
     strategy: t(reticle.rasterization === 'independent' ? 'strategyFull.independentLabel' : 'strategyFull.fixedStepLabel'),
   }))
-  if (reticle.centerDot.radius > 0) {
-    const centerDiameterPx = Math.max(1, Math.round(reticle.centerDot.radius * 2 * ppm.h))
+  if (reticle.centerDot.diameter > 0) {
+    const ppmMin = Math.min(ppm.h, ppm.v)
+    const centerDiameterPx = Math.round(reticle.centerDot.diameter * ppmMin)
     lines.push('  ' + t('describe.reticle.centerDot', {
-      mradRadius: fmt(reticle.centerDot.radius, 3),
+      mradDiameter: fmt(reticle.centerDot.diameter, 3),
       pxDiameter: centerDiameterPx,
     }))
   } else {

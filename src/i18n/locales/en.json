@@ -35,7 +35,7 @@
       "sfp": "SFP (second, reticle fixed)",
       "magnification": "Magnification: \u00d7{{value}}",
       "rasterization": "Rasterization: {{strategy}}",
-      "centerDot": "Center dot: radius {{mradRadius}} MRAD, diameter {{pxDiameter}} px",
+      "centerDot": "Center dot: diameter {{mradDiameter}} MRAD = {{pxDiameter}} px",
       "centerDotDisabled": "Center dot disabled"
     },
     "wing": {
@@ -85,10 +85,9 @@
   },
   "centerDot": {
     "title": "\u25cf CENTER DOT",
-    "tooltip": "Aiming point at the center of the reticle. Size is set in MRAD and automatically snapped to whole pixels",
-    "radius": "Radius",
-    "radiusHint": "Center dot radius. Value is chosen so the dot occupies a whole number of pixels",
-    "diameter": "Diameter: {{value}} px"
+    "tooltip": "Aiming point at the center of the reticle. Diameter is set in MRAD and snapped to a whole number of pixels. Directly comparable with a wing's \"dot size\"",
+    "diameterLabel": "Diameter",
+    "diameterHint": "Center-dot diameter in MRAD. The value is snapped so that the resulting pixel diameter is a whole number. This is the same quantity as a wing's \"dot size\", so a center dot of N pixels is exactly N times wider than a wing dot of 1 pixel."
   },
   "wings": {
     "title": "WINGS",

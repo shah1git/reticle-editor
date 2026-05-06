@@ -27,7 +27,7 @@ interface WingRenderData {
   gapMrad: number
   dx: number
   dy: number
-  dotRadiusScreen: number
+  dotDiameterScreen: number
 }
 
 export default function ReticleRenderer({ reticle, ppm, cx, cy, zoom, onDotHover, magnification = 1, focalPlane = 'ffp' }: Props) {
@@ -37,19 +37,23 @@ export default function ReticleRenderer({ reticle, ppm, cx, cy, zoom, onDotHover
     const wings: WingRenderData[] = []
     const color = reticle.color
 
-    // Center dot
+    // Center dot — rendered as a pixel-aligned square so its visual width
+    // exactly matches its labelled pixel diameter
     const dotPpmMin = Math.min(ppm.h, ppm.v)
-    const dotRadiusMrad = snapToPixel(reticle.centerDot.radius, dotPpmMin)
-    const dotRadiusScreen = dotRadiusMrad * zoom
+    const dotDiameterMrad = snapToPixel(reticle.centerDot.diameter, dotPpmMin)
+    const dotRadiusMrad = dotDiameterMrad / 2
+    const dotDiameterScreen = dotDiameterMrad * zoom
 
-    if (dotRadiusScreen > 0) {
+    if (dotDiameterScreen > 0) {
       lines.push(
-        <circle
+        <rect
           key="center-dot"
-          cx={cx}
-          cy={cy}
-          r={dotRadiusScreen}
+          x={cx - dotDiameterScreen / 2}
+          y={cy - dotDiameterScreen / 2}
+          width={dotDiameterScreen}
+          height={dotDiameterScreen}
           fill={color}
+          shapeRendering="crispEdges"
         />
       )
     }
@@ -108,8 +112,8 @@ export default function ReticleRenderer({ reticle, ppm, cx, cy, zoom, onDotHover
       const dotCount = effectiveDotCount(wing)
       if (dotCount > 0) {
         const marks = rasterize(reticle.rasterization, wing.dots.spacing, axisPpm, dotCount)
-        const dotRadiusScreen = (wing.dotSize / 2) * (zoom / axisPpm) * visualMag
-        wings.push({ dir, marks, axisPpm, gapMrad, dx, dy, dotRadiusScreen })
+        const dotDiameterScreen = wing.dotSize * (zoom / axisPpm) * visualMag
+        wings.push({ dir, marks, axisPpm, gapMrad, dx, dy, dotDiameterScreen })
       }
     }
 
@@ -175,15 +179,17 @@ export default function ReticleRenderer({ reticle, ppm, cx, cy, zoom, onDotHover
           const posMrad = w.gapMrad + mark.actualPx / w.axisPpm
           const dotCx = cx + posMrad * w.dx * zoom
           const dotCy = cy + posMrad * w.dy * zoom
-          const visibleR = Math.max(w.dotRadiusScreen, 0.5)
-          const hitR = Math.max(visibleR, 5)
+          const visibleD = Math.max(w.dotDiameterScreen, 1)
+          const hitR = Math.max(visibleD / 2, 5)
           return (
             <g key={`dot-${w.dir}-${mark.index}`}>
-              <circle
-                cx={dotCx}
-                cy={dotCy}
-                r={visibleR}
+              <rect
+                x={dotCx - visibleD / 2}
+                y={dotCy - visibleD / 2}
+                width={visibleD}
+                height={visibleD}
                 fill={errorToColor(mark.errorPx)}
+                shapeRendering="crispEdges"
               />
               <circle
                 cx={dotCx}

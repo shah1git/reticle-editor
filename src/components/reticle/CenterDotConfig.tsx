@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Reticle } from '../../types/reticle'
 import type { PixelsPerMrad } from '../../math/optics'
@@ -15,9 +14,7 @@ interface Props {
 export default function CenterDotConfig({ reticle, setReticle, ppm }: Props) {
   const { t } = useTranslation()
   const ppmMin = Math.min(ppm.h, ppm.v)
-  const radiusPx = reticle.centerDot.radius * ppmMin
-  const snappedRadius = useMemo(() => snapToPixel(reticle.centerDot.radius, ppmMin), [reticle.centerDot.radius, ppmMin])
-  const diameterPx = Math.round(snappedRadius * ppmMin) * 2
+  const diameterPx = reticle.centerDot.diameter * ppmMin
 
   return (
     <Section
@@ -25,18 +22,16 @@ export default function CenterDotConfig({ reticle, setReticle, ppm }: Props) {
       tooltip={t('centerDot.tooltip')}
     >
       <NumberInput
-        label={t('centerDot.radius')}
-        value={reticle.centerDot.radius}
-        onChange={v => setReticle({ ...reticle, centerDot: { radius: v } })}
+        label={t('centerDot.diameterLabel')}
+        value={reticle.centerDot.diameter}
+        onChange={v => setReticle({ ...reticle, centerDot: { diameter: v } })}
         min={0}
         step={1 / ppmMin}
-        pxValue={radiusPx}
+        snapFn={v => snapToPixel(v, ppmMin)}
+        pxValue={diameterPx}
         unit="MRAD"
-        hint={t('centerDot.radiusHint')}
+        hint={t('centerDot.diameterHint')}
       />
-      <div style={{ fontSize: 13, color: '#ffffff', marginTop: -4 }}>
-        {t('centerDot.diameter', { value: diameterPx })}
-      </div>
     </Section>
   )
 }

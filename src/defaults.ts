@@ -27,7 +27,7 @@ export const defaultScope: ScopeProfile = {
 }
 
 export const defaultReticle: Reticle = {
-  centerDot: { radius: 0.15 },
+  centerDot: { diameter: 0.3 },
   wings: {
     up: { enabled: false, length: 0, lineThickness: 0.1, dotSize: 2, dots: { enabled: true, spacing: 1.0, maxDots: 0 } },
     down: defaultWing(10.0),
