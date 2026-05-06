@@ -67,7 +67,7 @@ export function exportBmp(scope: ScopeProfile, reticle: Reticle): void {
       if (count > 0) {
         const marks = rasterize(reticle.rasterization, wing.dots.spacing, axisPpm, count)
         const axisAlong: 'h' | 'v' = (dx !== 0) ? 'h' : 'v'
-        const dotPx = wingDotPixels(wing.dots.kind, axisAlong, lineThicknessPx)
+        const dotPx = wingDotPixels(wing.dots.kind, axisAlong)
         ctx.fillStyle = color
         for (const mark of marks) {
           const posPx = gapPxBase + mark.actualPx
