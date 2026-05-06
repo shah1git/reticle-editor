@@ -41,7 +41,7 @@
       "magnification": "Magnification: \u00d7{{value}}",
       "rasterization": "Rasterization: {{strategy}}",
       "centerDot": "Center dot: {{label}}",
-      "centerPixels": "Mark size: {{count}} px"
+      "centerPixels": "Lit pixels: {{count}}"
     },
     "wing": {
       "headerUp": "\u2191 UP WING",
@@ -50,7 +50,7 @@
       "headerRight": "\u2192 RIGHT WING",
       "disabled": "disabled",
       "dotKind": "Mark shape: {{label}}",
-      "markPixels": "Mark size: {{count}} px",
+      "markPixels": "Lit pixels: {{count}}",
       "dotsDisabled": "Dots on this wing disabled",
       "spacing": "Spacing between dots: {{mrad}} MRAD ({{px}} px)",
       "count": "Dot count: {{count}}",
