@@ -1,16 +1,10 @@
 import type { ScopeProfile } from '../types/scope'
 import type { Reticle } from '../types/reticle'
-import i18n from '../i18n'
 import { calcPixelsPerMrad } from '../math/optics'
 import { rasterize, effectiveDotCount } from '../math/rasterization'
 import { centerMarkPixels, centerMarkHalfExtent, wingDotPixels } from '../math/shapes'
-import { loadLogo } from './logoLoader'
 
-declare const __APP_VERSION__: string
-
-const PROJECT_URL = 'https://shah1git.github.io/reticle-editor/'
-
-export async function exportBmp(scope: ScopeProfile, reticle: Reticle): Promise<void> {
+export function exportBmp(scope: ScopeProfile, reticle: Reticle): void {
   const width = scope.displayResX
   const height = scope.displayResY
   const ppm = calcPixelsPerMrad(scope)
@@ -60,23 +54,6 @@ export async function exportBmp(scope: ScopeProfile, reticle: Reticle): Promise<
         ctx.fillRect(dotX + p.x, dotY + p.y, p.w, p.h)
       }
     }
-  }
-
-  // Project attribution — logo + URL/version line in lower-left corner.
-  // Uses the reticle colour so it's part of the same single-colour bitmap.
-  const logo = await loadLogo()
-  const margin = 8
-  let footerY = height - margin
-  const footerText = i18n.t('describe.footer', { version: __APP_VERSION__, url: PROJECT_URL })
-  ctx.font = '12px sans-serif'
-  ctx.textBaseline = 'alphabetic'
-  ctx.fillStyle = color
-  ctx.fillText(footerText, margin, footerY)
-  footerY -= 14
-  if (logo) {
-    const logoH = 28
-    const logoW = logoH * (logo.width / logo.height || 3.46)
-    ctx.drawImage(logo, margin, footerY - logoH, logoW, logoH)
   }
 
   // 2. Read pixels from canvas
