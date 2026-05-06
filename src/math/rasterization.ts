@@ -2,17 +2,13 @@ import type { RasterMark, RasterStrategy } from '../types/rasterization'
 import type { Wing } from '../types/reticle'
 
 /**
- * Effective dot count for a wing.
+ * Effective dot count for a wing — number of marks actually rendered.
  * Returns 0 if the wing or its dots are disabled / unconfigured.
- * If wing.dots.maxDots > 0, the count is clamped to that cap.
  */
 export function effectiveDotCount(wing: Wing): number {
-  if (!wing.enabled || wing.length <= 0) return 0
+  if (!wing.enabled) return 0
   if (!wing.dots.enabled || wing.dots.spacing <= 0) return 0
-  const natural = Math.floor(wing.length / wing.dots.spacing)
-  const cap = wing.dots.maxDots
-  if (cap && cap > 0) return Math.min(natural, cap)
-  return natural
+  return Math.max(0, Math.floor(wing.dots.count))
 }
 
 /**

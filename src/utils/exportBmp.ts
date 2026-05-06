@@ -35,27 +35,23 @@ export function exportBmp(scope: ScopeProfile, reticle: Reticle): void {
   const dirs = ['up', 'down', 'left', 'right'] as const
   for (const dir of dirs) {
     const wing = reticle.wings[dir]
-    if (!wing.enabled || wing.length <= 0) continue
+    const count = effectiveDotCount(wing)
+    if (count <= 0) continue
 
     const dx = dir === 'left' ? -1 : dir === 'right' ? 1 : 0
     const dy = dir === 'down' ? 1 : dir === 'up' ? -1 : 0
     const axisPpm = dy !== 0 ? ppm.v : ppm.h
 
-    {
-      const count = effectiveDotCount(wing)
-      if (count > 0) {
-        const marks = rasterize(reticle.rasterization, wing.dots.spacing, axisPpm, count)
-        const axisAlong: 'h' | 'v' = (dx !== 0) ? 'h' : 'v'
-        const dotPx = wingDotPixels(wing.dots.kind, axisAlong)
-        ctx.fillStyle = color
-        for (const mark of marks) {
-          const posPx = gapPxBase + mark.actualPx
-          const dotX = cxPx + posPx * dx
-          const dotY = cyPx + posPx * dy
-          for (const p of dotPx) {
-            ctx.fillRect(dotX + p.x, dotY + p.y, p.w, p.h)
-          }
-        }
+    const marks = rasterize(reticle.rasterization, wing.dots.spacing, axisPpm, count)
+    const axisAlong: 'h' | 'v' = (dx !== 0) ? 'h' : 'v'
+    const dotPx = wingDotPixels(wing.dots.kind, axisAlong)
+    ctx.fillStyle = color
+    for (const mark of marks) {
+      const posPx = gapPxBase + mark.actualPx
+      const dotX = cxPx + posPx * dx
+      const dotY = cyPx + posPx * dy
+      for (const p of dotPx) {
+        ctx.fillRect(dotX + p.x, dotY + p.y, p.w, p.h)
       }
     }
   }
