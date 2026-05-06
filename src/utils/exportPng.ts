@@ -4,10 +4,15 @@ import i18n from '../i18n'
 import { calcPixelsPerMrad, getFovMrad, isSquarePixelRatio } from '../math/optics'
 import { rasterize, effectiveDotCount } from '../math/rasterization'
 import { centerMarkPixels, centerMarkHalfExtent, wingDotPixels } from '../math/shapes'
+import { loadLogo } from './logoLoader'
+
+declare const __APP_VERSION__: string
+
+const PROJECT_URL = 'https://shah1git.github.io/reticle-editor/'
 import { findBestStrategy } from '../math/bestStrategy'
 import { errorToColor } from '../math/errorColor'
 
-const t = (key: string) => i18n.t(key)
+const t = (key: string, opts?: Record<string, unknown>): string => i18n.t(key, opts as never) as unknown as string
 
 const INFO_WIDTH = 420
 const PADDING = 16
@@ -67,7 +72,7 @@ function getWingStats(reticle: Reticle, ppm: { h: number; v: number }): WingStat
   return result
 }
 
-function drawInfoPanel(ctx: CanvasRenderingContext2D, x0: number, y0: number, scope: ScopeProfile, reticle: Reticle) {
+function drawInfoPanel(ctx: CanvasRenderingContext2D, x0: number, y0: number, scope: ScopeProfile, reticle: Reticle, logo: HTMLImageElement | null) {
   const ppm = calcPixelsPerMrad(scope)
   const fov = getFovMrad(scope)
   const sqPx = isSquarePixelRatio(ppm)
@@ -246,6 +251,23 @@ function drawInfoPanel(ctx: CanvasRenderingContext2D, x0: number, y0: number, sc
   label(t('export.globalMaxError'), y); value(`\u00b1${best.currentMaxError.toFixed(2)} ${t('units.px')}`, valX, y, best.currentMaxError > 0.4 ? COL_WARN : COL_ACCENT); y += LINE_H
   label(t('export.bestStrategy'), y); value(`${stratLabels[best.best]} (\u00b1${best.bestMaxError.toFixed(2)} ${t('units.px')})`, valX, y); y += LINE_H
 
+  // Footer \u2014 project attribution
+  y += 8
+  y = separator(y)
+  if (logo) {
+    const maxW = INFO_WIDTH - PADDING * 2
+    const logoW = Math.min(maxW, 240)
+    const logoH = logoW * (logo.height / logo.width || 0.29)
+    ctx.drawImage(logo, x0 + (INFO_WIDTH - logoW) / 2, y, logoW, logoH)
+    y += logoH + 6
+  }
+  ctx.font = FONT_SMALL
+  ctx.fillStyle = COL_LABEL
+  ctx.textAlign = 'center'
+  ctx.fillText(t('describe.footer', { version: __APP_VERSION__, url: PROJECT_URL }), x0 + INFO_WIDTH / 2, y + LINE_H - 4)
+  ctx.textAlign = 'left'
+  y += LINE_H
+
   return y + PADDING
 }
 
@@ -284,13 +306,15 @@ function measureInfoHeight(scope: ScopeProfile, reticle: Reticle): number {
 
   const tableRows = wingStats.reduce((s, w) => s + (w.count > 0 ? w.count + 1 : 0), 0)
   const normalRows = lines - tableRows
-  return PADDING * 2 + normalRows * LINE_H + tableRows * (LINE_H - 4) + wingStats.length * 12 + 80
+  // Body height + footer block (logo ~70px + URL line + paddings)
+  return PADDING * 2 + normalRows * LINE_H + tableRows * (LINE_H - 4) + wingStats.length * 12 + 80 + 110
 }
 
-export function exportPng(scope: ScopeProfile, reticle: Reticle): void {
+export async function exportPng(scope: ScopeProfile, reticle: Reticle): Promise<void> {
   const ppm = calcPixelsPerMrad(scope)
   const reticleW = scope.displayResX
   const reticleH = scope.displayResY
+  const logo = await loadLogo()
 
   const infoH = measureInfoHeight(scope, reticle)
   const totalW = reticleW + INFO_WIDTH
@@ -354,7 +378,7 @@ export function exportPng(scope: ScopeProfile, reticle: Reticle): void {
     }
   }
 
-  drawInfoPanel(ctx, reticleW, 0, scope, reticle)
+  drawInfoPanel(ctx, reticleW, 0, scope, reticle, logo)
 
   canvas.toBlob(blob => {
     if (!blob) return
