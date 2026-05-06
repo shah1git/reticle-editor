@@ -28,7 +28,7 @@
       "pixelPitch": "Sensor pixel pitch: {{value}} \u03bcm",
       "fovDegrees": "Field of view: {{value}}\u00b0",
       "ppm": "Pixels/MRAD: {{h}} (Horiz) \u00d7 {{v}} (Vert)",
-      "onePixel": "1 pixel: {{mradH}} \u00d7 {{mradV}} MRAD = {{mmH}} \u00d7 {{mmV}} mm at 100 m",
+      "clickValue": "Click value: {{mradH}} \u00d7 {{mradV}} MRAD = {{mmH}} \u00d7 {{mmV}} mm at 100 m",
       "fovMrad": "FOV: {{h}} \u00d7 {{v}} MRAD",
       "nonSquare": "\u26a0 Non-square pixel ratio"
     },
