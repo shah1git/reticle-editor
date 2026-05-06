@@ -47,14 +47,10 @@
       "headerLeft": "\u2190 LEFT WING",
       "headerRight": "\u2192 RIGHT WING",
       "disabled": "disabled",
-      "length": "Length: {{mrad}} MRAD ({{px}} px)",
-      "lineThickness": "Line thickness: {{mrad}} MRAD ({{px}} px)",
-      "noLine": "Line not drawn (dots only)",
       "dotKind": "Mark shape: {{label}}",
       "dotsDisabled": "Dots on this wing disabled",
       "spacing": "Spacing between dots: {{mrad}} MRAD ({{px}} px)",
       "count": "Dot count: {{count}}",
-      "countCapped": "Dot count: {{count}} (capped at {{cap}}; uncapped would be {{natural}})",
       "maxError": "Max positioning error: \u00b1{{px}} px",
       "step": "Step: {{step}} px (uniform)",
       "stepRange": "Step: {{min}}\u2013{{max}} px"
@@ -104,10 +100,6 @@
     "enabled": "Enabled",
     "disabled": "Disabled",
     "dotsOnWing": "Dots on wing",
-    "length": "Length",
-    "lengthHint": "How far the wing extends from the center dot. 1 MRAD \u2248 10 cm at 100 m, \u2248 1 m at 1 km.\n\nWith length {{length}} and interval {{spacing}}, the wing fits {{count}} marks. At 0 the wing is hidden.",
-    "lineThickness": "Line thickness",
-    "lineThicknessHint": "Wing line thickness in MRAD. Thin line (0.05\u20130.1) covers less of the target, thick (0.2+) is more visible on noisy images.\n\nValue 0 is allowed \u2014 no line is drawn, only dot marks remain (if enabled). Useful when you need only a scale without a guide line.",
     "dotKindField": "Mark shape",
     "dotKindLabel": {
       "h": {
@@ -118,9 +110,9 @@
       }
     },
     "interval": "Interval",
-    "intervalHint": "Distance between adjacent dot marks on the wing in MRAD. Determines how frequently the scale divisions are placed.\n\nWith interval 1.0 and length {{length}}, there will be {{count}} dots. Mark count = length \u00f7 interval (fractions are discarded).\n\nThis parameter creates the rasterization problem: interval \u00d7 pixels per MRAD is almost never a whole number of pixels.",
-    "maxDots": "Max dots",
-    "maxDotsHint": "Maximum number of marks on this wing. 0 \u2014 unlimited: the count is determined only by length and interval.\n\nWith a positive cap, the wing will never show more than the specified number of marks even if more would fit by length. Useful for cutting off the scale early without changing length or interval.\n\nWith current parameters: unlimited would yield {{natural}} marks, currently shown {{effective}}."
+    "intervalHint": "Distance between adjacent marks on the wing in MRAD. With interval {{spacing}}, neighbouring marks sit that far apart.\n\nThis parameter creates the rasterization problem: interval \u00d7 pixels per MRAD is almost never a whole number of pixels.",
+    "count": "Mark count",
+    "countHint": "How many marks to draw. They land at distances 1\u00b7interval, 2\u00b7interval, \u2026, {{count}}\u00b7interval from the centre. Last mark sits at {{total}} MRAD.\n\nA value of 0 leaves the wing without marks (effectively invisible)."
   },
   "scopePanel": {
     "title": "SCOPE PROFILE",

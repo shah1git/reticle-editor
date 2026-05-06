@@ -67,10 +67,21 @@ export function loadFromJson(
       for (const key of ['up', 'down', 'left', 'right']) {
         const w = r.wings?.[key]
         if (!w) continue
-        if (!w.dots) w.dots = { enabled: true, spacing: 1, maxDots: 0, kind: 'pair' }
-        if (w.dots.maxDots == null) w.dots.maxDots = 0
-        w.dots.kind = 'pair'
-        if (w.dots.radius != null) delete w.dots.radius
+        const dots = w.dots ?? {}
+        const spacing = dots.spacing ?? 1
+        let count = dots.count
+        if (count == null) {
+          if (dots.maxDots != null && dots.maxDots > 0) count = dots.maxDots
+          else if (w.length != null && w.length > 0 && spacing > 0) count = Math.floor(w.length / spacing)
+          else count = 0
+        }
+        w.dots = {
+          enabled: dots.enabled ?? true,
+          spacing,
+          count,
+          kind: 'pair',
+        }
+        if ('length' in w) delete w.length
         if ('dotSize' in w) delete w.dotSize
         if ('lineThickness' in w) delete w.lineThickness
       }

@@ -34,16 +34,23 @@ const loadState = () => {
         reticle.centerDot = { kind: 'square4' }
       }
       for (const k of ['up', 'down', 'left', 'right'] as const) {
-        const w = reticle.wings?.[k] as { dots?: { kind?: string; maxDots?: number; enabled?: boolean; spacing?: number }; dotSize?: number; lineThickness?: number } | undefined
+        const w = reticle.wings?.[k] as
+          | { dots?: { kind?: string; count?: number; maxDots?: number; enabled?: boolean; spacing?: number }
+              ; length?: number; dotSize?: number; lineThickness?: number }
+          | undefined
         if (!w) continue
-        if (w.dots == null || w.dots.maxDots == null) {
-          w.dots = { enabled: true, spacing: 1, ...(w.dots ?? {}), maxDots: 0 } as typeof w.dots
+        const dots = (w.dots ?? {}) as { kind?: string; count?: number; maxDots?: number; enabled?: boolean; spacing?: number }
+        const enabled = dots.enabled ?? true
+        const spacing = dots.spacing ?? 1
+        // count = explicit count, otherwise migrated from maxDots, otherwise from length/spacing.
+        let count = dots.count
+        if (count == null) {
+          if (dots.maxDots != null && dots.maxDots > 0) count = dots.maxDots
+          else if (w.length != null && w.length > 0 && spacing > 0) count = Math.floor(w.length / spacing)
+          else count = 0
         }
-        if (w.dots && w.dots.kind !== 'pair') {
-          w.dots.kind = 'pair'
-        }
-        // Old size/line concepts are gone — mark shape is variant-driven and
-        // there's no separate axis line on the reticle.
+        w.dots = { enabled, spacing, count, kind: 'pair' }
+        if ('length' in w) delete (w as Record<string, unknown>).length
         if ('dotSize' in w) delete (w as Record<string, unknown>).dotSize
         if ('lineThickness' in w) delete (w as Record<string, unknown>).lineThickness
       }

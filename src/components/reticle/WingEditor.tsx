@@ -6,7 +6,6 @@ import NumberInput from '../ui/NumberInput'
 import CheckboxInput from '../ui/CheckboxInput'
 import SelectInput from '../ui/SelectInput'
 import Section from '../ui/Section'
-import { effectiveDotCount } from '../../math/rasterization'
 import styles from './WingEditor.module.css'
 
 interface Props {
@@ -46,9 +45,6 @@ export default function WingEditor({ reticle, setReticle, ppm, activeWing, setAc
     updateWing({ dots: { ...wing.dots, ...patch } })
   }
 
-  const naturalDotCount = wing.dots.spacing > 0 ? Math.floor(wing.length / wing.dots.spacing) : 0
-  const effectiveCount = effectiveDotCount(wing)
-
   const dotKindOptions = WING_DOT_KINDS.map(k => ({
     value: k,
     label: t(`wings.dotKindLabel.${isHorizontal ? 'h' : 'v'}.${k}`),
@@ -65,7 +61,7 @@ export default function WingEditor({ reticle, setReticle, ppm, activeWing, setAc
               className={`${styles.tab} ${activeWing === key ? styles.tabActive : ''} ${!w.enabled ? styles.tabOff : ''}`}
               onClick={() => setActiveWing(key)}
             >
-              {wingLabels[key]} {w.enabled && w.length > 0 ? w.length.toFixed(1) : ''}
+              {wingLabels[key]} {w.enabled && w.dots.count > 0 ? w.dots.count : ''}
             </button>
           )
         })}
@@ -86,51 +82,40 @@ export default function WingEditor({ reticle, setReticle, ppm, activeWing, setAc
         )}
       </div>
 
-      {wing.enabled && (
+      {wing.enabled && wing.dots.enabled && (
         <div className={styles.cards}>
+          <SelectInput
+            label={t('wings.dotKindField')}
+            value={wing.dots.kind}
+            onChange={v => updateDots({ kind: v as WingDotKind })}
+            options={dotKindOptions}
+          />
           <NumberInput
-            label={t('wings.length')}
-            value={wing.length}
-            onChange={v => updateWing({ length: v })}
+            label={t('wings.interval')}
+            value={wing.dots.spacing}
+            onChange={v => updateDots({ spacing: v })}
+            min={0.1}
+            defaultValue={1}
+            step={0.1}
+            pxValue={wing.dots.spacing * axisPpm}
+            unit="MRAD"
+            hint={t('wings.intervalHint', { spacing: wing.dots.spacing.toFixed(1) })}
+          />
+          <NumberInput
+            label={t('wings.count')}
+            value={wing.dots.count}
+            onChange={v => updateDots({ count: v })}
             min={0}
             defaultValue={5}
-            step={0.1}
-            pxValue={wing.length * axisPpm}
-            unit="MRAD"
-            hint={t('wings.lengthHint', { length: wing.length.toFixed(1), spacing: wing.dots.spacing.toFixed(1), count: effectiveCount })}
+            step={1}
+            unit=""
+            snapFn={v => Math.max(0, Math.round(v))}
+            hint={t('wings.countHint', {
+              count: wing.dots.count,
+              spacing: wing.dots.spacing.toFixed(1),
+              total: (wing.dots.count * wing.dots.spacing).toFixed(1),
+            })}
           />
-          {wing.dots.enabled && (
-            <>
-              <SelectInput
-                label={t('wings.dotKindField')}
-                value={wing.dots.kind}
-                onChange={v => updateDots({ kind: v as WingDotKind })}
-                options={dotKindOptions}
-              />
-              <NumberInput
-                label={t('wings.interval')}
-                value={wing.dots.spacing}
-                onChange={v => updateDots({ spacing: v })}
-                min={0.1}
-                defaultValue={1}
-                step={0.1}
-                pxValue={wing.dots.spacing * axisPpm}
-                unit="MRAD"
-                hint={t('wings.intervalHint', { length: wing.length.toFixed(1), count: effectiveCount })}
-              />
-              <NumberInput
-                label={t('wings.maxDots')}
-                value={wing.dots.maxDots}
-                onChange={v => updateDots({ maxDots: v })}
-                min={0}
-                defaultValue={0}
-                step={1}
-                unit=""
-                snapFn={v => Math.max(0, Math.round(v))}
-                hint={t('wings.maxDotsHint', { natural: naturalDotCount, effective: effectiveCount })}
-              />
-            </>
-          )}
         </div>
       )}
     </Section>

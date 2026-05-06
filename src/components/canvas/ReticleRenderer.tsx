@@ -70,18 +70,16 @@ export default function ReticleRenderer({ reticle, ppm, cx, cy, pixelScale, onDo
     const dirs: Dir[] = ['up', 'down', 'left', 'right']
     for (const dir of dirs) {
       const wing = reticle.wings[dir]
-      if (!wing.enabled || wing.length <= 0) continue
+      const dotCount = effectiveDotCount(wing)
+      if (dotCount <= 0) continue
 
       const dx = dir === 'left' ? -1 : dir === 'right' ? 1 : 0
       const dy = dir === 'down' ? 1 : dir === 'up' ? -1 : 0
       const effectiveAxisPpm = dy !== 0 ? ppm.v : ppm.h
 
       // Marks: rasterize at the effective ppm. actualPx in effective image-pixels.
-      const dotCount = effectiveDotCount(wing)
-      if (dotCount > 0) {
-        const marks = rasterize(reticle.rasterization, wing.dots.spacing, effectiveAxisPpm, dotCount)
-        wings.push({ dir, marks, axisPpm: effectiveAxisPpm, gapPx: gapPxBase, dx, dy })
-      }
+      const marks = rasterize(reticle.rasterization, wing.dots.spacing, effectiveAxisPpm, dotCount)
+      wings.push({ dir, marks, axisPpm: effectiveAxisPpm, gapPx: gapPxBase, dx, dy })
     }
 
     return { rects, wings }

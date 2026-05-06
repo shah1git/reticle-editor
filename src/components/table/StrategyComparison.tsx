@@ -20,7 +20,6 @@ interface WingData {
   axisPpm: number
   count: number
   spacing: number
-  length: number
 }
 
 interface StrategyStats {
@@ -59,8 +58,8 @@ function getActiveWings(reticle: Reticle, ppm: PixelsPerMrad) {
     const count = effectiveDotCount(wing)
     if (count <= 0) continue
     const axisPpm = (key === 'up' || key === 'down') ? ppm.v : ppm.h
-    wings.push({ key, axisPpm, count, spacing: wing.dots.spacing, length: wing.length })
-    info.push(`${WING_ARROWS[key]}${wing.length}\u00d7${wing.dots.spacing}`)
+    wings.push({ key, axisPpm, count, spacing: wing.dots.spacing })
+    info.push(`${WING_ARROWS[key]}${count}\u00d7${wing.dots.spacing}`)
     totalMarks += count
   }
 

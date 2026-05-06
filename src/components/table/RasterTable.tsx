@@ -74,7 +74,7 @@ export default function RasterTable({ reticle, ppm, magnification, focalPlane, a
   }, [hoveredIndex, wing, reticle.rasterization, focalPlane, baseAxisPpm])
 
   const modalStep = marks.length > 0 ? marks[0].stepPx : 0
-  const disabled = !wing.enabled || wing.length <= 0
+  const disabled = !wing.enabled || effectiveDotCount(wing) === 0
 
   const stepsText = steps.allEqual
     ? t('rasterTable.summaryStepsAll', { step: steps.min })
@@ -94,7 +94,7 @@ export default function RasterTable({ reticle, ppm, magnification, focalPlane, a
       <div className={styles.tabs}>
         {(['up', 'down', 'left', 'right'] as const).map(tab => {
           const w = reticle.wings[tab]
-          const off = !w.enabled || w.length <= 0
+          const off = !w.enabled || effectiveDotCount(w) === 0
           return (
             <button
               key={tab}

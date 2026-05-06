@@ -28,17 +28,15 @@ function describeWing(
 ): string[] {
   const lines: string[] = []
   const header = t(wingHeaderKey[key])
-  if (!wing.enabled || wing.length <= 0) {
+  if (!wing.enabled) {
     lines.push(`${header}: ${t('describe.wing.disabled')}`)
     return lines
   }
 
   const axisPpm = key === 'up' || key === 'down' ? ppm.v : ppm.h
-  const lengthPx = Math.round(wing.length * axisPpm)
   const isHorizontal = key === 'left' || key === 'right'
 
   lines.push(header)
-  lines.push('  ' + t('describe.wing.length', { mrad: fmt(wing.length), px: lengthPx }))
 
   if (!wing.dots.enabled || wing.dots.spacing <= 0) {
     lines.push('  ' + t('describe.wing.dotsDisabled'))
@@ -50,14 +48,9 @@ function describeWing(
   }))
 
   const spacingPx = wing.dots.spacing * axisPpm
-  const naturalCount = Math.floor(wing.length / wing.dots.spacing)
   const count = effectiveDotCount(wing)
   lines.push('  ' + t('describe.wing.spacing', { mrad: fmt(wing.dots.spacing), px: fmt(spacingPx, 2) }))
-  if (wing.dots.maxDots > 0 && naturalCount > wing.dots.maxDots) {
-    lines.push('  ' + t('describe.wing.countCapped', { count, natural: naturalCount, cap: wing.dots.maxDots }))
-  } else {
-    lines.push('  ' + t('describe.wing.count', { count }))
-  }
+  lines.push('  ' + t('describe.wing.count', { count }))
 
   if (count > 0) {
     const marks = rasterize(rasterStrategy, wing.dots.spacing, axisPpm, count)
