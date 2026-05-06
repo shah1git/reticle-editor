@@ -101,6 +101,7 @@ interface Wing {
   dots: {
     enabled: boolean      // Показывать точки-метки
     spacing: number       // Интервал между метками в MRAD
+    maxDots: number       // Лимит точек на крыле; 0 = без лимита
   }
 }
 ```

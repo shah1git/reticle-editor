@@ -24,9 +24,17 @@ const loadState = () => {
     const saved = localStorage.getItem(STORAGE_KEY)
     if (saved) {
       const parsed = JSON.parse(saved)
+      const reticle = { ...defaultReticle, ...parsed.reticle } as Reticle
+      // Migrate older state that lacks the per-wing maxDots cap
+      for (const k of ['up', 'down', 'left', 'right'] as const) {
+        const w = reticle.wings?.[k]
+        if (w && (w.dots == null || (w.dots as { maxDots?: number }).maxDots == null)) {
+          w.dots = { ...w.dots, maxDots: 0 }
+        }
+      }
       return {
         scope: { ...defaultScope, ...parsed.scope },
-        reticle: { ...defaultReticle, ...parsed.reticle },
+        reticle,
       }
     }
   } catch {}

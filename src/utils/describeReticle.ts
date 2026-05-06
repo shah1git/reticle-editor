@@ -3,7 +3,7 @@ import type { ScopeProfile } from '../types/scope'
 import type { Reticle, Wing } from '../types/reticle'
 import type { PixelsPerMrad } from '../math/optics'
 import { getFovMrad, isSquarePixelRatio } from '../math/optics'
-import { rasterize } from '../math/rasterization'
+import { rasterize, effectiveDotCount } from '../math/rasterization'
 import type { WingKey } from '../App'
 
 const fmt = (n: number, digits = 2): string => {
@@ -53,9 +53,14 @@ function describeWing(
   }
 
   const spacingPx = wing.dots.spacing * axisPpm
-  const count = Math.floor(wing.length / wing.dots.spacing)
+  const naturalCount = Math.floor(wing.length / wing.dots.spacing)
+  const count = effectiveDotCount(wing)
   lines.push('  ' + t('describe.wing.spacing', { mrad: fmt(wing.dots.spacing), px: fmt(spacingPx, 2) }))
-  lines.push('  ' + t('describe.wing.count', { count }))
+  if (wing.dots.maxDots > 0 && naturalCount > wing.dots.maxDots) {
+    lines.push('  ' + t('describe.wing.countCapped', { count, natural: naturalCount, cap: wing.dots.maxDots }))
+  } else {
+    lines.push('  ' + t('describe.wing.count', { count }))
+  }
 
   if (count > 0) {
     const marks = rasterize(rasterStrategy, wing.dots.spacing, axisPpm, count)
@@ -139,9 +144,9 @@ export function describeReticle(
     const wingLines = describeWing(k, wing, ppm, reticle.rasterization, t)
     lines.push(...wingLines)
     lines.push('')
-    if (wing.enabled && wing.length > 0 && wing.dots.enabled && wing.dots.spacing > 0) {
+    {
       const axisPpm = k === 'up' || k === 'down' ? ppm.v : ppm.h
-      const count = Math.floor(wing.length / wing.dots.spacing)
+      const count = effectiveDotCount(wing)
       if (count > 0) {
         totalMarks += count
         const marks = rasterize(reticle.rasterization, wing.dots.spacing, axisPpm, count)

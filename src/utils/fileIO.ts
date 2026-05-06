@@ -2,7 +2,7 @@ import type { ScopeProfile } from '../types/scope'
 import type { Reticle } from '../types/reticle'
 import type { RasterMark } from '../types/rasterization'
 import { calcPixelsPerMrad } from '../math/optics'
-import { rasterize } from '../math/rasterization'
+import { rasterize, effectiveDotCount } from '../math/rasterization'
 
 interface SaveData {
   version: 1
@@ -22,9 +22,9 @@ export function saveToJson(scope: ScopeProfile, reticle: Reticle): void {
 
   const buildMarks = (wingKey: 'up' | 'down' | 'left' | 'right'): RasterMark[] => {
     const wing = reticle.wings[wingKey]
-    if (!wing.enabled || wing.length <= 0 || !wing.dots.enabled || wing.dots.spacing <= 0) return []
+    const count = effectiveDotCount(wing)
+    if (count <= 0) return []
     const axisPpm = (wingKey === 'down' || wingKey === 'up') ? ppm.v : ppm.h
-    const count = Math.floor(wing.length / wing.dots.spacing)
     return rasterize(reticle.rasterization, wing.dots.spacing, axisPpm, count)
   }
 
@@ -65,6 +65,9 @@ export function loadFromJson(
       for (const key of ['up', 'down', 'left', 'right']) {
         const w = r.wings?.[key]
         if (!w) continue
+        if (w.dots && w.dots.maxDots == null) {
+          w.dots.maxDots = 0
+        }
         if (w.dotSize == null) {
           // Old format had dots.radius in MRAD — convert to pixel diameter
           if (w.dots?.radius != null) {

@@ -3,7 +3,7 @@ import type { Reticle } from '../../types/reticle'
 import type { PixelsPerMrad } from '../../math/optics'
 import type { RasterMark } from '../../types/rasterization'
 import type { DotHoverInfo } from '../../types/dotTooltip'
-import { rasterize } from '../../math/rasterization'
+import { rasterize, effectiveDotCount } from '../../math/rasterization'
 import { snapToPixel } from '../../math/optics'
 import { errorToColor } from '../../math/errorColor'
 
@@ -105,13 +105,11 @@ export default function ReticleRenderer({ reticle, ppm, cx, cy, zoom, onDotHover
       }
 
       // Dots data
-      if (wing.dots.enabled && wing.dots.spacing > 0) {
-        const dotCount = Math.floor(wing.length / wing.dots.spacing)
-        if (dotCount > 0) {
-          const marks = rasterize(reticle.rasterization, wing.dots.spacing, axisPpm, dotCount)
-          const dotRadiusScreen = (wing.dotSize / 2) * (zoom / axisPpm) * visualMag
-          wings.push({ dir, marks, axisPpm, gapMrad, dx, dy, dotRadiusScreen })
-        }
+      const dotCount = effectiveDotCount(wing)
+      if (dotCount > 0) {
+        const marks = rasterize(reticle.rasterization, wing.dots.spacing, axisPpm, dotCount)
+        const dotRadiusScreen = (wing.dotSize / 2) * (zoom / axisPpm) * visualMag
+        wings.push({ dir, marks, axisPpm, gapMrad, dx, dy, dotRadiusScreen })
       }
     }
 

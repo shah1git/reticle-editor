@@ -6,6 +6,7 @@ export interface Wing {
   dots: {
     enabled: boolean
     spacing: number       // MRAD
+    maxDots: number       // 0 = unlimited; otherwise hard cap on dot count
   }
 }
 

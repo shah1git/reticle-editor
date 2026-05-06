@@ -51,6 +51,7 @@
       "dotsDisabled": "Dots on this wing disabled",
       "spacing": "Spacing between dots: {{mrad}} MRAD ({{px}} px)",
       "count": "Dot count: {{count}}",
+      "countCapped": "Dot count: {{count}} (capped at {{cap}}; uncapped would be {{natural}})",
       "maxError": "Max positioning error: \u00b1{{px}} px",
       "step": "Step: {{step}} px (uniform)",
       "stepRange": "Step: {{min}}\u2013{{max}} px"
@@ -106,7 +107,9 @@
     "dotSize": "DOT SIZE",
     "dotSizeHint": "Diameter of each dot mark in pixels. Set directly \u2014 without conversion from MRAD. Each wing can have its own size.\n\n1 px \u2014 minimum dot, may be hard to see. 2\u20133 px \u2014 clearly visible mark. 4+ px \u2014 large, for low resolutions.\n\nCurrent size {{size}} px = {{mrad}} MRAD on this axis.",
     "interval": "Interval",
-    "intervalHint": "Distance between adjacent dot marks on the wing in MRAD. Determines how frequently the scale divisions are placed.\n\nWith interval 1.0 and length {{length}}, there will be {{count}} dots. Mark count = length \u00f7 interval (fractions are discarded).\n\nThis parameter creates the rasterization problem: interval \u00d7 pixels per MRAD is almost never a whole number of pixels."
+    "intervalHint": "Distance between adjacent dot marks on the wing in MRAD. Determines how frequently the scale divisions are placed.\n\nWith interval 1.0 and length {{length}}, there will be {{count}} dots. Mark count = length \u00f7 interval (fractions are discarded).\n\nThis parameter creates the rasterization problem: interval \u00d7 pixels per MRAD is almost never a whole number of pixels.",
+    "maxDots": "Max dots",
+    "maxDotsHint": "Maximum number of marks on this wing. 0 \u2014 unlimited: the count is determined only by length and interval.\n\nWith a positive cap, the wing will never show more than the specified number of marks even if more would fit by length. Useful for cutting off the scale early without changing length or interval.\n\nWith current parameters: unlimited would yield {{natural}} marks, currently shown {{effective}}."
   },
   "scopePanel": {
     "title": "SCOPE PROFILE",

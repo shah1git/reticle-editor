@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import type { Reticle } from '../../types/reticle'
 import type { PixelsPerMrad } from '../../math/optics'
 import type { WingKey } from '../../App'
-import { rasterize } from '../../math/rasterization'
+import { rasterize, effectiveDotCount } from '../../math/rasterization'
 import Tooltip from '../ui/Tooltip'
 import styles from './RasterTable.module.css'
 
@@ -41,8 +41,8 @@ export default function RasterTable({ reticle, ppm, magnification, focalPlane, a
   const baseAxisPpm = focalPlane === 'ffp' && magnification > 0 ? axisPpm / magnification : axisPpm
 
   const marks = useMemo(() => {
-    if (!wing.enabled || wing.length <= 0 || !wing.dots.enabled || wing.dots.spacing <= 0) return []
-    const count = Math.floor(wing.length / wing.dots.spacing)
+    const count = effectiveDotCount(wing)
+    if (count <= 0) return []
     return rasterize(reticle.rasterization, wing.dots.spacing, axisPpm, count)
   }, [wing, reticle.rasterization, axisPpm])
 
@@ -60,8 +60,8 @@ export default function RasterTable({ reticle, ppm, magnification, focalPlane, a
   }, [marks])
 
   const magDetail = useMemo(() => {
-    if (hoveredIndex === null || !wing.enabled || wing.length <= 0 || !wing.dots.enabled || wing.dots.spacing <= 0) return null
-    const count = Math.floor(wing.length / wing.dots.spacing)
+    if (hoveredIndex === null) return null
+    const count = effectiveDotCount(wing)
     if (count <= 0) return null
 
     return MAG_PRESETS.map(m => {
