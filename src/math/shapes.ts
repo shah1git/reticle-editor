@@ -50,18 +50,15 @@ export function centerMarkHalfExtent(kind: CenterMarkKind): number {
 export function wingDotPixels(kind: WingDotKind, axisAlong: 'h' | 'v'): PixelRect[] {
   switch (kind) {
     case 'pair': {
+      // Two adjacent firmware pixels — flush to each other, no gap.
+      // The mark anchor is the bottom-right pixel; the partner sits one
+      // pixel earlier along the perpendicular direction.
       if (axisAlong === 'h') {
-        // Horizontal wing: one pixel above the axis row, one below.
-        return [
-          { x: 0, y: -1, w: 1, h: 1 },
-          { x: 0, y: 1, w: 1, h: 1 },
-        ]
+        // Horizontal wing — pair runs vertically across the axis row.
+        return [{ x: 0, y: -1, w: 1, h: 2 }]
       }
-      // Vertical wing: one pixel left of the axis column, one right.
-      return [
-        { x: -1, y: 0, w: 1, h: 1 },
-        { x: 1, y: 0, w: 1, h: 1 },
-      ]
+      // Vertical wing — pair runs horizontally across the axis column.
+      return [{ x: -1, y: 0, w: 2, h: 1 }]
     }
   }
 }
