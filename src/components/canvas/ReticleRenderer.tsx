@@ -48,9 +48,6 @@ export default function ReticleRenderer({ reticle, ppm, cx, cy, pixelScale, onDo
     const wings: WingRenderData[] = []
     const color = reticle.color
 
-    // Firmware-scale ppm (without FFP magnification).
-    const firmwarePpm = { h: ppm.h / visualMag, v: ppm.v / visualMag }
-
     // Center mark — fixed 4×4 (or other future variants), pixel-perfect.
     const centerPixels = centerMarkPixels(reticle.centerDot.kind)
     for (const [i, p] of centerPixels.entries()) {
@@ -77,49 +74,7 @@ export default function ReticleRenderer({ reticle, ppm, cx, cy, pixelScale, onDo
 
       const dx = dir === 'left' ? -1 : dir === 'right' ? 1 : 0
       const dy = dir === 'down' ? 1 : dir === 'up' ? -1 : 0
-      const firmwareAxisPpm = dy !== 0 ? firmwarePpm.v : firmwarePpm.h
       const effectiveAxisPpm = dy !== 0 ? ppm.v : ppm.h
-
-      const lineThicknessPx = Math.max(0, Math.round(wing.lineThickness * firmwareAxisPpm))
-      const lengthPx = Math.max(0, Math.round(wing.length * firmwareAxisPpm))
-
-      // Wing line as integer-pixel rectangle (firmware-px × screenScale)
-      if (lineThicknessPx > 0 && lengthPx > 0) {
-        const halfThick = Math.floor(lineThicknessPx / 2)
-        if (dx !== 0) {
-          const startImg = gapPxBase * dx
-          const endImg = (gapPxBase + lengthPx) * dx
-          const xMinImg = Math.min(startImg, endImg)
-          const wImg = Math.abs(endImg - startImg)
-          rects.push(
-            <rect
-              key={`wing-${dir}-line`}
-              x={cx + xMinImg * screenScale}
-              y={cy - halfThick * screenScale}
-              width={wImg * screenScale}
-              height={lineThicknessPx * screenScale}
-              fill={color}
-              shapeRendering="crispEdges"
-            />
-          )
-        } else {
-          const startImg = gapPxBase * dy
-          const endImg = (gapPxBase + lengthPx) * dy
-          const yMinImg = Math.min(startImg, endImg)
-          const hImg = Math.abs(endImg - startImg)
-          rects.push(
-            <rect
-              key={`wing-${dir}-line`}
-              x={cx - halfThick * screenScale}
-              y={cy + yMinImg * screenScale}
-              width={lineThicknessPx * screenScale}
-              height={hImg * screenScale}
-              fill={color}
-              shapeRendering="crispEdges"
-            />
-          )
-        }
-      }
 
       // Marks: rasterize at the effective ppm. actualPx in effective image-pixels.
       const dotCount = effectiveDotCount(wing)

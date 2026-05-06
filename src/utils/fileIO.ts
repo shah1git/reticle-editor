@@ -72,6 +72,7 @@ export function loadFromJson(
         w.dots.kind = 'pair'
         if (w.dots.radius != null) delete w.dots.radius
         if ('dotSize' in w) delete w.dotSize
+        if ('lineThickness' in w) delete w.lineThickness
       }
       setReticle(r as Reticle)
     }

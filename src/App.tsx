@@ -34,7 +34,7 @@ const loadState = () => {
         reticle.centerDot = { kind: 'square4' }
       }
       for (const k of ['up', 'down', 'left', 'right'] as const) {
-        const w = reticle.wings?.[k] as { dots?: { kind?: string; maxDots?: number; enabled?: boolean; spacing?: number }; dotSize?: number } | undefined
+        const w = reticle.wings?.[k] as { dots?: { kind?: string; maxDots?: number; enabled?: boolean; spacing?: number }; dotSize?: number; lineThickness?: number } | undefined
         if (!w) continue
         if (w.dots == null || w.dots.maxDots == null) {
           w.dots = { enabled: true, spacing: 1, ...(w.dots ?? {}), maxDots: 0 } as typeof w.dots
@@ -42,8 +42,10 @@ const loadState = () => {
         if (w.dots && w.dots.kind !== 'pair') {
           w.dots.kind = 'pair'
         }
-        // dotSize was a separate field — drop it; new mark sizing is variant-driven
+        // Old size/line concepts are gone — mark shape is variant-driven and
+        // there's no separate axis line on the reticle.
         if ('dotSize' in w) delete (w as Record<string, unknown>).dotSize
+        if ('lineThickness' in w) delete (w as Record<string, unknown>).lineThickness
       }
       return {
         scope: { ...defaultScope, ...parsed.scope },

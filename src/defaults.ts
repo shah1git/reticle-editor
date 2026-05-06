@@ -4,7 +4,6 @@ import type { Reticle, Wing } from './types/reticle'
 const defaultWing = (length: number): Wing => ({
   enabled: true,
   length,
-  lineThickness: 0.1,
   dots: {
     enabled: true,
     spacing: 1.0,
@@ -29,7 +28,7 @@ export const defaultScope: ScopeProfile = {
 export const defaultReticle: Reticle = {
   centerDot: { kind: 'square4' },
   wings: {
-    up: { enabled: false, length: 0, lineThickness: 0.1, dots: { enabled: true, spacing: 1.0, maxDots: 0, kind: 'pair' } },
+    up: { enabled: false, length: 0, dots: { enabled: true, spacing: 1.0, maxDots: 0, kind: 'pair' } },
     down: defaultWing(10.0),
     left: defaultWing(5.0),
     right: defaultWing(5.0),

@@ -8,12 +8,11 @@ export type WingDotKind = 'pair'
 
 export interface Wing {
   enabled: boolean
-  length: number          // MRAD
-  lineThickness: number   // MRAD
+  length: number          // MRAD — extent of the wing from the centre
   dots: {
     enabled: boolean
-    spacing: number       // MRAD
-    maxDots: number       // 0 = unlimited; otherwise hard cap on dot count
+    spacing: number       // MRAD — interval between marks
+    maxDots: number       // 0 = unlimited; otherwise hard cap on mark count
     kind: WingDotKind     // mark-shape variant
   }
 }

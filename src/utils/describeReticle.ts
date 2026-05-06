@@ -35,16 +35,10 @@ function describeWing(
 
   const axisPpm = key === 'up' || key === 'down' ? ppm.v : ppm.h
   const lengthPx = Math.round(wing.length * axisPpm)
-  const thicknessPx = Math.round(wing.lineThickness * axisPpm)
   const isHorizontal = key === 'left' || key === 'right'
 
   lines.push(header)
   lines.push('  ' + t('describe.wing.length', { mrad: fmt(wing.length), px: lengthPx }))
-  if (wing.lineThickness > 0) {
-    lines.push('  ' + t('describe.wing.lineThickness', { mrad: fmt(wing.lineThickness), px: thicknessPx }))
-  } else {
-    lines.push('  ' + t('describe.wing.noLine'))
-  }
 
   if (!wing.dots.enabled || wing.dots.spacing <= 0) {
     lines.push('  ' + t('describe.wing.dotsDisabled'))
