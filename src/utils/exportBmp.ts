@@ -1,14 +1,10 @@
 import type { ScopeProfile } from '../types/scope'
 import type { Reticle } from '../types/reticle'
-import { calcPixelsPerMrad } from '../math/optics'
-import { rasterize, effectiveDotCount } from '../math/rasterization'
-import { centerMarkPixels, centerMarkHalfExtent, wingDotPixels } from '../math/shapes'
+import { computeReticleRects } from './reticleRects'
 
 export function exportBmp(scope: ScopeProfile, reticle: Reticle, magnification = 1): void {
   const width = scope.displayResX
   const height = scope.displayResY
-  const basePpm = calcPixelsPerMrad(scope)
-  const ppm = { h: basePpm.h * magnification, v: basePpm.v * magnification }
 
   const canvas = document.createElement('canvas')
   canvas.width = width
@@ -18,39 +14,9 @@ export function exportBmp(scope: ScopeProfile, reticle: Reticle, magnification =
   ctx.fillStyle = '#000000'
   ctx.fillRect(0, 0, width, height)
 
-  const cxPx = Math.round(width / 2)
-  const cyPx = Math.round(height / 2)
-  const color = reticle.color
-
-  const centerPx = centerMarkPixels(reticle.centerDot.kind)
-  ctx.fillStyle = color
-  for (const p of centerPx) {
-    ctx.fillRect(cxPx + p.x, cyPx + p.y, p.w, p.h)
-  }
-  const gapPxBase = centerMarkHalfExtent(reticle.centerDot.kind)
-
-  const dirs = ['up', 'down', 'left', 'right'] as const
-  for (const dir of dirs) {
-    const wing = reticle.wings[dir]
-    const count = effectiveDotCount(wing)
-    if (count <= 0) continue
-
-    const dx = dir === 'left' ? -1 : dir === 'right' ? 1 : 0
-    const dy = dir === 'down' ? 1 : dir === 'up' ? -1 : 0
-    const axisPpm = dy !== 0 ? ppm.v : ppm.h
-
-    const marks = rasterize(reticle.rasterization, wing.dots.spacing, axisPpm, count)
-    const axisAlong: 'h' | 'v' = (dx !== 0) ? 'h' : 'v'
-    const dotPx = wingDotPixels(wing.dots.kind, axisAlong)
-    ctx.fillStyle = color
-    for (const mark of marks) {
-      const posPx = gapPxBase + mark.actualPx
-      const dotX = cxPx + posPx * dx
-      const dotY = cyPx + posPx * dy
-      for (const p of dotPx) {
-        ctx.fillRect(dotX + p.x, dotY + p.y, p.w, p.h)
-      }
-    }
+  for (const r of computeReticleRects(scope, reticle, magnification)) {
+    ctx.fillStyle = r.color
+    ctx.fillRect(r.x, r.y, r.w, r.h)
   }
 
   const imageData = ctx.getImageData(0, 0, width, height)

@@ -3,8 +3,10 @@ import type { Reticle } from '../types/reticle'
 import type { RasterMark } from '../types/rasterization'
 import { calcPixelsPerMrad } from '../math/optics'
 import { rasterize, effectiveDotCount } from '../math/rasterization'
+import { buildRenderManifest, RENDER_README, type RenderManifest } from './renderManifest'
 
 interface SaveData {
+  _readme: string
   version: 1
   unit: 'MRAD'
   scopeProfile: ScopeProfile
@@ -15,6 +17,7 @@ interface SaveData {
     left: RasterMark[]
     right: RasterMark[]
   }
+  renderManifest: RenderManifest
 }
 
 export function saveToJson(scope: ScopeProfile, reticle: Reticle): void {
@@ -29,6 +32,7 @@ export function saveToJson(scope: ScopeProfile, reticle: Reticle): void {
   }
 
   const data: SaveData = {
+    _readme: RENDER_README,
     version: 1,
     unit: 'MRAD',
     scopeProfile: scope,
@@ -39,6 +43,7 @@ export function saveToJson(scope: ScopeProfile, reticle: Reticle): void {
       left: buildMarks('left'),
       right: buildMarks('right'),
     },
+    renderManifest: buildRenderManifest(scope, reticle),
   }
 
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
@@ -61,8 +66,6 @@ export function loadFromJson(
     if (data.scopeProfile) setScope(data.scopeProfile)
     if (data.reticle) {
       const r = data.reticle as any
-      // Migrate to kind-based shape variants. Old centerDot.radius and
-      // centerDot.diameter are dropped; we keep the only available shape.
       r.centerDot = { kind: 'square4' }
       for (const key of ['up', 'down', 'left', 'right']) {
         const w = r.wings?.[key]
