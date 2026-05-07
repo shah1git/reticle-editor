@@ -12,6 +12,11 @@
     "exportPng": "\u2b07 Export PNG",
     "exportBmp": "\u2b07 Export BMP"
   },
+  "bmpPicker": {
+    "title": "Export BMP \u2014 pick magnification",
+    "hint": "The reticle manufacturer typically needs a separate BMP per magnification level. Pick a scale to download that image.",
+    "cancel": "Cancel"
+  },
   "describe": {
     "title": "Reticle description",
     "copy": "Copy",
@@ -298,6 +303,7 @@
     "display": "Display:",
     "pixelPitch": "Pixel pitch:",
     "fov": "FOV:",
+    "magnification": "Magnification:",
     "pxPerMrad": "px/MRAD:",
     "pxPerMradH": "px/MRAD H:",
     "pxPerMradV": "px/MRAD V:",

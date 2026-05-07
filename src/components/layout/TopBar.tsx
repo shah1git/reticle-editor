@@ -9,6 +9,7 @@ import { saveToJson, loadFromJson } from '../../utils/fileIO'
 import { exportPng } from '../../utils/exportPng'
 import { exportBmp } from '../../utils/exportBmp'
 import DescribeModal from '../ui/DescribeModal'
+import BmpScalePicker from '../ui/BmpScalePicker'
 import LanguageSwitcher from './LanguageSwitcher'
 import styles from './TopBar.module.css'
 
@@ -25,6 +26,7 @@ export default function TopBar({ scope, reticle, setScope, setReticle, ppm, magn
   const { t } = useTranslation()
   const fileRef = useRef<HTMLInputElement>(null)
   const [describeOpen, setDescribeOpen] = useState(false)
+  const [bmpPickerOpen, setBmpPickerOpen] = useState(false)
 
   const handleLoad = () => fileRef.current?.click()
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,7 +62,7 @@ export default function TopBar({ scope, reticle, setScope, setReticle, ppm, magn
           <span className={styles.btnText}>{t('topbar.exportPng')}</span>
           <span className={styles.btnIcon}>{'\u2b07'}</span>
         </button>
-        <button className={styles.btnAccent} onClick={() => exportBmp(scope, reticle)}>
+        <button className={styles.btnAccent} onClick={() => setBmpPickerOpen(true)}>
           <span className={styles.btnText}>{t('topbar.exportBmp')}</span>
           <span className={styles.btnIcon}>{'\u2b07'}</span>
         </button>
@@ -79,6 +81,15 @@ export default function TopBar({ scope, reticle, setScope, setReticle, ppm, magn
           ppm={ppm}
           magnification={magnification}
           onClose={() => setDescribeOpen(false)}
+        />
+      )}
+      {bmpPickerOpen && (
+        <BmpScalePicker
+          onPick={(k) => {
+            exportBmp(scope, reticle, k)
+            setBmpPickerOpen(false)
+          }}
+          onClose={() => setBmpPickerOpen(false)}
         />
       )}
     </header>
