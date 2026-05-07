@@ -1,7 +1,7 @@
 import type { ScopeProfile } from '../types/scope'
 import type { Reticle } from '../types/reticle'
 import i18n from '../i18n'
-import { calcPixelsPerMrad, getFovMrad, isSquarePixelRatio } from '../math/optics'
+import { calcPixelsPerMrad, getFovMrad, isSquarePixelRatio, type PixelsPerMrad } from '../math/optics'
 import { rasterize, effectiveDotCount } from '../math/rasterization'
 import { centerMarkPixels, centerMarkHalfExtent, wingDotPixels } from '../math/shapes'
 import { loadLogo } from './logoLoader'
@@ -20,6 +20,7 @@ const LINE_H = 18
 const FONT = '13px JetBrains Mono, monospace'
 const FONT_BOLD = 'bold 13px JetBrains Mono, monospace'
 const FONT_TITLE = 'bold 15px JetBrains Mono, monospace'
+const FONT_MAG = 'bold 22px JetBrains Mono, monospace'
 const FONT_SMALL = '11px JetBrains Mono, monospace'
 const COL_LABEL = '#8b95b0'
 const COL_VALUE = '#e8ecf4'
@@ -28,6 +29,10 @@ const COL_WARN = '#ff8c42'
 const COL_BG = '#12141c'
 const COL_PANEL = '#181b25'
 const COL_BORDER = '#252938'
+
+const MAG_LEVELS = [1, 2, 3, 4, 5, 6, 7, 8] as const
+const MAG_HEADER_H = 36
+const TILE_GAP = 12
 
 interface WingStats {
   name: string
@@ -42,7 +47,7 @@ interface WingStats {
   spacing: number
 }
 
-function getWingStats(reticle: Reticle, ppm: { h: number; v: number }): WingStats[] {
+function getWingStats(reticle: Reticle, ppm: PixelsPerMrad): WingStats[] {
   const nameKeys: Record<string, string> = {
     up: 'export.wingUp', down: 'export.wingDown',
     left: 'export.wingLeft', right: 'export.wingRight',
@@ -72,8 +77,16 @@ function getWingStats(reticle: Reticle, ppm: { h: number; v: number }): WingStat
   return result
 }
 
-function drawInfoPanel(ctx: CanvasRenderingContext2D, x0: number, y0: number, scope: ScopeProfile, reticle: Reticle, logo: HTMLImageElement | null) {
-  const ppm = calcPixelsPerMrad(scope)
+function drawInfoPanel(
+  ctx: CanvasRenderingContext2D,
+  x0: number,
+  y0: number,
+  scope: ScopeProfile,
+  reticle: Reticle,
+  ppm: PixelsPerMrad,
+  magnification: number,
+  logo: HTMLImageElement | null,
+) {
   const fov = getFovMrad(scope)
   const sqPx = isSquarePixelRatio(ppm)
   const best = findBestStrategy(reticle, ppm)
@@ -112,11 +125,9 @@ function drawInfoPanel(ctx: CanvasRenderingContext2D, x0: number, y0: number, sc
 
   const valX = x0 + 180
 
-  // Title
-  title(t('export.title'), y)
+  title(`${t('export.title')} — ×${magnification}`, y)
   y += LINE_H + 4
 
-  // Scope section
   ctx.font = FONT_BOLD
   ctx.fillStyle = COL_VALUE
   ctx.fillText(t('export.scope'), x0 + PADDING, y)
@@ -127,14 +138,16 @@ function drawInfoPanel(ctx: CanvasRenderingContext2D, x0: number, y0: number, sc
   if (scope.type === 'digital') {
     label(t('export.type'), y); value(t('export.typeDigital'), valX, y); y += LINE_H
     label(t('export.focalLength'), y); value(`${scope.lensFL} ${t('units.mm')}`, valX, y); y += LINE_H
-    label(t('export.sensor'), y); value(`${scope.sensorResX}\u00d7${scope.sensorResY} ${t('units.px')}`, valX, y); y += LINE_H
-    label(t('export.display'), y); value(`${scope.displayResX}\u00d7${scope.displayResY} ${t('units.px')}`, valX, y); y += LINE_H
+    label(t('export.sensor'), y); value(`${scope.sensorResX}×${scope.sensorResY} ${t('units.px')}`, valX, y); y += LINE_H
+    label(t('export.display'), y); value(`${scope.displayResX}×${scope.displayResY} ${t('units.px')}`, valX, y); y += LINE_H
     label(t('export.pixelPitch'), y); value(`${scope.pixelPitch} ${t('units.um')}`, valX, y); y += LINE_H
   } else {
     label(t('export.type'), y); value(t('export.typeOptical'), valX, y); y += LINE_H
     label(t('export.fov'), y); value(`${scope.fovDegrees}${t('units.deg')}`, valX, y); y += LINE_H
-    label(t('export.display'), y); value(`${scope.displayResX}\u00d7${scope.displayResY} ${t('units.px')}`, valX, y); y += LINE_H
+    label(t('export.display'), y); value(`${scope.displayResX}×${scope.displayResY} ${t('units.px')}`, valX, y); y += LINE_H
   }
+
+  label(t('export.magnification'), y); value(`×${magnification}`, valX, y, COL_ACCENT); y += LINE_H
 
   if (sqPx) {
     label(t('export.pxPerMrad'), y); value(`${ppm.h.toFixed(3)}`, valX, y, COL_ACCENT); y += LINE_H
@@ -142,13 +155,12 @@ function drawInfoPanel(ctx: CanvasRenderingContext2D, x0: number, y0: number, sc
     label(t('export.pxPerMradH'), y); value(`${ppm.h.toFixed(3)}`, valX, y, COL_ACCENT); y += LINE_H
     label(t('export.pxPerMradV'), y); value(`${ppm.v.toFixed(3)}`, valX, y, COL_ACCENT); y += LINE_H
   }
-  label(t('export.fov'), y); value(`${fov.h.toFixed(1)} \u00d7 ${fov.v.toFixed(1)} ${t('units.mrad')}`, valX, y); y += LINE_H
+  label(t('export.fov'), y); value(`${fov.h.toFixed(1)} × ${fov.v.toFixed(1)} ${t('units.mrad')}`, valX, y); y += LINE_H
   label(t('export.focalPlane'), y); value(reticle.focalPlane.toUpperCase(), valX, y); y += LINE_H
 
   y += 4
   y = separator(y)
 
-  // Reticle section
   ctx.font = FONT_BOLD
   ctx.fillStyle = COL_VALUE
   ctx.fillText(t('export.reticle'), x0 + PADDING, y)
@@ -159,19 +171,18 @@ function drawInfoPanel(ctx: CanvasRenderingContext2D, x0: number, y0: number, sc
   label(t('export.strategy'), y)
   const isOptimal = best.best === reticle.rasterization
   value(
-    `${stratLabels[reticle.rasterization]}${isOptimal ? ' \u2713' : ''}`,
+    `${stratLabels[reticle.rasterization]}${isOptimal ? ' ✓' : ''}`,
     valX, y, isOptimal ? COL_ACCENT : COL_VALUE,
   )
   y += LINE_H
   if (!isOptimal) {
-    label(t('export.recommended'), y); value(`${stratLabels[best.best]} (\u00b1${best.bestMaxError.toFixed(2)} ${t('units.px')})`, valX, y, COL_WARN); y += LINE_H
+    label(t('export.recommended'), y); value(`${stratLabels[best.best]} (±${best.bestMaxError.toFixed(2)} ${t('units.px')})`, valX, y, COL_WARN); y += LINE_H
   }
-  label(t('export.maxError'), y); value(`\u00b1${best.currentMaxError.toFixed(2)} ${t('units.px')}`, valX, y, best.currentMaxError > 0.4 ? COL_WARN : COL_ACCENT); y += LINE_H
+  label(t('export.maxError'), y); value(`±${best.currentMaxError.toFixed(2)} ${t('units.px')}`, valX, y, best.currentMaxError > 0.4 ? COL_WARN : COL_ACCENT); y += LINE_H
 
   y += 4
   y = separator(y)
 
-  // Wings section
   for (const ws of wingStats) {
     ctx.font = FONT_BOLD
     ctx.fillStyle = COL_VALUE
@@ -184,10 +195,10 @@ function drawInfoPanel(ctx: CanvasRenderingContext2D, x0: number, y0: number, sc
 
     if (ws.count > 0) {
       label(t('export.maxError'), y)
-      value(`\u00b1${ws.maxError.toFixed(2)} ${t('units.px')}`, valX, y, ws.maxError > 0.4 ? COL_WARN : COL_ACCENT)
+      value(`±${ws.maxError.toFixed(2)} ${t('units.px')}`, valX, y, ws.maxError > 0.4 ? COL_WARN : COL_ACCENT)
       y += LINE_H
 
-      const stepsStr = ws.minStep === ws.maxStep ? `all = ${ws.minStep}` : `${ws.minStep}\u2013${ws.maxStep}`
+      const stepsStr = ws.minStep === ws.maxStep ? `all = ${ws.minStep}` : `${ws.minStep}–${ws.maxStep}`
       label(t('export.steps'), y); value(`${stepsStr} ${t('units.px')}`, valX, y); y += LINE_H
 
       label(t('export.lastMarkError'), y)
@@ -195,7 +206,6 @@ function drawInfoPanel(ctx: CanvasRenderingContext2D, x0: number, y0: number, sc
       value(`${ws.lastError >= 0 ? '+' : ''}${ws.lastError.toFixed(2)} ${t('units.px')}${accum}`, valX, y)
       y += LINE_H
 
-      // Mini rasterization table
       y += 4
       ctx.font = FONT_SMALL
       ctx.fillStyle = COL_LABEL
@@ -239,7 +249,6 @@ function drawInfoPanel(ctx: CanvasRenderingContext2D, x0: number, y0: number, sc
     y = separator(y)
   }
 
-  // Summary
   let totalMarks = 0
   for (const ws of wingStats) totalMarks += ws.count
   ctx.font = FONT_BOLD
@@ -248,10 +257,9 @@ function drawInfoPanel(ctx: CanvasRenderingContext2D, x0: number, y0: number, sc
   y += LINE_H
   label(t('export.totalMarks'), y); value(`${totalMarks}`, valX, y); y += LINE_H
   label(t('export.activeWings'), y); value(`${wingStats.length}`, valX, y); y += LINE_H
-  label(t('export.globalMaxError'), y); value(`\u00b1${best.currentMaxError.toFixed(2)} ${t('units.px')}`, valX, y, best.currentMaxError > 0.4 ? COL_WARN : COL_ACCENT); y += LINE_H
-  label(t('export.bestStrategy'), y); value(`${stratLabels[best.best]} (\u00b1${best.bestMaxError.toFixed(2)} ${t('units.px')})`, valX, y); y += LINE_H
+  label(t('export.globalMaxError'), y); value(`±${best.currentMaxError.toFixed(2)} ${t('units.px')}`, valX, y, best.currentMaxError > 0.4 ? COL_WARN : COL_ACCENT); y += LINE_H
+  label(t('export.bestStrategy'), y); value(`${stratLabels[best.best]} (±${best.bestMaxError.toFixed(2)} ${t('units.px')})`, valX, y); y += LINE_H
 
-  // Footer \u2014 project attribution
   y += 8
   y = separator(y)
   if (logo) {
@@ -264,8 +272,6 @@ function drawInfoPanel(ctx: CanvasRenderingContext2D, x0: number, y0: number, sc
   ctx.font = FONT_SMALL
   ctx.fillStyle = COL_LABEL
   ctx.textAlign = 'center'
-  // Footer is rendered on multiple lines so it doesn't overflow the
-  // narrow info panel (the URL alone often exceeds the panel width).
   const footerText = t('describe.footer', { version: __APP_VERSION__, url: PROJECT_URL })
   const footerLines = footerText.split(' · ')
   for (const line of footerLines) {
@@ -284,8 +290,7 @@ function errColor(errorPx: number): string {
   return COL_WARN
 }
 
-function measureInfoHeight(scope: ScopeProfile, reticle: Reticle): number {
-  const ppm = calcPixelsPerMrad(scope)
+function measureInfoHeight(scope: ScopeProfile, reticle: Reticle, ppm: PixelsPerMrad): number {
   const sqPx = isSquarePixelRatio(ppm)
   const best = findBestStrategy(reticle, ppm)
   const wingStats = getWingStats(reticle, ppm)
@@ -294,6 +299,7 @@ function measureInfoHeight(scope: ScopeProfile, reticle: Reticle): number {
   lines += 2 // title
   lines += 1 + 1 // scope header + name
   lines += scope.type === 'digital' ? 4 : 3
+  lines += 1 // magnification line
   lines += sqPx ? 1 : 2
   lines += 2 + 1 // fov + focalPlane + separator
   lines += 1 + 3 // reticle header + dot/color/strategy
@@ -312,46 +318,30 @@ function measureInfoHeight(scope: ScopeProfile, reticle: Reticle): number {
 
   const tableRows = wingStats.reduce((s, w) => s + (w.count > 0 ? w.count + 1 : 0), 0)
   const normalRows = lines - tableRows
-  // Body height + footer block (logo ~70px + 2 footer text lines + paddings)
   return PADDING * 2 + normalRows * LINE_H + tableRows * (LINE_H - 4) + wingStats.length * 12 + 80 + 130
 }
 
-export async function exportPng(scope: ScopeProfile, reticle: Reticle): Promise<void> {
-  const ppm = calcPixelsPerMrad(scope)
-  const reticleW = scope.displayResX
-  const reticleH = scope.displayResY
-  const logo = await loadLogo()
-
-  const infoH = measureInfoHeight(scope, reticle)
-  const totalW = reticleW + INFO_WIDTH
-  const totalH = Math.max(reticleH, infoH)
-
-  const canvas = document.createElement('canvas')
-  canvas.width = totalW
-  canvas.height = totalH
-  const ctx = canvas.getContext('2d')!
-
-  ctx.fillStyle = COL_BG
-  ctx.fillRect(0, 0, totalW, totalH)
+function drawReticle(
+  ctx: CanvasRenderingContext2D,
+  x0: number,
+  y0: number,
+  reticleW: number,
+  reticleH: number,
+  reticle: Reticle,
+  ppm: PixelsPerMrad,
+) {
+  ctx.save()
+  ctx.beginPath()
+  ctx.rect(x0, y0, reticleW, reticleH)
+  ctx.clip()
 
   ctx.fillStyle = '#000000'
-  ctx.fillRect(0, 0, reticleW, reticleH)
+  ctx.fillRect(x0, y0, reticleW, reticleH)
 
-  ctx.fillStyle = COL_PANEL
-  ctx.fillRect(reticleW, 0, INFO_WIDTH, totalH)
-
-  ctx.strokeStyle = COL_BORDER
-  ctx.lineWidth = 1
-  ctx.beginPath()
-  ctx.moveTo(reticleW, 0)
-  ctx.lineTo(reticleW, totalH)
-  ctx.stroke()
-
-  const cxPx = Math.round(reticleW / 2)
-  const cyPx = Math.round(reticleH / 2)
+  const cxPx = x0 + Math.round(reticleW / 2)
+  const cyPx = y0 + Math.round(reticleH / 2)
   const color = reticle.color
 
-  // Center mark — variant-driven, pixel-perfect
   const centerPx = centerMarkPixels(reticle.centerDot.kind)
   ctx.fillStyle = color
   for (const p of centerPx) {
@@ -359,7 +349,6 @@ export async function exportPng(scope: ScopeProfile, reticle: Reticle): Promise<
   }
   const gapPxBase = centerMarkHalfExtent(reticle.centerDot.kind)
 
-  // Wings
   const dirs = ['up', 'down', 'left', 'right'] as const
   for (const dir of dirs) {
     const wing = reticle.wings[dir]
@@ -384,14 +373,88 @@ export async function exportPng(scope: ScopeProfile, reticle: Reticle): Promise<
     }
   }
 
-  drawInfoPanel(ctx, reticleW, 0, scope, reticle, logo)
+  ctx.restore()
+}
+
+export async function exportPng(scope: ScopeProfile, reticle: Reticle): Promise<void> {
+  const basePpm = calcPixelsPerMrad(scope)
+  const reticleW = scope.displayResX
+  const reticleH = scope.displayResY
+  const logo = await loadLogo()
+
+  const tiles = MAG_LEVELS.map(k => {
+    const ppm = { h: basePpm.h * k, v: basePpm.v * k }
+    const infoH = measureInfoHeight(scope, reticle, ppm)
+    const bodyH = Math.max(reticleH, infoH)
+    return { k, ppm, infoH, bodyH }
+  })
+
+  const totalW = reticleW + INFO_WIDTH
+  const totalH = tiles.reduce((s, t) => s + MAG_HEADER_H + t.bodyH + TILE_GAP, 0)
+
+  const canvas = document.createElement('canvas')
+  canvas.width = totalW
+  canvas.height = totalH
+  const ctx = canvas.getContext('2d')!
+
+  ctx.fillStyle = COL_BG
+  ctx.fillRect(0, 0, totalW, totalH)
+
+  let y = 0
+  for (const tile of tiles) {
+    // Magnification header band spanning the full width.
+    ctx.fillStyle = COL_PANEL
+    ctx.fillRect(0, y, totalW, MAG_HEADER_H)
+    ctx.strokeStyle = COL_BORDER
+    ctx.lineWidth = 1
+    ctx.beginPath()
+    ctx.moveTo(0, y + MAG_HEADER_H - 0.5)
+    ctx.lineTo(totalW, y + MAG_HEADER_H - 0.5)
+    ctx.stroke()
+
+    ctx.font = FONT_MAG
+    ctx.fillStyle = COL_ACCENT
+    ctx.textBaseline = 'middle'
+    ctx.fillText(`×${tile.k}`, PADDING, y + MAG_HEADER_H / 2)
+    ctx.font = FONT
+    ctx.fillStyle = COL_LABEL
+    ctx.fillText(
+      `${tile.ppm.h.toFixed(2)} ${t('units.px')}/${t('units.mrad')}`,
+      PADDING + 60,
+      y + MAG_HEADER_H / 2,
+    )
+    ctx.textBaseline = 'alphabetic'
+
+    y += MAG_HEADER_H
+
+    // Reticle area background (left).
+    ctx.fillStyle = '#000000'
+    ctx.fillRect(0, y, reticleW, tile.bodyH)
+
+    // Info panel background (right).
+    ctx.fillStyle = COL_PANEL
+    ctx.fillRect(reticleW, y, INFO_WIDTH, tile.bodyH)
+
+    // Vertical separator.
+    ctx.strokeStyle = COL_BORDER
+    ctx.lineWidth = 1
+    ctx.beginPath()
+    ctx.moveTo(reticleW, y)
+    ctx.lineTo(reticleW, y + tile.bodyH)
+    ctx.stroke()
+
+    drawReticle(ctx, 0, y, reticleW, reticleH, reticle, tile.ppm)
+    drawInfoPanel(ctx, reticleW, y, scope, reticle, tile.ppm, tile.k, logo)
+
+    y += tile.bodyH + TILE_GAP
+  }
 
   canvas.toBlob(blob => {
     if (!blob) return
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `${scope.name.replace(/\s+/g, '_')}_reticle_${reticleW}x${reticleH}.png`
+    a.download = `${scope.name.replace(/\s+/g, '_')}_reticle_${reticleW}x${reticleH}_x1-x8.png`
     a.click()
     URL.revokeObjectURL(url)
   }, 'image/png')
