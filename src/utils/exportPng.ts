@@ -3,8 +3,8 @@ import type { Reticle } from '../types/reticle'
 import i18n from '../i18n'
 import { calcPixelsPerMrad, getFovMrad, isSquarePixelRatio, type PixelsPerMrad } from '../math/optics'
 import { rasterize, effectiveDotCount } from '../math/rasterization'
-import { centerMarkPixels, centerMarkHalfExtent, wingDotPixels } from '../math/shapes'
 import { loadLogo } from './logoLoader'
+import { computeReticleRects } from './reticleRects'
 
 declare const __APP_VERSION__: string
 
@@ -327,8 +327,9 @@ function drawReticle(
   y0: number,
   reticleW: number,
   reticleH: number,
+  scope: ScopeProfile,
   reticle: Reticle,
-  ppm: PixelsPerMrad,
+  magnification: number,
 ) {
   ctx.save()
   ctx.beginPath()
@@ -338,39 +339,12 @@ function drawReticle(
   ctx.fillStyle = '#000000'
   ctx.fillRect(x0, y0, reticleW, reticleH)
 
-  const cxPx = x0 + Math.round(reticleW / 2)
-  const cyPx = y0 + Math.round(reticleH / 2)
-  const color = reticle.color
-
-  const centerPx = centerMarkPixels(reticle.centerDot.kind)
-  ctx.fillStyle = color
-  for (const p of centerPx) {
-    ctx.fillRect(cxPx + p.x, cyPx + p.y, p.w, p.h)
-  }
-  const gapPxBase = centerMarkHalfExtent(reticle.centerDot.kind)
-
-  const dirs = ['up', 'down', 'left', 'right'] as const
-  for (const dir of dirs) {
-    const wing = reticle.wings[dir]
-    const count = effectiveDotCount(wing)
-    if (count <= 0) continue
-
-    const dx = dir === 'left' ? -1 : dir === 'right' ? 1 : 0
-    const dy = dir === 'down' ? 1 : dir === 'up' ? -1 : 0
-    const axisPpm = dy !== 0 ? ppm.v : ppm.h
-
-    const marks = rasterize(reticle.rasterization, wing.dots.spacing, axisPpm, count)
-    const axisAlong: 'h' | 'v' = (dx !== 0) ? 'h' : 'v'
-    const dotPx = wingDotPixels(wing.dots.kind, axisAlong)
-    for (const mark of marks) {
-      const posPx = gapPxBase + mark.actualPx
-      const dotX = cxPx + posPx * dx
-      const dotY = cyPx + posPx * dy
-      ctx.fillStyle = errorToColor(mark.errorPx)
-      for (const p of dotPx) {
-        ctx.fillRect(dotX + p.x, dotY + p.y, p.w, p.h)
-      }
-    }
+  const rects = computeReticleRects(scope, reticle, magnification, {
+    markColor: (mark) => errorToColor(mark.errorPx),
+  })
+  for (const r of rects) {
+    ctx.fillStyle = r.color
+    ctx.fillRect(x0 + r.x, y0 + r.y, r.w, r.h)
   }
 
   ctx.restore()
@@ -443,7 +417,7 @@ export async function exportPng(scope: ScopeProfile, reticle: Reticle): Promise<
     ctx.lineTo(reticleW, y + tile.bodyH)
     ctx.stroke()
 
-    drawReticle(ctx, 0, y, reticleW, reticleH, reticle, tile.ppm)
+    drawReticle(ctx, 0, y, reticleW, reticleH, scope, reticle, tile.k)
     drawInfoPanel(ctx, reticleW, y, scope, reticle, tile.ppm, tile.k, logo)
 
     y += tile.bodyH + TILE_GAP
