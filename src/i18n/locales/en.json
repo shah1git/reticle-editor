@@ -2,7 +2,8 @@
   "canvas": {
     "pixelGrid": "Pixel grid",
     "pixelScaleSuffix": "({{ppm}} px/MRAD)",
-    "refCircle": "1 m @ 100 m"
+    "refCircle": "1 m @ 100 m",
+    "mradUnit": "Unit: true MRAD (1 mrad = 1/1000 rad). Not 6000-mil (WarPac) or 6400-mil (NATO)."
   },
   "topbar": {
     "title": "RETICLE EDITOR",
@@ -36,6 +37,7 @@
       "ppm": "Pixels/MRAD: {{h}} (Horiz) \u00d7 {{v}} (Vert)",
       "clickValue": "Click value: {{mradH}} \u00d7 {{mradV}} MRAD = {{mmH}} \u00d7 {{mmV}} mm at 100 m",
       "fovMrad": "FOV: {{h}} \u00d7 {{v}} MRAD",
+      "mradUnit": "Unit: true MRAD (1 mrad = 1/1000 rad \u2248 0.0573\u00b0). One full circle = 2\u03c0 \u00d7 1000 \u2248 6283.185 mrad. The app does NOT use the artillery 6000-mil (Warsaw Pact) or 6400-mil (NATO) approximations.",
       "nonSquare": "\u26a0 Non-square pixel ratio"
     },
     "reticle": {

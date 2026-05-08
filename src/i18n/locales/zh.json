@@ -2,7 +2,8 @@
   "canvas": {
     "pixelGrid": "\u50cf\u7d20\u6805\u683c",
     "pixelScaleSuffix": "({{ppm}} px/MRAD)",
-    "refCircle": "100 \u7c73\u5904 1 \u7c73"
+    "refCircle": "100 \u7c73\u5904 1 \u7c73",
+    "mradUnit": "\u5355\u4f4d\uff1a\u771f\u5b9e MRAD\uff081 mrad = 1/1000 \u5f27\u5ea6\uff09\u3002\u975e\u534e\u7ea6 6000 \u6216\u5317\u7ea6 6400 \u5bc6\u4f4d\u3002"
   },
   "topbar": {
     "title": "\u5206\u5212\u677f\u7f16\u8f91\u5668",
@@ -36,6 +37,7 @@
       "ppm": "\u50cf\u7d20/\u5bc6\u4f4d\uff1a{{h}}\uff08\u6a2a\uff09\u00d7 {{v}}\uff08\u7eb5\uff09",
       "clickValue": "\u523b\u5ea6\u503c\uff1a{{mradH}} \u00d7 {{mradV}} \u5bc6\u4f4d = 100 \u7c73\u5904 {{mmH}} \u00d7 {{mmV}} \u6beb\u7c73",
       "fovMrad": "\u89c6\u573a\uff1a{{h}} \u00d7 {{v}} \u5bc6\u4f4d",
+      "mradUnit": "\u5355\u4f4d\uff1a\u771f\u5b9e MRAD\uff081 mrad = 1/1000 \u5f27\u5ea6 \u2248 0.0573\u00b0\uff09\u3002\u6574\u5706 = 2\u03c0 \u00d7 1000 \u2248 6283.185 mrad\u3002\u672c\u5e94\u7528\u4e0d\u4f7f\u7528\u70ae\u5175\u5bc6\u4f4d\u7684 6000\uff08\u534e\u7ea6\uff09\u6216 6400\uff08\u5317\u7ea6\uff09\u8fd1\u4f3c\u503c\u3002",
       "nonSquare": "\u26a0 \u975e\u65b9\u5f62\u50cf\u7d20\u6bd4"
     },
     "reticle": {

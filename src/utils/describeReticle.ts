@@ -111,6 +111,7 @@ export function describeReticle(
   }))
   const fov = getFovMrad(scope)
   lines.push('  ' + t('describe.scope.fovMrad', { h: fmt(fov.h, 2), v: fmt(fov.v, 2) }))
+  lines.push('  ' + t('describe.scope.mradUnit'))
   if (!isSquarePixelRatio(ppm)) {
     lines.push('  ' + t('describe.scope.nonSquare'))
   }
