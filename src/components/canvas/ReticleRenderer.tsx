@@ -48,6 +48,24 @@ export default function ReticleRenderer({ reticle, ppm, cx, cy, pixelScale, onDo
     const wings: WingRenderData[] = []
     const color = reticle.color
 
+    // Pixel-paint mode: render only the user's hand-drawn pixels.
+    if (reticle.mode === 'pixels') {
+      for (const [i, [dx, dy]] of reticle.customPixels.entries()) {
+        rects.push(
+          <rect
+            key={`pixel-${i}`}
+            x={cx + dx * screenScale}
+            y={cy + dy * screenScale}
+            width={screenScale}
+            height={screenScale}
+            fill={color}
+            shapeRendering="crispEdges"
+          />
+        )
+      }
+      return { rects, wings }
+    }
+
     // Center mark — fixed 4×4 (or other future variants), pixel-perfect.
     const centerPixels = centerMarkPixels(reticle.centerDot.kind)
     for (const [i, p] of centerPixels.entries()) {

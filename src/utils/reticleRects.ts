@@ -54,6 +54,22 @@ export function computeReticleRects(
 
   const out: ColoredRect[] = []
 
+  // Pixel-paint mode bypasses the parametric pipeline entirely — the user's
+  // hand-drawn pixels are the firmware output, regardless of magnification.
+  if (reticle.mode === 'pixels') {
+    for (const [dx, dy] of reticle.customPixels) {
+      out.push({
+        x: cx + dx,
+        y: cy + dy,
+        w: 1,
+        h: 1,
+        color,
+        role: 'pixel',
+      })
+    }
+    return out
+  }
+
   for (const p of centerMarkPixels(reticle.centerDot.kind)) {
     out.push({
       x: cx + p.x,

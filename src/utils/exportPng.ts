@@ -166,7 +166,12 @@ function drawInfoPanel(
   ctx.fillText(t('export.reticle'), x0 + PADDING, y)
   y += LINE_H
 
-  label(t('export.centerDot'), y); value(t(`centerDot.kindLabel.${reticle.centerDot.kind}`), valX, y); y += LINE_H
+  if (reticle.mode === 'pixels') {
+    label(t('export.mode'), y); value(t('export.modePixels'), valX, y, COL_ACCENT); y += LINE_H
+    label(t('export.customPixels'), y); value(`${reticle.customPixels.length}`, valX, y); y += LINE_H
+  } else {
+    label(t('export.centerDot'), y); value(t(`centerDot.kindLabel.${reticle.centerDot.kind}`), valX, y); y += LINE_H
+  }
   if (reticle.refCircle.enabled && reticle.refCircle.diameterMrad > 0) {
     const d = reticle.refCircle.diameterMrad
     label(t('export.refCircle'), y)

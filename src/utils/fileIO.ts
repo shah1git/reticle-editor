@@ -74,6 +74,10 @@ export function loadFromJson(
         enabled: typeof rc?.enabled === 'boolean' ? rc.enabled : false,
         diameterMrad: typeof rc?.diameterMrad === 'number' && rc.diameterMrad > 0 ? rc.diameterMrad : 10,
       }
+      r.mode = r.mode === 'pixels' ? 'pixels' : 'parametric'
+      r.customPixels = Array.isArray(r.customPixels)
+        ? r.customPixels.filter((p: unknown) => Array.isArray(p) && p.length === 2 && typeof p[0] === 'number' && typeof p[1] === 'number')
+        : []
       for (const key of ['up', 'down', 'left', 'right']) {
         const w = r.wings?.[key]
         if (!w) continue

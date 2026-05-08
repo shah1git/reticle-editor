@@ -119,6 +119,20 @@ export function describeReticle(
   // Reticle section
   lines.push(t('describe.reticle.header'))
   lines.push('  ' + t('describe.reticle.color', { color: reticle.color }))
+
+  // Pixel-paint mode bypasses the rest of the parametric description.
+  if (reticle.mode === 'pixels') {
+    lines.push('  ' + t('describe.reticle.modePixels'))
+    lines.push('  ' + t('describe.reticle.customPixels', { count: reticle.customPixels.length }))
+    lines.push('')
+    lines.push(t('describe.summary.header'))
+    lines.push('  ' + t('describe.summary.totalMarks', { count: reticle.customPixels.length }))
+    lines.push('')
+    lines.push('—')
+    lines.push(t('describe.footer', { version: __APP_VERSION__, url: PROJECT_URL }))
+    return lines.join('\n')
+  }
+
   lines.push('  ' + t('describe.reticle.focalPlane', {
     plane: t(reticle.focalPlane === 'ffp' ? 'describe.reticle.ffp' : 'describe.reticle.sfp'),
   }))
