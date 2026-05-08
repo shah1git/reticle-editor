@@ -28,9 +28,13 @@ const loadState = () => {
       // Migrate to kind-based shape variants. Older states stored
       // centerDot.radius / centerDot.diameter and wing.dotSize — those are
       // dropped now; we keep the user's reticle layout and snap shapes to
-      // the only currently available variants ('square4' and 'pair').
+      // the supported variants ('square4'/'square2' for center, 'pair' for wings).
       const cd = reticle.centerDot as { kind?: string; radius?: number; diameter?: number } | undefined
-      if (!cd || cd.kind !== 'square4') {
+      const knownCenterKinds = ['square4', 'square2', 'pixelBR', 'pixelTL'] as const
+      type KnownCenterKind = typeof knownCenterKinds[number]
+      if (cd?.kind && (knownCenterKinds as readonly string[]).includes(cd.kind)) {
+        reticle.centerDot = { kind: cd.kind as KnownCenterKind }
+      } else {
         reticle.centerDot = { kind: 'square4' }
       }
       for (const k of ['up', 'down', 'left', 'right'] as const) {
@@ -49,7 +53,8 @@ const loadState = () => {
           else if (w.length != null && w.length > 0 && spacing > 0) count = Math.floor(w.length / spacing)
           else count = 0
         }
-        w.dots = { enabled, spacing, count, kind: 'pair' }
+        const dotKind = dots.kind === 'single' ? 'single' : 'pair'
+        w.dots = { enabled, spacing, count, kind: dotKind }
         if ('length' in w) delete (w as Record<string, unknown>).length
         if ('dotSize' in w) delete (w as Record<string, unknown>).dotSize
         if ('lineThickness' in w) delete (w as Record<string, unknown>).lineThickness

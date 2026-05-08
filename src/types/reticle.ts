@@ -3,8 +3,8 @@
  * vertical-wing dot) carries its own `kind` field. Today every entity has a
  * single allowed value; new variants are added later by extending the union.
  */
-export type CenterMarkKind = 'square4'
-export type WingDotKind = 'pair'
+export type CenterMarkKind = 'square4' | 'square2' | 'pixelBR' | 'pixelTL'
+export type WingDotKind = 'pair' | 'single'
 
 export interface Wing {
   enabled: boolean

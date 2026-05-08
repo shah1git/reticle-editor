@@ -66,7 +66,9 @@ export function loadFromJson(
     if (data.scopeProfile) setScope(data.scopeProfile)
     if (data.reticle) {
       const r = data.reticle as any
-      r.centerDot = { kind: 'square4' }
+      const cdKind = (r.centerDot && (r.centerDot as { kind?: string }).kind) || 'square4'
+      const knownCenterKinds = ['square4', 'square2', 'pixelBR', 'pixelTL']
+      r.centerDot = { kind: knownCenterKinds.includes(cdKind) ? cdKind : 'square4' }
       for (const key of ['up', 'down', 'left', 'right']) {
         const w = r.wings?.[key]
         if (!w) continue
@@ -82,7 +84,7 @@ export function loadFromJson(
           enabled: dots.enabled ?? true,
           spacing,
           count,
-          kind: 'pair',
+          kind: dots.kind === 'single' ? 'single' : 'pair',
         }
         if ('length' in w) delete w.length
         if ('dotSize' in w) delete w.dotSize

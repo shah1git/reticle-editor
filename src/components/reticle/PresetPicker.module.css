@@ -1,0 +1,33 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.btn {
+  background: var(--bg-input);
+  border: 1px solid var(--border-input);
+  color: var(--text-secondary);
+  padding: 8px 4px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.15s;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn:hover {
+  border-color: var(--text-secondary);
+  background: var(--bg-hover);
+}
+
+.btnActive {
+  border-color: var(--accent-border);
+  color: var(--accent);
+  background: var(--accent-bg);
+}

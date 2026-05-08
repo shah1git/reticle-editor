@@ -29,7 +29,8 @@ npm run preview   # preview production-сборки
 ```
 src/
 ├── App.tsx                    # Корневой компонент, state: scope, reticle, activeWing, magnification
-├── defaults.ts                # Значения по умолчанию для ScopeProfile и Reticle
+├── defaults.ts                # ScopeProfile по умолчанию; defaultReticle = PRESETS[0]
+├── presets.ts                 # Каталог готовых конфигураций сетки + reticleMatchesPreset
 ├── global.css                 # CSS-переменные, сброс, скроллбары
 ├── main.tsx                   # Точка входа React
 │
@@ -67,6 +68,7 @@ src/
     │   └── ScopeProfilePanel.tsx  # Параметры прицела (тип, фокус, сенсор, дисплей)
     │
     ├── reticle/
+    │   ├── PresetPicker.tsx    # 6 кнопок-пресетов сверху LeftPanel; подсветка активного
     │   ├── WingEditor.tsx      # Табы крыльев + параметры (длина, толщина, точки)
     │   ├── CenterDotConfig.tsx # Радиус центральной точки (MRAD, snap к пикселям)
     │   └── RasterStrategySelector.tsx # Выбор А/Б/В + сворачиваемое описание
@@ -122,6 +124,29 @@ interface Reticle {
 ### ScopeProfile (профиль прицела)
 
 Два типа: `digital` (тепловизор/ночник — фокус, сенсор, дисплей, pixel pitch) и `optical` (оптика — FOV, дисплей для экспорта). Из параметров вычисляется `pixelsPerMrad` — ключевой коэффициент пересчёта.
+
+## Пресеты сетки
+
+`src/presets.ts` хранит каталог готовых конфигураций — массив `PRESETS: ReticlePreset[]`. Каждый пресет содержит `id` и полный объект `Reticle` (центральная точка, 4 крыла, цвет, фокальная плоскость, стратегия растеризации).
+
+Кнопки пресетов отрисовываются в `PresetPicker.tsx` сверху `LeftPanel`. Применение пресета — `setReticle(preset.reticle)`, то есть **полная замена** текущей сетки. Сравнение `reticleMatchesPreset(reticle, preset.reticle)` подсвечивает активный пресет.
+
+Текущий каталог:
+
+| ID | Сценарий | Конфигурация |
+|---|---|---|
+| `hunting` | Универсальный охотничий | Центр 4×4, верх off, низ 10×1.0 MRAD, бока 5×1.0 MRAD, метки `pair` |
+| `fine` | Малоразмерные цели | Центр 1px (BR), single-метки 0.5 MRAD; верх off, низ 8, бока 4 |
+| `longRange` | Holdover на длинной дистанции | Центр 2×2, низ 15×1.0 MRAD, бока 3, верх off |
+| `milGrid` | Симметричная mil-сетка для измерений | Центр 4×4, все 4 крыла 8×1.0 MRAD, метки `pair` |
+| `windBias` | Под ветреные условия | Центр 2×2, бока 10×0.5 MRAD, низ 10×1.0, верх 2×1.0 |
+| `minDot` | Близкие дистанции, быстрая стрельба | Центр 1px (TL), все крылья off |
+
+`defaultReticle` (стартовое состояние при первом запуске) равен `PRESETS[0].reticle` — то есть `hunting`.
+
+Локализация — ключи `presets.<id>.name` и `presets.<id>.desc` в `src/i18n/locales/{en,ru,zh}.json`. Описание используется как нативный `title`-tooltip кнопки.
+
+Добавление нового пресета: расширить юнион `PresetId`, добавить элемент в `PRESETS` (`presets.ts`), добавить `name`/`desc` во все 3 локали — больше ничего трогать не нужно.
 
 ## FFP / SFP и кратность
 

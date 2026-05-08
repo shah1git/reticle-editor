@@ -22,7 +22,7 @@
     "copy": "Copy",
     "copied": "Copied",
     "close": "Close",
-    "translateTo": "🌐 Translate: {{lang}}",
+    "translateTo": "\ud83c\udf10 Translate: {{lang}}",
     "scope": {
       "header": "SCOPE",
       "name": "Name: {{name}}",
@@ -90,12 +90,43 @@
   "leftPanel": {
     "reticle": "RETICLE"
   },
+  "presets": {
+    "title": "PRESETS",
+    "tooltip": "Ready-made reticle configurations. Applying a preset fully replaces the current reticle.",
+    "hunting": {
+      "name": "Hunting",
+      "desc": "No top wing, bottom 10\u00d71.0, sides 5\u00d71.0. General-purpose."
+    },
+    "fine": {
+      "name": "Fine",
+      "desc": "1 px centre, single dots at 0.5 MRAD. For small targets."
+    },
+    "longRange": {
+      "name": "Long",
+      "desc": "Long bottom 15\u00d71.0, narrow sides \u00d73. Drop holdover."
+    },
+    "milGrid": {
+      "name": "Mil-grid",
+      "desc": "All four wings 8\u00d71.0. Symmetric ranging grid."
+    },
+    "windBias": {
+      "name": "Wind",
+      "desc": "Sides 0.5 MRAD \u00d710, bottom 1.0. Windy conditions."
+    },
+    "minDot": {
+      "name": "Minimal",
+      "desc": "Just one pixel at centre, no wings. Close range."
+    }
+  },
   "centerDot": {
     "title": "\u25cf CENTER DOT",
-    "tooltip": "Aiming dot at the reticle center. One variant available for now \u2014 a 4\u00d74-pixel square. More shapes can be added later.",
+    "tooltip": "Aiming dot at the reticle center. Even-sized squares (4\u00d74, 2\u00d72) sit symmetrically on the geometric centre; the 1-pixel variants are themselves symmetric but offset half a pixel from true centre into one of the four quadrants.",
     "kindField": "Shape",
     "kindLabel": {
-      "square4": "4\u00d74 px square"
+      "square4": "4\u00d74 px square",
+      "square2": "2\u00d72 px square",
+      "pixelBR": "1 px (bottom-right of centre)",
+      "pixelTL": "1 px (top-left of centre)"
     }
   },
   "wings": {
@@ -111,10 +142,12 @@
     "dotKindField": "Mark shape",
     "dotKindLabel": {
       "h": {
-        "pair": "Pair: one pixel above the axis, one below"
+        "pair": "Pair: one pixel above the axis, one below",
+        "single": "Single: 1 pixel (off-axis by half a pixel)"
       },
       "v": {
-        "pair": "Pair: one pixel left of the axis, one right"
+        "pair": "Pair: one pixel left of the axis, one right",
+        "single": "Single: 1 pixel (off-axis by half a pixel)"
       }
     },
     "interval": "Interval",

@@ -16,7 +16,7 @@ interface Props {
   setActiveWing: (w: WingKey) => void
 }
 
-const WING_DOT_KINDS: WingDotKind[] = ['pair']
+const WING_DOT_KINDS: WingDotKind[] = ['pair', 'single']
 
 export default function WingEditor({ reticle, setReticle, ppm, activeWing, setActiveWing }: Props) {
   const { t } = useTranslation()

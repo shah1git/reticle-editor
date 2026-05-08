@@ -8,7 +8,7 @@ interface Props {
   setReticle: (r: Reticle) => void
 }
 
-const CENTER_KINDS: CenterMarkKind[] = ['square4']
+const CENTER_KINDS: CenterMarkKind[] = ['square4', 'square2', 'pixelBR', 'pixelTL']
 
 export default function CenterDotConfig({ reticle, setReticle }: Props) {
   const { t } = useTranslation()
