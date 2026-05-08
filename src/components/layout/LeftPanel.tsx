@@ -5,6 +5,7 @@ import type { WingKey } from '../../App'
 import CenterDotConfig from '../reticle/CenterDotConfig'
 
 import WingEditor from '../reticle/WingEditor'
+import PresetPicker from '../reticle/PresetPicker'
 import Section from '../ui/Section'
 import styles from './LeftPanel.module.css'
 
@@ -21,6 +22,8 @@ export default function LeftPanel({ reticle, setReticle, ppm, activeWing, setAct
 
   return (
     <aside className={styles.panel}>
+      <PresetPicker reticle={reticle} setReticle={setReticle} />
+
       <Section title={t('leftPanel.reticle')} collapsible={false}>
         <CenterDotConfig reticle={reticle} setReticle={setReticle} />
       </Section>
