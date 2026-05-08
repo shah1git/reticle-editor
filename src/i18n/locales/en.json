@@ -47,8 +47,7 @@
       "magnification": "Magnification: \u00d7{{value}}",
       "rasterization": "Rasterization: {{strategy}}",
       "centerDot": "Center dot: {{label}}",
-      "modePixels": "Mode: pixel paint (parametric flattened into individual pixels — non-reversible)",
-      "customPixels": "Lit pixels: {{count}}"
+      "customPixels": "Painted pixels: {{count}} (drawn on top of the parametric reticle)"
     },
     "refCircle": {
       "header": "REFERENCE RING",
@@ -73,7 +72,8 @@
     "summary": {
       "header": "SUMMARY",
       "totalMarks": "Total marks: {{count}}",
-      "maxError": "Overall max error: \u00b1{{px}} px"
+      "maxError": "Overall max error: \u00b1{{px}} px",
+      "customPixels": "Painted pixels: {{count}}"
     },
     "footer": "Made in RikaNV Reticle Editor v{{version}} \u00b7 {{url}}"
   },
@@ -99,14 +99,9 @@
     "reticle": "RETICLE"
   },
   "paint": {
-    "enterMode": "Pixel mode →",
-    "convertConfirm": "Convert this reticle to pixel-paint mode? The current parametric reticle will be flattened into individual pixels and you won't be able to edit it parametrically afterwards.",
-    "modeBadge": "Pixel mode · {{count}} pixels",
-    "clearAll": "Clear",
-    "clearConfirm": "Erase all painted pixels?",
-    "panelTitle": "PIXEL PAINT",
-    "panelTooltip": "Free-form pixel-by-pixel reticle drawing.",
-    "howTo": "Left click on the canvas toggles a pixel; drag with the mouse held down to paint or erase a stroke. Alt+left or middle-button drag pans the canvas. Wheel zooms."
+    "toggle": "Pixel paint",
+    "clearAll": "Clear painted ({{count}})",
+    "clearConfirm": "Erase all painted pixels?"
   },
   "presets": {
     "title": "PRESETS",
@@ -361,9 +356,7 @@
     "focalPlane": "Focal plane:",
     "reticle": "RETICLE",
     "centerDot": "Center dot:",
-    "mode": "Mode:",
-    "modePixels": "Pixel paint",
-    "customPixels": "Lit pixels:",
+    "customPixels": "Painted pixels:",
     "refCircle": "Reference ring:",
     "refCircleValue": "{{diameterMrad}} MRAD diameter ({{sizeAt100m}} m at 100 m)",
     "color": "Color:",

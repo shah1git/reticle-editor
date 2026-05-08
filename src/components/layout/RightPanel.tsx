@@ -14,9 +14,6 @@ interface Props {
 }
 
 export default function RightPanel({ reticle, ppm, magnification, activeWing, setActiveWing }: Props) {
-  // The right panel exposes wing rasterisation tables and summary cards —
-  // both meaningless in pixel mode because there are no parametric wings.
-  if (reticle.mode === 'pixels') return null
   return (
     <aside className={styles.panel}>
       <RasterTable
