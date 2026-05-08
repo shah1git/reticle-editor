@@ -231,6 +231,13 @@
   margin-top: 2px;
 }
 
+.unitNote {
+  font-size: 11px;
+  color: var(--text-hint);
+  font-style: italic;
+  margin-top: 2px;
+}
+
 .gradient {
   display: inline-block;
   width: 40px;

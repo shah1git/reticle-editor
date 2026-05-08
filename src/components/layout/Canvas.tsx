@@ -248,6 +248,7 @@ export default function Canvas({ scope, reticle, setReticle, ppm, magnification,
         )}
         <div>{t('scopePanel.oneMrad', { value: ppm.h.toFixed(1) })} {reticle.focalPlane.toUpperCase()} {magnification > 1 ? `${magnification}×` : ''}</div>
         <div>FOV: {effectiveFov.h.toFixed(0)} {'×'} {effectiveFov.v.toFixed(0)} MRAD</div>
+        <div className={styles.unitNote}>{t('canvas.mradUnit')}</div>
         {isOptimal ? (
           <div className={styles.roundingLine}>{t('toolbar.rounding')} {t(strategyTransKeys[reticle.rasterization])} <span className={styles.roundingCheck}>{'✓'}</span></div>
         ) : (
