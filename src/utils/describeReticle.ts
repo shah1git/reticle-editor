@@ -4,6 +4,7 @@ import type { Reticle, Wing } from '../types/reticle'
 import type { PixelsPerMrad } from '../math/optics'
 import { getFovMrad, isSquarePixelRatio } from '../math/optics'
 import { rasterize, effectiveDotCount } from '../math/rasterization'
+import { referenceCirclePixels } from '../math/shapes'
 import type { WingKey } from '../App'
 
 declare const __APP_VERSION__: string
@@ -130,14 +131,32 @@ export function describeReticle(
   lines.push('  ' + t('describe.reticle.centerDot', {
     label: t(`centerDot.kindLabel.${reticle.centerDot.kind}`),
   }))
+  lines.push('')
+
+  // Reference ring — own section, only when enabled.
   if (reticle.refCircle.enabled && reticle.refCircle.diameterMrad > 0) {
     const d = reticle.refCircle.diameterMrad
-    lines.push('  ' + t('describe.reticle.refCircle', {
-      diameterMrad: fmt(d, 2),
-      sizeAt100m: fmt(d * 0.1, 2),
+    const diameterPx = d * ppm.h
+    const radiusPx = diameterPx / 2
+    const ringPixels = referenceCirclePixels(radiusPx)
+    let maxErrPx = 0
+    for (const p of ringPixels) {
+      const cxp = p.x + 0.5
+      const cyp = p.y + 0.5
+      const dist = Math.sqrt(cxp * cxp + cyp * cyp)
+      const err = Math.abs(dist - radiusPx)
+      if (err > maxErrPx) maxErrPx = err
+    }
+    lines.push(t('describe.refCircle.header'))
+    lines.push('  ' + t('describe.refCircle.diameter', {
+      mrad: fmt(d, 2),
+      m: fmt(d * 0.1, 2),
+      px: fmt(diameterPx, 2),
     }))
+    lines.push('  ' + t('describe.refCircle.litPixels', { count: ringPixels.length }))
+    lines.push('  ' + t('describe.refCircle.maxError', { px: fmt(maxErrPx, 2) }))
+    lines.push('')
   }
-  lines.push('')
 
   // Wings
   const wingKeys: WingKey[] = ['up', 'down', 'left', 'right']

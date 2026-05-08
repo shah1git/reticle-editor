@@ -46,8 +46,13 @@
       "sfp": "SFP\uff08\u540e\u7f6e\uff0c\u5206\u5212\u677f\u56fa\u5b9a\uff09",
       "magnification": "\u500d\u7387\uff1a\u00d7{{value}}",
       "rasterization": "\u5149\u6805\u5316\uff1a{{strategy}}",
-      "centerDot": "\u4e2d\u5fc3\u70b9\uff1a{{label}}",
-      "refCircle": "\u53c2\u8003\u5706\uff1a\u76f4\u5f84 {{diameterMrad}} MRAD\uff08= 100 m \u5904 {{sizeAt100m}} m\uff09"
+      "centerDot": "\u4e2d\u5fc3\u70b9\uff1a{{label}}"
+    },
+    "refCircle": {
+      "header": "\u53c2\u8003\u5706",
+      "diameter": "\u76f4\u5f84\uff1a{{mrad}} MRAD = 100 m \u5904 {{m}} m\uff08{{px}} \u50cf\u7d20\uff09",
+      "litPixels": "\u70b9\u4eae\u50cf\u7d20\uff1a{{count}}",
+      "maxError": "\u73af\u6700\u5927\u8bef\u5dee\uff1a\u00b1{{px}} \u50cf\u7d20"
     },
     "wing": {
       "headerUp": "\u2191 \u4e0a\u7ffc",
