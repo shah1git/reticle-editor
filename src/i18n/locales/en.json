@@ -112,10 +112,12 @@
     "dotKindField": "Mark shape",
     "dotKindLabel": {
       "h": {
-        "pair": "Pair: one pixel above the axis, one below"
+        "pair": "Pair: one pixel above the axis, one below",
+        "single": "Single: 1 pixel (off-axis by half a pixel)"
       },
       "v": {
-        "pair": "Pair: one pixel left of the axis, one right"
+        "pair": "Pair: one pixel left of the axis, one right",
+        "single": "Single: 1 pixel (off-axis by half a pixel)"
       }
     },
     "interval": "Interval",

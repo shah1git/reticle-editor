@@ -4,7 +4,7 @@
  * single allowed value; new variants are added later by extending the union.
  */
 export type CenterMarkKind = 'square4' | 'square2'
-export type WingDotKind = 'pair'
+export type WingDotKind = 'pair' | 'single'
 
 export interface Wing {
   enabled: boolean

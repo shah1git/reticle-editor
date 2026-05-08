@@ -72,5 +72,10 @@ export function wingDotPixels(kind: WingDotKind, axisAlong: 'h' | 'v'): PixelRec
       // Vertical wing — pair runs horizontally across the axis column.
       return [{ x: -1, y: 0, w: 2, h: 1 }]
     }
+    case 'single':
+      // Single firmware pixel sitting just below-right of the corner anchor.
+      // Same quadrant as the bottom-right pixel of `pair`, so single dots
+      // line up with the inner edge of pair dots.
+      return [{ x: 0, y: 0, w: 1, h: 1 }]
   }
 }

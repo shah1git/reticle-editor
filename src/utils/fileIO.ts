@@ -83,7 +83,7 @@ export function loadFromJson(
           enabled: dots.enabled ?? true,
           spacing,
           count,
-          kind: 'pair',
+          kind: dots.kind === 'single' ? 'single' : 'pair',
         }
         if ('length' in w) delete w.length
         if ('dotSize' in w) delete w.dotSize
