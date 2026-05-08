@@ -4,6 +4,7 @@ import type { Reticle, Wing } from '../types/reticle'
 import type { PixelsPerMrad } from '../math/optics'
 import { getFovMrad, isSquarePixelRatio } from '../math/optics'
 import { rasterize, effectiveDotCount } from '../math/rasterization'
+import { referenceCirclePixels } from '../math/shapes'
 import type { WingKey } from '../App'
 
 declare const __APP_VERSION__: string
@@ -118,6 +119,20 @@ export function describeReticle(
   // Reticle section
   lines.push(t('describe.reticle.header'))
   lines.push('  ' + t('describe.reticle.color', { color: reticle.color }))
+
+  // Pixel-paint mode bypasses the rest of the parametric description.
+  if (reticle.mode === 'pixels') {
+    lines.push('  ' + t('describe.reticle.modePixels'))
+    lines.push('  ' + t('describe.reticle.customPixels', { count: reticle.customPixels.length }))
+    lines.push('')
+    lines.push(t('describe.summary.header'))
+    lines.push('  ' + t('describe.summary.totalMarks', { count: reticle.customPixels.length }))
+    lines.push('')
+    lines.push('—')
+    lines.push(t('describe.footer', { version: __APP_VERSION__, url: PROJECT_URL }))
+    return lines.join('\n')
+  }
+
   lines.push('  ' + t('describe.reticle.focalPlane', {
     plane: t(reticle.focalPlane === 'ffp' ? 'describe.reticle.ffp' : 'describe.reticle.sfp'),
   }))
@@ -131,6 +146,31 @@ export function describeReticle(
     label: t(`centerDot.kindLabel.${reticle.centerDot.kind}`),
   }))
   lines.push('')
+
+  // Reference ring — own section, only when enabled.
+  if (reticle.refCircle.enabled && reticle.refCircle.diameterMrad > 0) {
+    const d = reticle.refCircle.diameterMrad
+    const diameterPx = d * ppm.h
+    const radiusPx = diameterPx / 2
+    const ringPixels = referenceCirclePixels(radiusPx)
+    let maxErrPx = 0
+    for (const p of ringPixels) {
+      const cxp = p.x + 0.5
+      const cyp = p.y + 0.5
+      const dist = Math.sqrt(cxp * cxp + cyp * cyp)
+      const err = Math.abs(dist - radiusPx)
+      if (err > maxErrPx) maxErrPx = err
+    }
+    lines.push(t('describe.refCircle.header'))
+    lines.push('  ' + t('describe.refCircle.diameter', {
+      mrad: fmt(d, 2),
+      m: fmt(d * 0.1, 2),
+      px: fmt(diameterPx, 2),
+    }))
+    lines.push('  ' + t('describe.refCircle.litPixels', { count: ringPixels.length }))
+    lines.push('  ' + t('describe.refCircle.maxError', { px: fmt(maxErrPx, 2) }))
+    lines.push('')
+  }
 
   // Wings
   const wingKeys: WingKey[] = ['up', 'down', 'left', 'right']

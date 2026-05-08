@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type Dispatch, type SetStateAction } from 'react'
 import type { ScopeProfile } from '../../types/scope'
 import type { Reticle } from '../../types/reticle'
 import type { PixelsPerMrad } from '../../math/optics'
@@ -16,7 +16,7 @@ interface Props {
   scope: ScopeProfile
   setScope: (s: ScopeProfile) => void
   reticle: Reticle
-  setReticle: (r: Reticle) => void
+  setReticle: Dispatch<SetStateAction<Reticle>>
   ppm: PixelsPerMrad
   bestStrategy: BestStrategyInfo
   activeWing: WingKey
@@ -55,7 +55,7 @@ export default function MobileLayout({
         {activeTab === 'canvas' && (
           <div className={styles.canvasPanel}>
             <Canvas
-              scope={scope} reticle={reticle}
+              scope={scope} reticle={reticle} setReticle={setReticle}
               ppm={ppm}
               magnification={magnification} setMagnification={setMagnification}
             />

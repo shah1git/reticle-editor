@@ -69,6 +69,15 @@ export function loadFromJson(
       const cdKind = (r.centerDot && (r.centerDot as { kind?: string }).kind) || 'square4'
       const knownCenterKinds = ['square4', 'square2', 'pixelBR', 'pixelTL']
       r.centerDot = { kind: knownCenterKinds.includes(cdKind) ? cdKind : 'square4' }
+      const rc = r.refCircle as { enabled?: unknown; diameterMrad?: unknown } | undefined
+      r.refCircle = {
+        enabled: typeof rc?.enabled === 'boolean' ? rc.enabled : false,
+        diameterMrad: typeof rc?.diameterMrad === 'number' && rc.diameterMrad > 0 ? rc.diameterMrad : 10,
+      }
+      r.mode = r.mode === 'pixels' ? 'pixels' : 'parametric'
+      r.customPixels = Array.isArray(r.customPixels)
+        ? r.customPixels.filter((p: unknown) => Array.isArray(p) && p.length === 2 && typeof p[0] === 'number' && typeof p[1] === 'number')
+        : []
       for (const key of ['up', 'down', 'left', 'right']) {
         const w = r.wings?.[key]
         if (!w) continue

@@ -9,6 +9,10 @@ export interface ReticlePreset {
 
 const BASE_COLOR = '#00ff88'
 
+const noRefCircle = { enabled: false, diameterMrad: 10 }
+const baseMode: 'parametric' = 'parametric'
+const noPixels: Array<[number, number]> = []
+
 const wing = (count: number, spacing: number, kind: Wing['dots']['kind']): Wing => ({
   enabled: count > 0,
   dots: { enabled: true, spacing, count, kind },
@@ -33,6 +37,9 @@ export const PRESETS: ReticlePreset[] = [
       color: BASE_COLOR,
       rasterization: 'independent',
       focalPlane: 'ffp',
+      refCircle: noRefCircle,
+      mode: baseMode,
+      customPixels: noPixels,
     },
   },
   {
@@ -48,6 +55,9 @@ export const PRESETS: ReticlePreset[] = [
       color: BASE_COLOR,
       rasterization: 'independent',
       focalPlane: 'ffp',
+      refCircle: noRefCircle,
+      mode: baseMode,
+      customPixels: noPixels,
     },
   },
   {
@@ -63,6 +73,9 @@ export const PRESETS: ReticlePreset[] = [
       color: BASE_COLOR,
       rasterization: 'independent',
       focalPlane: 'ffp',
+      refCircle: noRefCircle,
+      mode: baseMode,
+      customPixels: noPixels,
     },
   },
   {
@@ -78,6 +91,9 @@ export const PRESETS: ReticlePreset[] = [
       color: BASE_COLOR,
       rasterization: 'independent',
       focalPlane: 'ffp',
+      refCircle: noRefCircle,
+      mode: baseMode,
+      customPixels: noPixels,
     },
   },
   {
@@ -93,6 +109,9 @@ export const PRESETS: ReticlePreset[] = [
       color: BASE_COLOR,
       rasterization: 'independent',
       focalPlane: 'ffp',
+      refCircle: noRefCircle,
+      mode: baseMode,
+      customPixels: noPixels,
     },
   },
   {
@@ -108,6 +127,9 @@ export const PRESETS: ReticlePreset[] = [
       color: BASE_COLOR,
       rasterization: 'independent',
       focalPlane: 'ffp',
+      refCircle: noRefCircle,
+      mode: baseMode,
+      customPixels: noPixels,
     },
   },
 ]
@@ -117,6 +139,10 @@ export function reticleMatchesPreset(reticle: Reticle, preset: Reticle): boolean
   if (reticle.color !== preset.color) return false
   if (reticle.rasterization !== preset.rasterization) return false
   if (reticle.focalPlane !== preset.focalPlane) return false
+  if (reticle.refCircle.enabled !== preset.refCircle.enabled) return false
+  if (reticle.refCircle.diameterMrad !== preset.refCircle.diameterMrad) return false
+  if (reticle.mode !== preset.mode) return false
+  if (reticle.customPixels.length !== preset.customPixels.length) return false
   for (const k of ['up', 'down', 'left', 'right'] as const) {
     const a = reticle.wings[k]
     const b = preset.wings[k]

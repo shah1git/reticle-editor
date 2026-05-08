@@ -16,7 +16,22 @@ export interface Wing {
   }
 }
 
+export type ReticleMode = 'parametric' | 'pixels'
+
 export interface Reticle {
+  /**
+   * Drawing mode. `parametric` uses center+wings+ring (rasterised on demand).
+   * `pixels` ignores all parametric fields and renders/exports `customPixels`
+   * directly. Switching parametric→pixels is a one-way conversion that
+   * flattens the current parametric reticle into editable pixels.
+   */
+  mode: ReticleMode
+  /**
+   * Sparse list of lit pixel offsets from the reticle centre, in firmware
+   * pixels. Each entry is `[dx, dy]` — the pixel occupies
+   * `[cx+dx .. cx+dx+1] × [cy+dy .. cy+dy+1]`. Used only when `mode === 'pixels'`.
+   */
+  customPixels: Array<[number, number]>
   centerDot: {
     kind: CenterMarkKind  // mark-shape variant
   }
@@ -29,4 +44,13 @@ export interface Reticle {
   color: string
   rasterization: 'independent' | 'fixed_step'
   focalPlane: 'ffp' | 'sfp'
+  /**
+   * Optional reference ring. When `enabled`, a 1-pixel-thick circle is
+   * rasterized around the centre at the given diameter. Same colour as the
+   * rest of the reticle and exported into BMP/PNG and the JSON manifest.
+   */
+  refCircle: {
+    enabled: boolean
+    diameterMrad: number
+  }
 }

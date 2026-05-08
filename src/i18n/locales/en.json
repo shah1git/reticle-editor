@@ -46,7 +46,15 @@
       "sfp": "SFP (second, reticle fixed)",
       "magnification": "Magnification: \u00d7{{value}}",
       "rasterization": "Rasterization: {{strategy}}",
-      "centerDot": "Center dot: {{label}}"
+      "centerDot": "Center dot: {{label}}",
+      "modePixels": "Mode: pixel paint (parametric flattened into individual pixels — non-reversible)",
+      "customPixels": "Lit pixels: {{count}}"
+    },
+    "refCircle": {
+      "header": "REFERENCE RING",
+      "diameter": "Diameter: {{mrad}} MRAD = {{m}} m at 100 m ({{px}} px)",
+      "litPixels": "Lit pixels: {{count}}",
+      "maxError": "Max ring error: \u00b1{{px}} px"
     },
     "wing": {
       "headerUp": "\u2191 UP WING",
@@ -89,6 +97,16 @@
   },
   "leftPanel": {
     "reticle": "RETICLE"
+  },
+  "paint": {
+    "enterMode": "Pixel mode →",
+    "convertConfirm": "Convert this reticle to pixel-paint mode? The current parametric reticle will be flattened into individual pixels and you won't be able to edit it parametrically afterwards.",
+    "modeBadge": "Pixel mode · {{count}} pixels",
+    "clearAll": "Clear",
+    "clearConfirm": "Erase all painted pixels?",
+    "panelTitle": "PIXEL PAINT",
+    "panelTooltip": "Free-form pixel-by-pixel reticle drawing.",
+    "howTo": "Left click on the canvas toggles a pixel; drag with the mouse held down to paint or erase a stroke. Alt+left or middle-button drag pans the canvas. Wheel zooms."
   },
   "presets": {
     "title": "PRESETS",
@@ -343,6 +361,11 @@
     "focalPlane": "Focal plane:",
     "reticle": "RETICLE",
     "centerDot": "Center dot:",
+    "mode": "Mode:",
+    "modePixels": "Pixel paint",
+    "customPixels": "Lit pixels:",
+    "refCircle": "Reference ring:",
+    "refCircleValue": "{{diameterMrad}} MRAD diameter ({{sizeAt100m}} m at 100 m)",
     "color": "Color:",
     "strategy": "Strategy:",
     "recommended": "Recommended:",

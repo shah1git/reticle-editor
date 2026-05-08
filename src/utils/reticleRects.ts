@@ -3,7 +3,7 @@ import type { Reticle } from '../types/reticle'
 import type { RasterMark } from '../types/rasterization'
 import { calcPixelsPerMrad } from '../math/optics'
 import { rasterize, effectiveDotCount } from '../math/rasterization'
-import { centerMarkPixels, centerMarkHalfExtent, wingDotPixels } from '../math/shapes'
+import { centerMarkPixels, centerMarkHalfExtent, wingDotPixels, referenceCirclePixels } from '../math/shapes'
 
 /**
  * A coloured pixel rectangle in display-pixel coordinates, ready to be
@@ -54,6 +54,22 @@ export function computeReticleRects(
 
   const out: ColoredRect[] = []
 
+  // Pixel-paint mode bypasses the parametric pipeline entirely — the user's
+  // hand-drawn pixels are the firmware output, regardless of magnification.
+  if (reticle.mode === 'pixels') {
+    for (const [dx, dy] of reticle.customPixels) {
+      out.push({
+        x: cx + dx,
+        y: cy + dy,
+        w: 1,
+        h: 1,
+        color,
+        role: 'pixel',
+      })
+    }
+    return out
+  }
+
   for (const p of centerMarkPixels(reticle.centerDot.kind)) {
     out.push({
       x: cx + p.x,
@@ -63,6 +79,20 @@ export function computeReticleRects(
       color,
       role: 'center',
     })
+  }
+
+  if (reticle.refCircle.enabled && reticle.refCircle.diameterMrad > 0) {
+    const radiusPx = (reticle.refCircle.diameterMrad / 2) * ppm.h
+    for (const p of referenceCirclePixels(radiusPx)) {
+      out.push({
+        x: cx + p.x,
+        y: cy + p.y,
+        w: p.w,
+        h: p.h,
+        color,
+        role: 'refCircle',
+      })
+    }
   }
 
   const gapPxBase = centerMarkHalfExtent(reticle.centerDot.kind)
