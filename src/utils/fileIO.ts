@@ -67,7 +67,8 @@ export function loadFromJson(
     if (data.reticle) {
       const r = data.reticle as any
       const cdKind = (r.centerDot && (r.centerDot as { kind?: string }).kind) || 'square4'
-      r.centerDot = { kind: cdKind === 'square2' ? 'square2' : 'square4' }
+      const knownCenterKinds = ['square4', 'square2', 'pixelBR', 'pixelTL']
+      r.centerDot = { kind: knownCenterKinds.includes(cdKind) ? cdKind : 'square4' }
       for (const key of ['up', 'down', 'left', 'right']) {
         const w = r.wings?.[key]
         if (!w) continue

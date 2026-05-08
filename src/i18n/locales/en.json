@@ -92,11 +92,13 @@
   },
   "centerDot": {
     "title": "\u25cf CENTER DOT",
-    "tooltip": "Aiming dot at the reticle center. Two variants available \u2014 a 4\u00d74 or 2\u00d72 pixel square.",
+    "tooltip": "Aiming dot at the reticle center. Even-sized squares (4\u00d74, 2\u00d72) sit symmetrically on the geometric centre; the 1-pixel variants are themselves symmetric but offset half a pixel from true centre into one of the four quadrants.",
     "kindField": "Shape",
     "kindLabel": {
       "square4": "4\u00d74 px square",
-      "square2": "2\u00d72 px square"
+      "square2": "2\u00d72 px square",
+      "pixelBR": "1 px (bottom-right of centre)",
+      "pixelTL": "1 px (top-left of centre)"
     }
   },
   "wings": {

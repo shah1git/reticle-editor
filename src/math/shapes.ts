@@ -35,6 +35,12 @@ export function centerMarkPixels(kind: CenterMarkKind): PixelRect[] {
     case 'square2':
       // 2×2 block centered on (0,0). Top-left at (-1,-1).
       return [{ x: -1, y: -1, w: 2, h: 2 }]
+    case 'pixelBR':
+      // Single pixel in the bottom-right quadrant of the corner anchor.
+      return [{ x: 0, y: 0, w: 1, h: 1 }]
+    case 'pixelTL':
+      // Single pixel in the top-left quadrant of the corner anchor.
+      return [{ x: -1, y: -1, w: 1, h: 1 }]
   }
 }
 
@@ -44,6 +50,11 @@ export function centerMarkHalfExtent(kind: CenterMarkKind): number {
     case 'square4':
       return 2
     case 'square2':
+      return 1
+    case 'pixelBR':
+    case 'pixelTL':
+      // 1×1 marks live in one quadrant only, but we still reserve a 1-px gap
+      // on every side so the wing dots never overlap the centre pixel.
       return 1
   }
 }

@@ -30,10 +30,12 @@ const loadState = () => {
       // dropped now; we keep the user's reticle layout and snap shapes to
       // the supported variants ('square4'/'square2' for center, 'pair' for wings).
       const cd = reticle.centerDot as { kind?: string; radius?: number; diameter?: number } | undefined
-      if (!cd || (cd.kind !== 'square4' && cd.kind !== 'square2')) {
-        reticle.centerDot = { kind: 'square4' }
+      const knownCenterKinds = ['square4', 'square2', 'pixelBR', 'pixelTL'] as const
+      type KnownCenterKind = typeof knownCenterKinds[number]
+      if (cd?.kind && (knownCenterKinds as readonly string[]).includes(cd.kind)) {
+        reticle.centerDot = { kind: cd.kind as KnownCenterKind }
       } else {
-        reticle.centerDot = { kind: cd.kind }
+        reticle.centerDot = { kind: 'square4' }
       }
       for (const k of ['up', 'down', 'left', 'right'] as const) {
         const w = reticle.wings?.[k] as
