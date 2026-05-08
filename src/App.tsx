@@ -28,10 +28,12 @@ const loadState = () => {
       // Migrate to kind-based shape variants. Older states stored
       // centerDot.radius / centerDot.diameter and wing.dotSize — those are
       // dropped now; we keep the user's reticle layout and snap shapes to
-      // the only currently available variants ('square4' and 'pair').
+      // the supported variants ('square4'/'square2' for center, 'pair' for wings).
       const cd = reticle.centerDot as { kind?: string; radius?: number; diameter?: number } | undefined
-      if (!cd || cd.kind !== 'square4') {
+      if (!cd || (cd.kind !== 'square4' && cd.kind !== 'square2')) {
         reticle.centerDot = { kind: 'square4' }
+      } else {
+        reticle.centerDot = { kind: cd.kind }
       }
       for (const k of ['up', 'down', 'left', 'right'] as const) {
         const w = reticle.wings?.[k] as

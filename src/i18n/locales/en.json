@@ -92,10 +92,11 @@
   },
   "centerDot": {
     "title": "\u25cf CENTER DOT",
-    "tooltip": "Aiming dot at the reticle center. One variant available for now \u2014 a 4\u00d74-pixel square. More shapes can be added later.",
+    "tooltip": "Aiming dot at the reticle center. Two variants available \u2014 a 4\u00d74 or 2\u00d72 pixel square.",
     "kindField": "Shape",
     "kindLabel": {
-      "square4": "4\u00d74 px square"
+      "square4": "4\u00d74 px square",
+      "square2": "2\u00d72 px square"
     }
   },
   "wings": {

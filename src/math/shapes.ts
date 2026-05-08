@@ -32,6 +32,9 @@ export function centerMarkPixels(kind: CenterMarkKind): PixelRect[] {
     case 'square4':
       // 4×4 block centered on (0,0). Top-left at (-2,-2).
       return [{ x: -2, y: -2, w: 4, h: 4 }]
+    case 'square2':
+      // 2×2 block centered on (0,0). Top-left at (-1,-1).
+      return [{ x: -1, y: -1, w: 2, h: 2 }]
   }
 }
 
@@ -40,6 +43,8 @@ export function centerMarkHalfExtent(kind: CenterMarkKind): number {
   switch (kind) {
     case 'square4':
       return 2
+    case 'square2':
+      return 1
   }
 }
 
