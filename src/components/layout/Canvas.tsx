@@ -1,5 +1,4 @@
 import { useRef, useState, useEffect, useMemo, useCallback, type MouseEvent as ReactMouseEvent, type Dispatch, type SetStateAction } from 'react'
-import { flattenReticleToPixels } from '../../utils/flattenToPixels'
 import { useTranslation } from 'react-i18next'
 import type { ScopeProfile } from '../../types/scope'
 import type { Reticle } from '../../types/reticle'
@@ -42,6 +41,7 @@ export default function Canvas({ scope, reticle, setReticle, ppm, magnification,
   const [size, setSize] = useState({ width: 800, height: 600 })
   const [sizeReady, setSizeReady] = useState(false)
   const [pixelGridOn, setPixelGridOn] = useState(true)
+  const [paintOn, setPaintOn] = useState(false)
 
   // Use ppm.h as the canvas axis ppm. For square-pixel scopes (the typical
   // case) ppm.h == ppm.v. For non-square pixels we accept a small distortion
@@ -171,7 +171,7 @@ export default function Canvas({ scope, reticle, setReticle, ppm, magnification,
   }, [setReticle])
 
   const handlePaintDown = useCallback((e: ReactMouseEvent<SVGSVGElement>) => {
-    if (reticle.mode !== 'pixels') return
+    if (!paintOn) return
     if (e.button !== 0 || e.altKey) return  // pan stays on alt+left / middle button
     const cell = pixelUnderMouse(e.clientX, e.clientY)
     if (!cell) return
@@ -179,7 +179,7 @@ export default function Canvas({ scope, reticle, setReticle, ppm, magnification,
     const exists = reticle.customPixels.some(([px, py]) => px === dx && py === dy)
     strokeRef.current = { kind: exists ? 'remove' : 'add', touched: new Set() }
     applyStrokeAt(dx, dy)
-  }, [reticle, pixelUnderMouse, applyStrokeAt])
+  }, [paintOn, reticle.customPixels, pixelUnderMouse, applyStrokeAt])
 
   const handlePaintMove = useCallback((e: ReactMouseEvent<SVGSVGElement>) => {
     if (!strokeRef.current) return
@@ -192,21 +192,12 @@ export default function Canvas({ scope, reticle, setReticle, ppm, magnification,
     strokeRef.current = null
   }, [])
 
-  const handleConvertToPixels = useCallback(() => {
-    if (reticle.mode === 'pixels') return
-    const ok = window.confirm(t('paint.convertConfirm'))
-    if (!ok) return
-    const pixels = flattenReticleToPixels(scope, reticle)
-    setReticle(prev => ({ ...prev, mode: 'pixels', customPixels: pixels }))
-  }, [scope, reticle, setReticle, t])
-
   const handleClearPixels = useCallback(() => {
-    if (reticle.mode !== 'pixels') return
     if (reticle.customPixels.length === 0) return
     const ok = window.confirm(t('paint.clearConfirm'))
     if (!ok) return
     setReticle(prev => ({ ...prev, customPixels: [] }))
-  }, [reticle, setReticle, t])
+  }, [reticle.customPixels.length, setReticle, t])
 
   return (
     <div className={styles.canvas} ref={containerRef}>
@@ -257,26 +248,24 @@ export default function Canvas({ scope, reticle, setReticle, ppm, magnification,
         )}
         <div>{t('scopePanel.oneMrad', { value: ppm.h.toFixed(1) })} {reticle.focalPlane.toUpperCase()} {magnification > 1 ? `${magnification}×` : ''}</div>
         <div>FOV: {effectiveFov.h.toFixed(0)} {'×'} {effectiveFov.v.toFixed(0)} MRAD</div>
-        {reticle.mode === 'parametric' && (isOptimal ? (
+        {isOptimal ? (
           <div className={styles.roundingLine}>{t('toolbar.rounding')} {t(strategyTransKeys[reticle.rasterization])} <span className={styles.roundingCheck}>{'✓'}</span></div>
         ) : (
           <>
             <div className={styles.roundingLine}>{t('toolbar.rounding')} {t(strategyTransKeys[reticle.rasterization])}</div>
             <div className={styles.roundingOptimal}>{t('toolbar.recommended')}: {t(strategyTransKeys[bestStrategy.best])} ({'±'}{bestStrategy.bestMaxError.toFixed(2)} {t('units.px')})</div>
           </>
-        ))}
-        {reticle.mode === 'parametric' && (
-          <div className={styles.legendRow}>
-            <span className={styles.legendLabel}>0</span>
-            <span className={styles.gradient} />
-            <span className={styles.legendLabel}>{'±'}0.5{t('units.px')}</span>
-          </div>
         )}
+        <div className={styles.legendRow}>
+          <span className={styles.legendLabel}>0</span>
+          <span className={styles.gradient} />
+          <span className={styles.legendLabel}>{'±'}0.5{t('units.px')}</span>
+        </div>
       </div>
 
       {dotHover && <DotTooltip info={dotHover} />}
 
-      {reticle.mode === 'parametric' && <StrategyComparison ppm={ppm} reticle={reticle} />}
+      <StrategyComparison ppm={ppm} reticle={reticle} />
 
       <div className={styles.hint}>
         <span className={styles.zoomLabel}>
@@ -297,17 +286,18 @@ export default function Canvas({ scope, reticle, setReticle, ppm, magnification,
           />
           {t('canvas.refCircle')}
         </label>
-        {reticle.mode === 'parametric' ? (
-          <button className={styles.paintBtn} onClick={handleConvertToPixels}>
-            {t('paint.enterMode')}
+        <label className={styles.gridToggle}>
+          <input
+            type="checkbox"
+            checked={paintOn}
+            onChange={e => setPaintOn(e.target.checked)}
+          />
+          {t('paint.toggle')}
+        </label>
+        {reticle.customPixels.length > 0 && (
+          <button className={styles.paintBtn} onClick={handleClearPixels}>
+            {t('paint.clearAll', { count: reticle.customPixels.length })}
           </button>
-        ) : (
-          <span className={styles.paintMode}>
-            {t('paint.modeBadge', { count: reticle.customPixels.length })}
-            <button className={styles.paintBtn} onClick={handleClearPixels}>
-              {t('paint.clearAll')}
-            </button>
-          </span>
         )}
       </div>
       <div className={styles.controls}>

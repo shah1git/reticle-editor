@@ -16,20 +16,13 @@ export interface Wing {
   }
 }
 
-export type ReticleMode = 'parametric' | 'pixels'
-
 export interface Reticle {
   /**
-   * Drawing mode. `parametric` uses center+wings+ring (rasterised on demand).
-   * `pixels` ignores all parametric fields and renders/exports `customPixels`
-   * directly. Switching parametric→pixels is a one-way conversion that
-   * flattens the current parametric reticle into editable pixels.
-   */
-  mode: ReticleMode
-  /**
-   * Sparse list of lit pixel offsets from the reticle centre, in firmware
-   * pixels. Each entry is `[dx, dy]` — the pixel occupies
-   * `[cx+dx .. cx+dx+1] × [cy+dy .. cy+dy+1]`. Used only when `mode === 'pixels'`.
+   * Sparse list of user-painted pixel offsets from the reticle centre, in
+   * firmware pixels. Each entry is `[dx, dy]` — the pixel occupies
+   * `[cx+dx .. cx+dx+1] × [cy+dy .. cy+dy+1]`. Always rendered on top of the
+   * parametric reticle (centre + wings + ring), so the user can decorate the
+   * generated reticle with hand-drawn pixels without losing parametric edit.
    */
   customPixels: Array<[number, number]>
   centerDot: {

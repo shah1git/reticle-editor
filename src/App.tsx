@@ -29,16 +29,13 @@ const loadState = () => {
       // centerDot.radius / centerDot.diameter and wing.dotSize — those are
       // dropped now; we keep the user's reticle layout and snap shapes to
       // the supported variants ('square4'/'square2' for center, 'pair' for wings).
-      // mode + customPixels for the pixel-paint mode.
-      const savedMode = (reticle as { mode?: unknown }).mode
-      reticle.mode = savedMode === 'pixels' ? 'pixels' : 'parametric'
+      // customPixels — user-painted decoration on top of the parametric reticle.
       const savedPixels = (reticle as { customPixels?: unknown }).customPixels
-      if (Array.isArray(savedPixels)) {
-        reticle.customPixels = savedPixels
-          .filter((p): p is [number, number] => Array.isArray(p) && p.length === 2 && typeof p[0] === 'number' && typeof p[1] === 'number')
-      } else {
-        reticle.customPixels = []
-      }
+      reticle.customPixels = Array.isArray(savedPixels)
+        ? savedPixels.filter((p): p is [number, number] => Array.isArray(p) && p.length === 2 && typeof p[0] === 'number' && typeof p[1] === 'number')
+        : []
+      // Drop the legacy `mode` field if present; pixels now coexist with parametric.
+      delete (reticle as { mode?: unknown }).mode
       const rc = (reticle as { refCircle?: { enabled?: unknown; diameterMrad?: unknown } }).refCircle
       const rcEnabled = typeof rc?.enabled === 'boolean' ? rc.enabled : false
       const rcDiameter = typeof rc?.diameterMrad === 'number' && rc.diameterMrad > 0 ? rc.diameterMrad : 10

@@ -47,8 +47,7 @@
       "magnification": "\u500d\u7387\uff1a\u00d7{{value}}",
       "rasterization": "\u5149\u6805\u5316\uff1a{{strategy}}",
       "centerDot": "\u4e2d\u5fc3\u70b9\uff1a{{label}}",
-      "modePixels": "\u6a21\u5f0f\uff1a\u50cf\u7d20\u7ed8\u5236\uff08\u53c2\u6570\u5df2\u5c55\u5e73\u4e3a\u5355\u4e2a\u50cf\u7d20 \u2014 \u4e0d\u53ef\u9006\uff09",
-      "customPixels": "\u70b9\u4eae\u50cf\u7d20\uff1a{{count}}"
+      "customPixels": "\u7ed8\u5236\u50cf\u7d20\uff1a{{count}}\uff08\u53e0\u52a0\u5728\u53c2\u6570\u5316\u5206\u5212\u677f\u4e4b\u4e0a\uff09"
     },
     "refCircle": {
       "header": "\u53c2\u8003\u5706",
@@ -73,7 +72,8 @@
     "summary": {
       "header": "\u6c47\u603b",
       "totalMarks": "\u603b\u523b\u5ea6\u70b9\u6570\uff1a{{count}}",
-      "maxError": "\u6574\u4f53\u6700\u5927\u8bef\u5dee\uff1a\u00b1{{px}} \u50cf\u7d20"
+      "maxError": "\u6574\u4f53\u6700\u5927\u8bef\u5dee\uff1a\u00b1{{px}} \u50cf\u7d20",
+      "customPixels": "\u7ed8\u5236\u50cf\u7d20\uff1a{{count}}"
     },
     "footer": "\u7531 RikaNV Reticle Editor v{{version}} \u751f\u6210 \u00b7 {{url}}"
   },
@@ -99,14 +99,9 @@
     "reticle": "\u5206\u5212\u677f"
   },
   "paint": {
-    "enterMode": "\u50cf\u7d20\u6a21\u5f0f \u2192",
-    "convertConfirm": "\u5207\u6362\u5230\u50cf\u7d20\u7ed8\u5236\u6a21\u5f0f\uff1f\u5f53\u524d\u7684\u53c2\u6570\u5316\u5206\u5212\u677f\u4f1a\u5c55\u5e73\u4e3a\u5355\u4e2a\u50cf\u7d20\uff0c\u4e4b\u540e\u5c06\u65e0\u6cd5\u7ee7\u7eed\u53c2\u6570\u5316\u7f16\u8f91\u3002",
-    "modeBadge": "\u50cf\u7d20\u6a21\u5f0f \u00b7 {{count}} \u50cf\u7d20",
-    "clearAll": "\u6e05\u7a7a",
-    "clearConfirm": "\u6e05\u9664\u6240\u6709\u7ed8\u5236\u7684\u50cf\u7d20\uff1f",
-    "panelTitle": "\u50cf\u7d20\u7ed8\u5236",
-    "panelTooltip": "\u9010\u50cf\u7d20\u81ea\u7531\u7ed8\u5236\u5206\u5212\u677f\u3002",
-    "howTo": "\u5728\u753b\u5e03\u4e0a\u5de6\u952e\u5355\u51fb\u5207\u6362\u50cf\u7d20\uff1b\u6309\u4f4f\u5de6\u952e\u62d6\u52a8\u53ef\u7ed8\u5236\u6216\u64e6\u9664\u4e00\u7b14\u3002Alt+\u5de6\u952e\u6216\u4e2d\u952e\u62d6\u52a8\u5e73\u79fb\u3002\u6eda\u8f6e\u7f29\u653e\u3002"
+    "toggle": "\u50cf\u7d20\u7ed8\u5236",
+    "clearAll": "\u6e05\u7a7a\u7ed8\u5236\uff08{{count}}\uff09",
+    "clearConfirm": "\u6e05\u9664\u6240\u6709\u7ed8\u5236\u7684\u50cf\u7d20\uff1f"
   },
   "presets": {
     "title": "\u9884\u8bbe",
@@ -361,9 +356,7 @@
     "focalPlane": "\u7126\u5e73\u9762\uff1a",
     "reticle": "\u5206\u5212\u677f",
     "centerDot": "\u4e2d\u5fc3\u70b9\uff1a",
-    "mode": "\u6a21\u5f0f\uff1a",
-    "modePixels": "\u50cf\u7d20\u7ed8\u5236",
-    "customPixels": "\u70b9\u4eae\u50cf\u7d20\uff1a",
+    "customPixels": "\u7ed8\u5236\u50cf\u7d20\uff1a",
     "refCircle": "\u53c2\u8003\u5706\uff1a",
     "refCircleValue": "\u76f4\u5f84 {{diameterMrad}} MRAD\uff08100 m \u5904 {{sizeAt100m}} m\uff09",
     "color": "\u989c\u8272\uff1a",
