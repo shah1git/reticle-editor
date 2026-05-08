@@ -4,7 +4,7 @@ import type { PixelsPerMrad } from '../../math/optics'
 import type { RasterMark } from '../../types/rasterization'
 import type { DotHoverInfo } from '../../types/dotTooltip'
 import { rasterize, effectiveDotCount } from '../../math/rasterization'
-import { centerMarkPixels, centerMarkHalfExtent, wingDotPixels } from '../../math/shapes'
+import { centerMarkPixels, centerMarkHalfExtent, wingDotPixels, referenceCirclePixels } from '../../math/shapes'
 import { errorToColor } from '../../math/errorColor'
 
 interface Props {
@@ -62,6 +62,26 @@ export default function ReticleRenderer({ reticle, ppm, cx, cy, pixelScale, onDo
           shapeRendering="crispEdges"
         />
       )
+    }
+
+    // Reference ring — same colour as the rest of the reticle, rasterised as
+    // firmware pixels so the canvas preview matches the BMP/PNG export.
+    if (reticle.refCircle.enabled && reticle.refCircle.diameterMrad > 0) {
+      const radiusFwPx = (reticle.refCircle.diameterMrad / 2) * ppm.h
+      const ringPixels = referenceCirclePixels(radiusFwPx)
+      for (const [i, p] of ringPixels.entries()) {
+        rects.push(
+          <rect
+            key={`ring-${i}`}
+            x={cx + p.x * screenScale}
+            y={cy + p.y * screenScale}
+            width={p.w * screenScale}
+            height={p.h * screenScale}
+            fill={color}
+            shapeRendering="crispEdges"
+          />
+        )
+      }
     }
     // Gap from center to inner edge of wing line, in firmware-image-px.
     const gapPxBase = centerMarkHalfExtent(reticle.centerDot.kind)

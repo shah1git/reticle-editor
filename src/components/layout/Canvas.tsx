@@ -9,7 +9,6 @@ import { findBestStrategy } from '../../math/bestStrategy'
 import { useCanvasInteraction } from '../../hooks/useCanvasInteraction'
 import MradGrid from '../canvas/MradGrid'
 import PixelGrid from '../canvas/PixelGrid'
-import ReferenceCircle from '../canvas/ReferenceCircle'
 import ReticleRenderer from '../canvas/ReticleRenderer'
 import DotTooltip from '../canvas/DotTooltip'
 import StrategyComparison from '../table/StrategyComparison'
@@ -18,6 +17,7 @@ import styles from './Canvas.module.css'
 interface Props {
   scope: ScopeProfile
   reticle: Reticle
+  setReticle: (r: Reticle) => void
   ppm: PixelsPerMrad
   magnification: number
   setMagnification: (m: number) => void
@@ -33,13 +33,12 @@ const MAG_PRESETS = [1, 2, 3, 4, 5, 6, 7, 8]
 const MIN_SCALE = 1
 const MAX_SCALE = 32
 
-export default function Canvas({ scope, reticle, ppm, magnification, setMagnification }: Props) {
+export default function Canvas({ scope, reticle, setReticle, ppm, magnification, setMagnification }: Props) {
   const { t } = useTranslation()
   const containerRef = useRef<HTMLDivElement>(null)
   const [size, setSize] = useState({ width: 800, height: 600 })
   const [sizeReady, setSizeReady] = useState(false)
   const [pixelGridOn, setPixelGridOn] = useState(true)
-  const [refCircleOn, setRefCircleOn] = useState(false)
 
   // Use ppm.h as the canvas axis ppm. For square-pixel scopes (the typical
   // case) ppm.h == ppm.v. For non-square pixels we accept a small distortion
@@ -169,9 +168,6 @@ export default function Canvas({ scope, reticle, ppm, magnification, setMagnific
           magnification={magnification}
           focalPlane={reticle.focalPlane}
         />
-        {refCircleOn && (
-          <ReferenceCircle cx={cx} cy={cy} radiusMrad={5} zoom={transform.zoom} />
-        )}
       </svg>
 
       <div className={styles.scopeInfo}>
@@ -211,7 +207,14 @@ export default function Canvas({ scope, reticle, ppm, magnification, setMagnific
           {t('canvas.pixelGrid')}
         </label>
         <label className={styles.gridToggle}>
-          <input type="checkbox" checked={refCircleOn} onChange={e => setRefCircleOn(e.target.checked)} />
+          <input
+            type="checkbox"
+            checked={reticle.refCircle.enabled}
+            onChange={e => setReticle({
+              ...reticle,
+              refCircle: { ...reticle.refCircle, enabled: e.target.checked },
+            })}
+          />
           {t('canvas.refCircle')}
         </label>
       </div>

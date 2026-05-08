@@ -46,7 +46,8 @@
       "sfp": "SFP\uff08\u540e\u7f6e\uff0c\u5206\u5212\u677f\u56fa\u5b9a\uff09",
       "magnification": "\u500d\u7387\uff1a\u00d7{{value}}",
       "rasterization": "\u5149\u6805\u5316\uff1a{{strategy}}",
-      "centerDot": "\u4e2d\u5fc3\u70b9\uff1a{{label}}"
+      "centerDot": "\u4e2d\u5fc3\u70b9\uff1a{{label}}",
+      "refCircle": "\u53c2\u8003\u5706\uff1a\u76f4\u5f84 {{diameterMrad}} MRAD\uff08= 100 m \u5904 {{sizeAt100m}} m\uff09"
     },
     "wing": {
       "headerUp": "\u2191 \u4e0a\u7ffc",
@@ -343,6 +344,8 @@
     "focalPlane": "\u7126\u5e73\u9762\uff1a",
     "reticle": "\u5206\u5212\u677f",
     "centerDot": "\u4e2d\u5fc3\u70b9\uff1a",
+    "refCircle": "\u53c2\u8003\u5706\uff1a",
+    "refCircleValue": "\u76f4\u5f84 {{diameterMrad}} MRAD\uff08100 m \u5904 {{sizeAt100m}} m\uff09",
     "color": "\u989c\u8272\uff1a",
     "strategy": "\u7b56\u7565\uff1a",
     "recommended": "\u63a8\u8350\uff1a",

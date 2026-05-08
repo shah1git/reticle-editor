@@ -70,6 +70,50 @@ export function centerMarkHalfExtent(kind: CenterMarkKind): number {
  * visual overlap simply uses the mark colour because marks are drawn
  * after the line.
  */
+/**
+ * Rasterize a 1-firmware-pixel-thick circle of the given radius around the
+ * reticle centre (the corner stack at (0,0)). Each returned PixelRect is one
+ * firmware pixel (w=h=1). The pixel ring is determined by picking, for each
+ * row and each column, the pixel whose centre is closest to the ideal circle
+ * — this avoids gaps near the cardinal directions that a simple
+ * x-only-or-y-only sweep would leave. The result is then mirrored into all
+ * four quadrants so the ring is symmetric around (0,0).
+ */
+export function referenceCirclePixels(radiusFwPx: number): PixelRect[] {
+  if (!Number.isFinite(radiusFwPx) || radiusFwPx <= 0.5) return []
+  const R = radiusFwPx
+  const R2 = R * R
+  const seen = new Set<string>()
+  const rounded = Math.ceil(R)
+  // Sweep by x: for every pixel column in the positive quadrant find the
+  // closest pixel-centre on the circle.
+  for (let px = 0; px < rounded; px++) {
+    const xc = px + 0.5
+    if (xc >= R) break
+    const yc = Math.sqrt(Math.max(0, R2 - xc * xc))
+    const py = Math.max(0, Math.round(yc - 0.5))
+    seen.add(`${px},${py}`)
+  }
+  // Same sweep by y to fill the rows the column sweep skipped.
+  for (let py = 0; py < rounded; py++) {
+    const yc = py + 0.5
+    if (yc >= R) break
+    const xc = Math.sqrt(Math.max(0, R2 - yc * yc))
+    const px = Math.max(0, Math.round(xc - 0.5))
+    seen.add(`${px},${py}`)
+  }
+  const out: PixelRect[] = []
+  for (const key of seen) {
+    const [px, py] = key.split(',').map(Number)
+    // 4-fold mirror around the corner anchor (0,0).
+    out.push({ x: px, y: py, w: 1, h: 1 })
+    out.push({ x: -px - 1, y: py, w: 1, h: 1 })
+    out.push({ x: px, y: -py - 1, w: 1, h: 1 })
+    out.push({ x: -px - 1, y: -py - 1, w: 1, h: 1 })
+  }
+  return out
+}
+
 export function wingDotPixels(kind: WingDotKind, axisAlong: 'h' | 'v'): PixelRect[] {
   switch (kind) {
     case 'pair': {

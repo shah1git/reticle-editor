@@ -46,7 +46,8 @@
       "sfp": "SFP (second, reticle fixed)",
       "magnification": "Magnification: \u00d7{{value}}",
       "rasterization": "Rasterization: {{strategy}}",
-      "centerDot": "Center dot: {{label}}"
+      "centerDot": "Center dot: {{label}}",
+      "refCircle": "Reference ring: {{diameterMrad}} MRAD diameter (= {{sizeAt100m}} m at 100 m)"
     },
     "wing": {
       "headerUp": "\u2191 UP WING",
@@ -343,6 +344,8 @@
     "focalPlane": "Focal plane:",
     "reticle": "RETICLE",
     "centerDot": "Center dot:",
+    "refCircle": "Reference ring:",
+    "refCircleValue": "{{diameterMrad}} MRAD diameter ({{sizeAt100m}} m at 100 m)",
     "color": "Color:",
     "strategy": "Strategy:",
     "recommended": "Recommended:",

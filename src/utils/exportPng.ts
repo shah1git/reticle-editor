@@ -167,6 +167,12 @@ function drawInfoPanel(
   y += LINE_H
 
   label(t('export.centerDot'), y); value(t(`centerDot.kindLabel.${reticle.centerDot.kind}`), valX, y); y += LINE_H
+  if (reticle.refCircle.enabled && reticle.refCircle.diameterMrad > 0) {
+    const d = reticle.refCircle.diameterMrad
+    label(t('export.refCircle'), y)
+    value(t('export.refCircleValue', { diameterMrad: d.toFixed(1), sizeAt100m: (d * 0.1).toFixed(2) }), valX, y)
+    y += LINE_H
+  }
   label(t('export.color'), y); value(reticle.color, valX, y); y += LINE_H
   label(t('export.strategy'), y)
   const isOptimal = best.best === reticle.rasterization

@@ -55,7 +55,7 @@ export default function MobileLayout({
         {activeTab === 'canvas' && (
           <div className={styles.canvasPanel}>
             <Canvas
-              scope={scope} reticle={reticle}
+              scope={scope} reticle={reticle} setReticle={setReticle}
               ppm={ppm}
               magnification={magnification} setMagnification={setMagnification}
             />

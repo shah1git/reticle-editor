@@ -29,6 +29,10 @@ const loadState = () => {
       // centerDot.radius / centerDot.diameter and wing.dotSize — those are
       // dropped now; we keep the user's reticle layout and snap shapes to
       // the supported variants ('square4'/'square2' for center, 'pair' for wings).
+      const rc = (reticle as { refCircle?: { enabled?: unknown; diameterMrad?: unknown } }).refCircle
+      const rcEnabled = typeof rc?.enabled === 'boolean' ? rc.enabled : false
+      const rcDiameter = typeof rc?.diameterMrad === 'number' && rc.diameterMrad > 0 ? rc.diameterMrad : 10
+      reticle.refCircle = { enabled: rcEnabled, diameterMrad: rcDiameter }
       const cd = reticle.centerDot as { kind?: string; radius?: number; diameter?: number } | undefined
       const knownCenterKinds = ['square4', 'square2', 'pixelBR', 'pixelTL'] as const
       type KnownCenterKind = typeof knownCenterKinds[number]
@@ -122,7 +126,7 @@ export default function App() {
           activeWing={activeWing} setActiveWing={setActiveWing}
         />
         <Canvas
-          scope={scope} reticle={reticle}
+          scope={scope} reticle={reticle} setReticle={setReticle}
           ppm={effectivePpm}
           magnification={magnification} setMagnification={setMagnification}
         />

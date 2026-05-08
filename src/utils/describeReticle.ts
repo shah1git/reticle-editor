@@ -130,6 +130,13 @@ export function describeReticle(
   lines.push('  ' + t('describe.reticle.centerDot', {
     label: t(`centerDot.kindLabel.${reticle.centerDot.kind}`),
   }))
+  if (reticle.refCircle.enabled && reticle.refCircle.diameterMrad > 0) {
+    const d = reticle.refCircle.diameterMrad
+    lines.push('  ' + t('describe.reticle.refCircle', {
+      diameterMrad: fmt(d, 2),
+      sizeAt100m: fmt(d * 0.1, 2),
+    }))
+  }
   lines.push('')
 
   // Wings
