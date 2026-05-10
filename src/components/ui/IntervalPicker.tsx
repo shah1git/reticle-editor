@@ -48,10 +48,10 @@ export default function IntervalPicker({ axisPpm, axis, currentSpacing, onPick, 
         </div>
         <div className={styles.body}>
           <div className={styles.head}>
-            <span>{t('intervalPicker.colTarget')}</span>
-            <span>{t('intervalPicker.colExact')}</span>
-            <span>{t('intervalPicker.colStep')}</span>
-            <span>{t('intervalPicker.colDelta')}</span>
+            <span title={t('intervalPicker.colTargetTip')}>{t('intervalPicker.colTarget')}</span>
+            <span title={t('intervalPicker.colExactTip')}>{t('intervalPicker.colExact')}</span>
+            <span title={t('intervalPicker.colStepTip')}>{t('intervalPicker.colStep')}</span>
+            <span title={t('intervalPicker.colDeltaTip')}>{t('intervalPicker.colDelta')}</span>
           </div>
           {candidates.map(c => {
             const isCurrent = Math.abs(c.spacing - currentSpacing) < 0.0005
