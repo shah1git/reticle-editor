@@ -23,18 +23,29 @@ interface Props {
   setActiveWing: (w: WingKey) => void
   magnification: number
   setMagnification: (m: number) => void
+  loadedFileName: string | null
+  setLoadedFileName: (n: string | null) => void
+  loadedFileHandle: FileSystemFileHandle | null
+  setLoadedFileHandle: (h: FileSystemFileHandle | null) => void
 }
 
 export default function MobileLayout({
   scope, setScope, reticle, setReticle,
   ppm, bestStrategy, activeWing, setActiveWing,
   magnification, setMagnification,
+  loadedFileName, setLoadedFileName, loadedFileHandle, setLoadedFileHandle,
 }: Props) {
   const [activeTab, setActiveTab] = useState<MobileTab>('canvas')
 
+  const fileLoaderProps = {
+    setScope, setReticle,
+    loadedFileName, setLoadedFileName,
+    loadedFileHandle, setLoadedFileHandle,
+  }
+
   return (
     <div className={styles.layout}>
-      <TopBar scope={scope} reticle={reticle} setScope={setScope} setReticle={setReticle} ppm={ppm} magnification={magnification} />
+      <TopBar scope={scope} reticle={reticle} ppm={ppm} magnification={magnification} {...fileLoaderProps} />
 
       <div className={styles.content}>
         {activeTab === 'settings' && (
@@ -55,9 +66,10 @@ export default function MobileLayout({
         {activeTab === 'canvas' && (
           <div className={styles.canvasPanel}>
             <Canvas
-              scope={scope} reticle={reticle} setReticle={setReticle}
+              scope={scope} reticle={reticle}
               ppm={ppm}
               magnification={magnification} setMagnification={setMagnification}
+              {...fileLoaderProps}
             />
           </div>
         )}

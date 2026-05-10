@@ -3,12 +3,18 @@
     "pixelGrid": "Pixel grid",
     "pixelScaleSuffix": "({{ppm}} px/MRAD)",
     "refCircle": "1 m @ 100 m",
-    "mradUnit": "Unit: true MRAD (1 mrad = 1/1000 rad). Not 6000-mil (WarPac) or 6400-mil (NATO)."
+    "mradUnit": "Unit: true MRAD (1 mrad = 1/1000 rad). Not 6000-mil (WarPac) or 6400-mil (NATO).",
+    "dropTitle": "Release to load reticle",
+    "dropHint": "Only a JSON reticle file is accepted.",
+    "dropOnlyJson": "Unsupported file type. Drop a .json reticle file."
   },
   "topbar": {
     "title": "RETICLE EDITOR",
     "open": "\u2191 Open",
     "save": "\u2193 Save",
+    "saveCurrent": "\ud83d\udcdd Save to file",
+    "saveCurrentTipOverwrite": "Overwrite the loaded file in place (Chromium-based browsers).",
+    "saveCurrentTipDownload": "Download with the same name as the loaded file. Browser doesn't support direct overwrite \u2014 you'll need to confirm replacement.",
     "describe": "\ud83d\udccb Describe",
     "exportPng": "\u2b07 Export PNG",
     "exportBmp": "\u2b07 Export BMP"

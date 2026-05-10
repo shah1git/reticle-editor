@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useMemo, useCallback, type MouseEvent as ReactMouseEvent, type Dispatch, type SetStateAction } from 'react'
+import { useRef, useState, useEffect, useMemo, useCallback, type MouseEvent as ReactMouseEvent, type DragEvent as ReactDragEvent, type Dispatch, type SetStateAction } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ScopeProfile } from '../../types/scope'
 import type { Reticle } from '../../types/reticle'
@@ -7,6 +7,7 @@ import type { PixelsPerMrad } from '../../math/optics'
 import { getFovMrad } from '../../math/optics'
 import { findBestStrategy } from '../../math/bestStrategy'
 import { useCanvasInteraction } from '../../hooks/useCanvasInteraction'
+import { useFileLoader } from '../../hooks/useFileLoader'
 import MradGrid from '../canvas/MradGrid'
 import PixelGrid from '../canvas/PixelGrid'
 import ReticleRenderer from '../canvas/ReticleRenderer'
@@ -16,6 +17,7 @@ import styles from './Canvas.module.css'
 
 interface Props {
   scope: ScopeProfile
+  setScope: (s: ScopeProfile) => void
   reticle: Reticle
   // Accept the standard React state setter so paint-mode drag strokes can
   // batch updates via the callback form without races between fast events.
@@ -23,6 +25,10 @@ interface Props {
   ppm: PixelsPerMrad
   magnification: number
   setMagnification: (m: number) => void
+  loadedFileName: string | null
+  setLoadedFileName: (n: string | null) => void
+  loadedFileHandle: FileSystemFileHandle | null
+  setLoadedFileHandle: (h: FileSystemFileHandle | null) => void
 }
 
 const strategyTransKeys: Record<string, string> = {
@@ -35,7 +41,10 @@ const MAG_PRESETS = [1, 2, 3, 4, 5, 6, 7, 8]
 const MIN_SCALE = 1
 const MAX_SCALE = 32
 
-export default function Canvas({ scope, reticle, setReticle, ppm, magnification, setMagnification }: Props) {
+export default function Canvas({
+  scope, setScope, reticle, setReticle, ppm, magnification, setMagnification,
+  setLoadedFileName, setLoadedFileHandle,
+}: Props) {
   const { t } = useTranslation()
   const containerRef = useRef<HTMLDivElement>(null)
   const [size, setSize] = useState({ width: 800, height: 600 })
@@ -192,6 +201,62 @@ export default function Canvas({ scope, reticle, setReticle, ppm, magnification,
     strokeRef.current = null
   }, [])
 
+  const { acceptFile } = useFileLoader(setScope, setReticle, setLoadedFileName, setLoadedFileHandle)
+  const [dragActive, setDragActive] = useState(false)
+  const dragDepthRef = useRef(0)
+
+  const handleDragEnter = useCallback((e: ReactDragEvent<HTMLDivElement>) => {
+    if (!Array.from(e.dataTransfer.types || []).includes('Files')) return
+    e.preventDefault()
+    dragDepthRef.current += 1
+    setDragActive(true)
+  }, [])
+
+  const handleDragOver = useCallback((e: ReactDragEvent<HTMLDivElement>) => {
+    if (!Array.from(e.dataTransfer.types || []).includes('Files')) return
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'copy'
+  }, [])
+
+  const handleDragLeave = useCallback((e: ReactDragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    dragDepthRef.current = Math.max(0, dragDepthRef.current - 1)
+    if (dragDepthRef.current === 0) setDragActive(false)
+  }, [])
+
+  const handleDrop = useCallback(async (e: ReactDragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    dragDepthRef.current = 0
+    setDragActive(false)
+    const items = e.dataTransfer.items
+    let file: File | null = null
+    let handle: FileSystemFileHandle | null = null
+    if (items && items.length > 0) {
+      const it = items[0]
+      if (it.kind !== 'file') return
+      type ItemWithHandle = DataTransferItem & { getAsFileSystemHandle?: () => Promise<FileSystemHandle | null> }
+      const getHandle = (it as ItemWithHandle).getAsFileSystemHandle
+      if (getHandle) {
+        try {
+          const h = await getHandle.call(it)
+          if (h && h.kind === 'file') {
+            handle = h as FileSystemFileHandle
+            file = await handle.getFile()
+          }
+        } catch { /* fall through to getAsFile */ }
+      }
+      if (!file) file = it.getAsFile()
+    } else {
+      file = e.dataTransfer.files?.[0] ?? null
+    }
+    if (!file) return
+    if (!file.name.toLowerCase().endsWith('.json')) {
+      window.alert(t('canvas.dropOnlyJson'))
+      return
+    }
+    acceptFile(file, handle)
+  }, [acceptFile, t])
+
   const handleClearPixels = useCallback(() => {
     if (reticle.customPixels.length === 0) return
     const ok = window.confirm(t('paint.clearConfirm'))
@@ -200,7 +265,23 @@ export default function Canvas({ scope, reticle, setReticle, ppm, magnification,
   }, [reticle.customPixels.length, setReticle, t])
 
   return (
-    <div className={styles.canvas} ref={containerRef}>
+    <div
+      className={`${styles.canvas} ${dragActive ? styles.canvasDragging : ''}`}
+      ref={containerRef}
+      onDragEnter={handleDragEnter}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
+      {dragActive && (
+        <div className={styles.dropOverlay}>
+          <div className={styles.dropMsg}>
+            <div className={styles.dropIcon}>⤓</div>
+            <div className={styles.dropTitle}>{t('canvas.dropTitle')}</div>
+            <div className={styles.dropHint}>{t('canvas.dropHint')}</div>
+          </div>
+        </div>
+      )}
       <svg
         width={size.width}
         height={size.height}
