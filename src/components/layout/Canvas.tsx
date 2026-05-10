@@ -7,7 +7,6 @@ import type { PixelsPerMrad } from '../../math/optics'
 import { getFovMrad } from '../../math/optics'
 import { findBestStrategy } from '../../math/bestStrategy'
 import { useCanvasInteraction } from '../../hooks/useCanvasInteraction'
-import { useFileLoader } from '../../hooks/useFileLoader'
 import MradGrid from '../canvas/MradGrid'
 import PixelGrid from '../canvas/PixelGrid'
 import ReticleRenderer from '../canvas/ReticleRenderer'
@@ -17,7 +16,6 @@ import styles from './Canvas.module.css'
 
 interface Props {
   scope: ScopeProfile
-  setScope: (s: ScopeProfile) => void
   reticle: Reticle
   // Accept the standard React state setter so paint-mode drag strokes can
   // batch updates via the callback form without races between fast events.
@@ -25,10 +23,7 @@ interface Props {
   ppm: PixelsPerMrad
   magnification: number
   setMagnification: (m: number) => void
-  loadedFileName: string | null
-  setLoadedFileName: (n: string | null) => void
-  loadedFileHandle: FileSystemFileHandle | null
-  setLoadedFileHandle: (h: FileSystemFileHandle | null) => void
+  onAcceptFile: (file: File, handle?: FileSystemFileHandle | null) => void
 }
 
 const strategyTransKeys: Record<string, string> = {
@@ -42,8 +37,8 @@ const MIN_SCALE = 1
 const MAX_SCALE = 32
 
 export default function Canvas({
-  scope, setScope, reticle, setReticle, ppm, magnification, setMagnification,
-  setLoadedFileName, setLoadedFileHandle,
+  scope, reticle, setReticle, ppm, magnification, setMagnification,
+  onAcceptFile,
 }: Props) {
   const { t } = useTranslation()
   const containerRef = useRef<HTMLDivElement>(null)
@@ -201,7 +196,6 @@ export default function Canvas({
     strokeRef.current = null
   }, [])
 
-  const { acceptFile } = useFileLoader(setScope, setReticle, setLoadedFileName, setLoadedFileHandle)
   const [dragActive, setDragActive] = useState(false)
   const dragDepthRef = useRef(0)
 
@@ -254,8 +248,8 @@ export default function Canvas({
       window.alert(t('canvas.dropOnlyJson'))
       return
     }
-    acceptFile(file, handle)
-  }, [acceptFile, t])
+    onAcceptFile(file, handle)
+  }, [onAcceptFile, t])
 
   const handleClearPixels = useCallback(() => {
     if (reticle.customPixels.length === 0) return

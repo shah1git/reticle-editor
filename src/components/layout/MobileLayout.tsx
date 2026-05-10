@@ -24,9 +24,8 @@ interface Props {
   magnification: number
   setMagnification: (m: number) => void
   loadedFileName: string | null
-  setLoadedFileName: (n: string | null) => void
   loadedFileHandle: FileSystemFileHandle | null
-  setLoadedFileHandle: (h: FileSystemFileHandle | null) => void
+  onAcceptFile: (file: File, handle?: FileSystemFileHandle | null) => void
   onSave: () => void | Promise<void>
   onSaveAs: () => void | Promise<void>
 }
@@ -35,20 +34,17 @@ export default function MobileLayout({
   scope, setScope, reticle, setReticle,
   ppm, bestStrategy, activeWing, setActiveWing,
   magnification, setMagnification,
-  loadedFileName, setLoadedFileName, loadedFileHandle, setLoadedFileHandle,
-  onSave, onSaveAs,
+  loadedFileName, loadedFileHandle, onAcceptFile, onSave, onSaveAs,
 }: Props) {
   const [activeTab, setActiveTab] = useState<MobileTab>('canvas')
 
-  const fileLoaderProps = {
-    setScope, setReticle,
-    loadedFileName, setLoadedFileName,
-    loadedFileHandle, setLoadedFileHandle,
-  }
-
   return (
     <div className={styles.layout}>
-      <TopBar scope={scope} reticle={reticle} ppm={ppm} magnification={magnification} {...fileLoaderProps} onSave={onSave} onSaveAs={onSaveAs} />
+      <TopBar
+        scope={scope} reticle={reticle} ppm={ppm} magnification={magnification}
+        loadedFileName={loadedFileName} loadedFileHandle={loadedFileHandle}
+        onAcceptFile={onAcceptFile} onSave={onSave} onSaveAs={onSaveAs}
+      />
 
       <div className={styles.content}>
         {activeTab === 'settings' && (
@@ -69,10 +65,10 @@ export default function MobileLayout({
         {activeTab === 'canvas' && (
           <div className={styles.canvasPanel}>
             <Canvas
-              scope={scope} reticle={reticle}
+              scope={scope} reticle={reticle} setReticle={setReticle}
               ppm={ppm}
               magnification={magnification} setMagnification={setMagnification}
-              {...fileLoaderProps}
+              onAcceptFile={onAcceptFile}
             />
           </div>
         )}

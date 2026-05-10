@@ -7,7 +7,7 @@ import type { Reticle } from '../../types/reticle'
 import type { PixelsPerMrad } from '../../math/optics'
 import { exportPng } from '../../utils/exportPng'
 import { exportBmp } from '../../utils/exportBmp'
-import { useFileLoader } from '../../hooks/useFileLoader'
+import { getOpenFilePicker } from '../../types/fileSystemAccess'
 import DescribeModal from '../ui/DescribeModal'
 import BmpScalePicker from '../ui/BmpScalePicker'
 import LanguageSwitcher from './LanguageSwitcher'
@@ -16,40 +16,26 @@ import styles from './TopBar.module.css'
 interface Props {
   scope: ScopeProfile
   reticle: Reticle
-  setScope: (s: ScopeProfile) => void
-  setReticle: (r: Reticle) => void
   ppm: PixelsPerMrad
   magnification: number
   loadedFileName: string | null
-  setLoadedFileName: (n: string | null) => void
   loadedFileHandle: FileSystemFileHandle | null
-  setLoadedFileHandle: (h: FileSystemFileHandle | null) => void
+  onAcceptFile: (file: File, handle?: FileSystemFileHandle | null) => void
   onSave: () => void | Promise<void>
   onSaveAs: () => void | Promise<void>
 }
 
-interface ShowOpenFilePicker {
-  (options?: {
-    types?: { description?: string; accept: Record<string, string[]> }[]
-    multiple?: boolean
-    excludeAcceptAllOption?: boolean
-  }): Promise<FileSystemFileHandle[]>
-}
-
 export default function TopBar({
-  scope, reticle, setScope, setReticle, ppm, magnification,
-  loadedFileName, setLoadedFileName, loadedFileHandle, setLoadedFileHandle,
-  onSave, onSaveAs,
+  scope, reticle, ppm, magnification,
+  loadedFileName, loadedFileHandle, onAcceptFile, onSave, onSaveAs,
 }: Props) {
   const { t } = useTranslation()
   const fileRef = useRef<HTMLInputElement>(null)
   const [describeOpen, setDescribeOpen] = useState(false)
   const [bmpPickerOpen, setBmpPickerOpen] = useState(false)
 
-  const { acceptFile } = useFileLoader(setScope, setReticle, setLoadedFileName, setLoadedFileHandle)
-
   const handleLoad = async () => {
-    const picker = (window as unknown as { showOpenFilePicker?: ShowOpenFilePicker }).showOpenFilePicker
+    const picker = getOpenFilePicker()
     if (picker) {
       try {
         const [handle] = await picker({
@@ -57,7 +43,7 @@ export default function TopBar({
           multiple: false,
         })
         const file = await handle.getFile()
-        acceptFile(file, handle)
+        onAcceptFile(file, handle)
         return
       } catch (err) {
         if ((err as DOMException).name === 'AbortError') return
@@ -70,7 +56,7 @@ export default function TopBar({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      acceptFile(file)
+      onAcceptFile(file)
       e.target.value = ''
     }
   }
