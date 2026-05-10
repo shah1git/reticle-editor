@@ -86,6 +86,8 @@ export default function App() {
   const [reticle, setReticle] = useState<Reticle>(initial.reticle)
   const [activeWing, setActiveWing] = useState<WingKey>('down')
   const [magnification, setMagnification] = useState(1)
+  const [loadedFileName, setLoadedFileName] = useState<string | null>(null)
+  const [loadedFileHandle, setLoadedFileHandle] = useState<FileSystemFileHandle | null>(null)
   const ppm = useMemo(() => calcPixelsPerMrad(scope), [scope])
 
   const effectivePpm = useMemo(() => {
@@ -110,21 +112,28 @@ export default function App() {
   useKeyboard({ onSave: handleSave })
   const isMobile = useIsMobile()
 
+  const fileLoaderProps = {
+    setScope, setReticle,
+    loadedFileName, setLoadedFileName,
+    loadedFileHandle, setLoadedFileHandle,
+  }
+
   if (isMobile) {
     return (
       <MobileLayout
-        scope={scope} setScope={setScope}
-        reticle={reticle} setReticle={setReticle}
+        scope={scope}
+        reticle={reticle}
         ppm={effectivePpm} bestStrategy={bestStrategy}
         activeWing={activeWing} setActiveWing={setActiveWing}
         magnification={magnification} setMagnification={setMagnification}
+        {...fileLoaderProps}
       />
     )
   }
 
   return (
     <div className="app">
-      <TopBar scope={scope} reticle={reticle} setScope={setScope} setReticle={setReticle} ppm={effectivePpm} magnification={magnification} />
+      <TopBar scope={scope} reticle={reticle} ppm={effectivePpm} magnification={magnification} {...fileLoaderProps} />
       <Toolbar scope={scope} setScope={setScope} reticle={reticle} setReticle={setReticle} ppm={effectivePpm} bestStrategy={bestStrategy} />
       <div className="app-body">
         <LeftPanel
@@ -133,9 +142,10 @@ export default function App() {
           activeWing={activeWing} setActiveWing={setActiveWing}
         />
         <Canvas
-          scope={scope} reticle={reticle} setReticle={setReticle}
+          scope={scope} reticle={reticle}
           ppm={effectivePpm}
           magnification={magnification} setMagnification={setMagnification}
+          {...fileLoaderProps}
         />
         <RightPanel
           reticle={reticle}

@@ -20,7 +20,7 @@ interface SaveData {
   renderManifest: RenderManifest
 }
 
-export function saveToJson(scope: ScopeProfile, reticle: Reticle): void {
+function buildSaveJson(scope: ScopeProfile, reticle: Reticle): string {
   const ppm = calcPixelsPerMrad(scope)
 
   const buildMarks = (wingKey: 'up' | 'down' | 'left' | 'right'): RasterMark[] => {
@@ -46,13 +46,49 @@ export function saveToJson(scope: ScopeProfile, reticle: Reticle): void {
     renderManifest: buildRenderManifest(scope, reticle),
   }
 
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+  return JSON.stringify(data, null, 2)
+}
+
+function downloadJson(json: string, fileName: string): void {
+  const blob = new Blob([json], { type: 'application/json' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = `сетка-${scope.name.replace(/\s+/g, '_')}.json`
+  a.download = fileName
   a.click()
   URL.revokeObjectURL(url)
+}
+
+export function saveToJson(scope: ScopeProfile, reticle: Reticle): void {
+  downloadJson(buildSaveJson(scope, reticle), `сетка-${scope.name.replace(/\s+/g, '_')}.json`)
+}
+
+/**
+ * Save under the originally-loaded filename. If a FileSystemFileHandle is
+ * available (Chromium browsers via showOpenFilePicker / DnD), writes back to
+ * the original file in place. Otherwise falls back to a regular download with
+ * the same filename — the user must overwrite manually.
+ */
+export async function saveToCurrentFile(
+  scope: ScopeProfile,
+  reticle: Reticle,
+  fileName: string,
+  handle: FileSystemFileHandle | null,
+): Promise<'overwritten' | 'downloaded'> {
+  const json = buildSaveJson(scope, reticle)
+
+  if (handle) {
+    try {
+      const writable = await handle.createWritable()
+      await writable.write(json)
+      await writable.close()
+      return 'overwritten'
+    } catch (e) {
+      console.warn('Falling back to download — could not write to file handle', e)
+    }
+  }
+  downloadJson(json, fileName)
+  return 'downloaded'
 }
 
 export function loadFromJson(
