@@ -35,7 +35,6 @@ export const PRESETS: ReticlePreset[] = [
       },
       color: BASE_COLOR,
       rasterization: 'independent',
-      focalPlane: 'ffp',
       refCircle: noRefCircle,
       customPixels: noPixels,
     },
@@ -52,7 +51,6 @@ export const PRESETS: ReticlePreset[] = [
       },
       color: BASE_COLOR,
       rasterization: 'independent',
-      focalPlane: 'ffp',
       refCircle: noRefCircle,
       customPixels: noPixels,
     },
@@ -69,7 +67,6 @@ export const PRESETS: ReticlePreset[] = [
       },
       color: BASE_COLOR,
       rasterization: 'independent',
-      focalPlane: 'ffp',
       refCircle: noRefCircle,
       customPixels: noPixels,
     },
@@ -86,7 +83,6 @@ export const PRESETS: ReticlePreset[] = [
       },
       color: BASE_COLOR,
       rasterization: 'independent',
-      focalPlane: 'ffp',
       refCircle: noRefCircle,
       customPixels: noPixels,
     },
@@ -103,7 +99,6 @@ export const PRESETS: ReticlePreset[] = [
       },
       color: BASE_COLOR,
       rasterization: 'independent',
-      focalPlane: 'ffp',
       refCircle: noRefCircle,
       customPixels: noPixels,
     },
@@ -120,7 +115,6 @@ export const PRESETS: ReticlePreset[] = [
       },
       color: BASE_COLOR,
       rasterization: 'independent',
-      focalPlane: 'ffp',
       refCircle: noRefCircle,
       customPixels: noPixels,
     },
@@ -131,7 +125,6 @@ export function reticleMatchesPreset(reticle: Reticle, preset: Reticle): boolean
   if (reticle.centerDot.kind !== preset.centerDot.kind) return false
   if (reticle.color !== preset.color) return false
   if (reticle.rasterization !== preset.rasterization) return false
-  if (reticle.focalPlane !== preset.focalPlane) return false
   if (reticle.refCircle.enabled !== preset.refCircle.enabled) return false
   if (reticle.refCircle.diameterMrad !== preset.refCircle.diameterMrad) return false
   if (reticle.customPixels.length !== preset.customPixels.length) return false

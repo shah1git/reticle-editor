@@ -120,10 +120,7 @@ export function describeReticle(
   // Reticle section
   lines.push(t('describe.reticle.header'))
   lines.push('  ' + t('describe.reticle.color', { color: reticle.color }))
-  lines.push('  ' + t('describe.reticle.focalPlane', {
-    plane: t(reticle.focalPlane === 'ffp' ? 'describe.reticle.ffp' : 'describe.reticle.sfp'),
-  }))
-  if (reticle.focalPlane === 'ffp' && magnification !== 1) {
+  if (magnification !== 1) {
     lines.push('  ' + t('describe.reticle.magnification', { value: fmt(magnification, 2) }))
   }
   lines.push('  ' + t('describe.reticle.rasterization', {

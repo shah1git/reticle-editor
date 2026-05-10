@@ -36,7 +36,6 @@ export interface Reticle {
   }
   color: string
   rasterization: 'independent' | 'fixed_step'
-  focalPlane: 'ffp' | 'sfp'
   /**
    * Optional reference ring. When `enabled`, a 1-pixel-thick circle is
    * rasterized around the centre at the given diameter. Same colour as the

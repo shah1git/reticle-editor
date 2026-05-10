@@ -20,7 +20,6 @@ export default function RightPanel({ reticle, ppm, magnification, activeWing, se
         reticle={reticle}
         ppm={ppm}
         magnification={magnification}
-        focalPlane={reticle.focalPlane}
         activeWing={activeWing}
         setActiveWing={setActiveWing}
       />
