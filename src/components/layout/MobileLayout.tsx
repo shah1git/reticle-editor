@@ -27,6 +27,8 @@ interface Props {
   setLoadedFileName: (n: string | null) => void
   loadedFileHandle: FileSystemFileHandle | null
   setLoadedFileHandle: (h: FileSystemFileHandle | null) => void
+  onSave: () => void | Promise<void>
+  onSaveAs: () => void | Promise<void>
 }
 
 export default function MobileLayout({
@@ -34,6 +36,7 @@ export default function MobileLayout({
   ppm, bestStrategy, activeWing, setActiveWing,
   magnification, setMagnification,
   loadedFileName, setLoadedFileName, loadedFileHandle, setLoadedFileHandle,
+  onSave, onSaveAs,
 }: Props) {
   const [activeTab, setActiveTab] = useState<MobileTab>('canvas')
 
@@ -45,7 +48,7 @@ export default function MobileLayout({
 
   return (
     <div className={styles.layout}>
-      <TopBar scope={scope} reticle={reticle} ppm={ppm} magnification={magnification} {...fileLoaderProps} />
+      <TopBar scope={scope} reticle={reticle} ppm={ppm} magnification={magnification} {...fileLoaderProps} onSave={onSave} onSaveAs={onSaveAs} />
 
       <div className={styles.content}>
         {activeTab === 'settings' && (

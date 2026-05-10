@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo, useEffect } from 'react'
 import type { ScopeProfile } from './types/scope'
 import type { Reticle } from './types/reticle'
 import { defaultScope, defaultReticle } from './defaults'
-import { saveToJson } from './utils/fileIO'
+import { saveToCurrentFile, saveAsJson } from './utils/fileIO'
 import { calcPixelsPerMrad } from './math/optics'
 import { findBestStrategy } from './math/bestStrategy'
 import { useKeyboard } from './hooks/useKeyboard'
@@ -105,9 +105,20 @@ export default function App() {
     } catch {}
   }, [scope, reticle])
 
-  const handleSave = useCallback(() => {
-    saveToJson(scope, reticle)
-  }, [scope, reticle])
+  const handleSaveAs = useCallback(async () => {
+    const result = await saveAsJson(scope, reticle, loadedFileName ?? undefined)
+    if (result.cancelled) return
+    setLoadedFileName(result.fileName)
+    setLoadedFileHandle(result.handle)
+  }, [scope, reticle, loadedFileName])
+
+  const handleSave = useCallback(async () => {
+    if (loadedFileName) {
+      await saveToCurrentFile(scope, reticle, loadedFileName, loadedFileHandle)
+    } else {
+      await handleSaveAs()
+    }
+  }, [scope, reticle, loadedFileName, loadedFileHandle, handleSaveAs])
 
   useKeyboard({ onSave: handleSave })
   const isMobile = useIsMobile()
@@ -117,6 +128,7 @@ export default function App() {
     loadedFileName, setLoadedFileName,
     loadedFileHandle, setLoadedFileHandle,
   }
+  const saveProps = { onSave: handleSave, onSaveAs: handleSaveAs }
 
   if (isMobile) {
     return (
@@ -127,13 +139,14 @@ export default function App() {
         activeWing={activeWing} setActiveWing={setActiveWing}
         magnification={magnification} setMagnification={setMagnification}
         {...fileLoaderProps}
+        {...saveProps}
       />
     )
   }
 
   return (
     <div className="app">
-      <TopBar scope={scope} reticle={reticle} ppm={effectivePpm} magnification={magnification} {...fileLoaderProps} />
+      <TopBar scope={scope} reticle={reticle} ppm={effectivePpm} magnification={magnification} {...fileLoaderProps} {...saveProps} />
       <Toolbar scope={scope} setScope={setScope} reticle={reticle} setReticle={setReticle} ppm={effectivePpm} bestStrategy={bestStrategy} />
       <div className="app-body">
         <LeftPanel

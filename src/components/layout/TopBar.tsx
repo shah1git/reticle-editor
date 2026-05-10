@@ -5,7 +5,6 @@ declare const __APP_VERSION__: string
 import type { ScopeProfile } from '../../types/scope'
 import type { Reticle } from '../../types/reticle'
 import type { PixelsPerMrad } from '../../math/optics'
-import { saveToJson, saveAsJson, saveToCurrentFile } from '../../utils/fileIO'
 import { exportPng } from '../../utils/exportPng'
 import { exportBmp } from '../../utils/exportBmp'
 import { useFileLoader } from '../../hooks/useFileLoader'
@@ -25,6 +24,8 @@ interface Props {
   setLoadedFileName: (n: string | null) => void
   loadedFileHandle: FileSystemFileHandle | null
   setLoadedFileHandle: (h: FileSystemFileHandle | null) => void
+  onSave: () => void | Promise<void>
+  onSaveAs: () => void | Promise<void>
 }
 
 interface ShowOpenFilePicker {
@@ -38,6 +39,7 @@ interface ShowOpenFilePicker {
 export default function TopBar({
   scope, reticle, setScope, setReticle, ppm, magnification,
   loadedFileName, setLoadedFileName, loadedFileHandle, setLoadedFileHandle,
+  onSave, onSaveAs,
 }: Props) {
   const { t } = useTranslation()
   const fileRef = useRef<HTMLInputElement>(null)
@@ -73,17 +75,9 @@ export default function TopBar({
     }
   }
 
-  const handleSaveCurrent = async () => {
-    if (!loadedFileName) return
-    await saveToCurrentFile(scope, reticle, loadedFileName, loadedFileHandle)
-  }
-
-  const handleSaveAs = async () => {
-    const result = await saveAsJson(scope, reticle, loadedFileName ?? undefined)
-    if (result.cancelled) return
-    setLoadedFileName(result.fileName)
-    setLoadedFileHandle(result.handle)
-  }
+  const saveTip = loadedFileName
+    ? (loadedFileHandle ? t('topbar.saveTipOverwrite', { name: loadedFileName }) : t('topbar.saveTipDownload', { name: loadedFileName }))
+    : t('topbar.saveTipNew')
 
   return (
     <header className={styles.topbar}>
@@ -101,24 +95,14 @@ export default function TopBar({
           <span className={styles.btnText}>{t('topbar.open')}</span>
           <span className={styles.btnIcon}>{'📂'}</span>
         </button>
-        <button className={styles.btn} onClick={() => saveToJson(scope, reticle)}>
+        <button className={styles.btn} onClick={() => onSave()} title={saveTip}>
           <span className={styles.btnText}>{t('topbar.save')}</span>
           <span className={styles.btnIcon}>{'💾'}</span>
         </button>
-        <button className={styles.btn} onClick={handleSaveAs} title={t('topbar.saveAsTip')}>
+        <button className={styles.btn} onClick={() => onSaveAs()} title={t('topbar.saveAsTip')}>
           <span className={styles.btnText}>{t('topbar.saveAs')}</span>
           <span className={styles.btnIcon}>{'💾'}</span>
         </button>
-        {loadedFileName && (
-          <button
-            className={styles.btnAccent}
-            onClick={handleSaveCurrent}
-            title={loadedFileHandle ? t('topbar.saveCurrentTipOverwrite') : t('topbar.saveCurrentTipDownload')}
-          >
-            <span className={styles.btnText}>{t('topbar.saveCurrent')}</span>
-            <span className={styles.btnIcon}>{'📝'}</span>
-          </button>
-        )}
         <button className={styles.btn} onClick={() => setDescribeOpen(true)} title={t('describe.title')}>
           <span className={styles.btnText}>{t('topbar.describe')}</span>
           <span className={styles.btnIcon}>{'📋'}</span>
