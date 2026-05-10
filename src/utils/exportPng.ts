@@ -11,6 +11,7 @@ declare const __APP_VERSION__: string
 const PROJECT_URL = 'https://shah1git.github.io/reticle-editor/'
 import { findBestStrategy } from '../math/bestStrategy'
 import { errorToColor } from '../math/errorColor'
+import { STRATEGY_TRANS_KEYS } from '../i18n/strategyKeys'
 
 const t = (key: string, opts?: Record<string, unknown>): string => i18n.t(key, opts as never) as unknown as string
 
@@ -91,10 +92,7 @@ function drawInfoPanel(
   const sqPx = isSquarePixelRatio(ppm)
   const best = findBestStrategy(reticle, ppm)
   const wingStats = getWingStats(reticle, ppm)
-  const stratLabels: Record<string, string> = {
-    independent: t('strategies.independent'),
-    fixed_step: t('strategies.fixedStep'),
-  }
+  const stratLabel = (s: keyof typeof STRATEGY_TRANS_KEYS) => t(STRATEGY_TRANS_KEYS[s])
 
   let y = y0 + PADDING
 
@@ -179,12 +177,12 @@ function drawInfoPanel(
   label(t('export.strategy'), y)
   const isOptimal = best.best === reticle.rasterization
   value(
-    `${stratLabels[reticle.rasterization]}${isOptimal ? ' ✓' : ''}`,
+    `${stratLabel(reticle.rasterization)}${isOptimal ? ' ✓' : ''}`,
     valX, y, isOptimal ? COL_ACCENT : COL_VALUE,
   )
   y += LINE_H
   if (!isOptimal) {
-    label(t('export.recommended'), y); value(`${stratLabels[best.best]} (±${best.bestMaxError.toFixed(2)} ${t('units.px')})`, valX, y, COL_WARN); y += LINE_H
+    label(t('export.recommended'), y); value(`${stratLabel(best.best)} (±${best.bestMaxError.toFixed(2)} ${t('units.px')})`, valX, y, COL_WARN); y += LINE_H
   }
   label(t('export.maxError'), y); value(`±${best.currentMaxError.toFixed(2)} ${t('units.px')}`, valX, y, best.currentMaxError > 0.4 ? COL_WARN : COL_ACCENT); y += LINE_H
 
@@ -266,7 +264,7 @@ function drawInfoPanel(
   label(t('export.totalMarks'), y); value(`${totalMarks}`, valX, y); y += LINE_H
   label(t('export.activeWings'), y); value(`${wingStats.length}`, valX, y); y += LINE_H
   label(t('export.globalMaxError'), y); value(`±${best.currentMaxError.toFixed(2)} ${t('units.px')}`, valX, y, best.currentMaxError > 0.4 ? COL_WARN : COL_ACCENT); y += LINE_H
-  label(t('export.bestStrategy'), y); value(`${stratLabels[best.best]} (±${best.bestMaxError.toFixed(2)} ${t('units.px')})`, valX, y); y += LINE_H
+  label(t('export.bestStrategy'), y); value(`${stratLabel(best.best)} (±${best.bestMaxError.toFixed(2)} ${t('units.px')})`, valX, y); y += LINE_H
 
   y += 8
   y = separator(y)

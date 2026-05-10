@@ -121,13 +121,21 @@ export const PRESETS: ReticlePreset[] = [
   },
 ]
 
+function sameCustomPixels(a: Array<[number, number]>, b: Array<[number, number]>): boolean {
+  if (a.length !== b.length) return false
+  // Order-insensitive: pixels are a set, not a sequence.
+  const key = ([x, y]: [number, number]) => `${x},${y}`
+  const set = new Set(a.map(key))
+  return b.every(p => set.has(key(p)))
+}
+
 export function reticleMatchesPreset(reticle: Reticle, preset: Reticle): boolean {
   if (reticle.centerDot.kind !== preset.centerDot.kind) return false
   if (reticle.color !== preset.color) return false
   if (reticle.rasterization !== preset.rasterization) return false
   if (reticle.refCircle.enabled !== preset.refCircle.enabled) return false
   if (reticle.refCircle.diameterMrad !== preset.refCircle.diameterMrad) return false
-  if (reticle.customPixels.length !== preset.customPixels.length) return false
+  if (!sameCustomPixels(reticle.customPixels, preset.customPixels)) return false
   for (const k of ['up', 'down', 'left', 'right'] as const) {
     const a = reticle.wings[k]
     const b = preset.wings[k]

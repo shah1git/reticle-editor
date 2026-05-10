@@ -1,22 +1,5 @@
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 20px;
-}
-
 .modal {
-  background: var(--bg-panel);
-  border: 1px solid var(--border);
-  border-radius: 10px;
   width: min(420px, 100%);
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
 .header {
@@ -46,7 +29,7 @@
 }
 
 .scaleBtn {
-  background: transparent;
+  background: var(--accent-bg);
   border: 1px solid var(--accent-border);
   color: var(--accent);
   padding: 14px 0;
@@ -56,7 +39,6 @@
   border-radius: 6px;
   transition: all 0.15s;
   font-family: var(--font);
-  background: var(--accent-bg);
 }
 
 .scaleBtn:hover {
