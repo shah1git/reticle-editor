@@ -12,6 +12,8 @@
     "title": "RETICLE EDITOR",
     "open": "\u2191 Open",
     "save": "\u2193 Save",
+    "saveAs": "\ud83d\udcbe Save as\u2026",
+    "saveAsTip": "Open a save dialog to pick a name and folder. After saving, the picked file becomes the current one \u2014 the \"Save to file\" button will write back to it.",
     "saveCurrent": "\ud83d\udcdd Save to file",
     "saveCurrentTipOverwrite": "Overwrite the loaded file in place (Chromium-based browsers).",
     "saveCurrentTipDownload": "Download with the same name as the loaded file. Browser doesn't support direct overwrite \u2014 you'll need to confirm replacement.",

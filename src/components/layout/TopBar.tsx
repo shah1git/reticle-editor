@@ -5,7 +5,7 @@ declare const __APP_VERSION__: string
 import type { ScopeProfile } from '../../types/scope'
 import type { Reticle } from '../../types/reticle'
 import type { PixelsPerMrad } from '../../math/optics'
-import { saveToJson, saveToCurrentFile } from '../../utils/fileIO'
+import { saveToJson, saveAsJson, saveToCurrentFile } from '../../utils/fileIO'
 import { exportPng } from '../../utils/exportPng'
 import { exportBmp } from '../../utils/exportBmp'
 import { useFileLoader } from '../../hooks/useFileLoader'
@@ -78,6 +78,13 @@ export default function TopBar({
     await saveToCurrentFile(scope, reticle, loadedFileName, loadedFileHandle)
   }
 
+  const handleSaveAs = async () => {
+    const result = await saveAsJson(scope, reticle, loadedFileName ?? undefined)
+    if (result.cancelled) return
+    setLoadedFileName(result.fileName)
+    setLoadedFileHandle(result.handle)
+  }
+
   return (
     <header className={styles.topbar}>
       <div className={styles.left}>
@@ -96,6 +103,10 @@ export default function TopBar({
         </button>
         <button className={styles.btn} onClick={() => saveToJson(scope, reticle)}>
           <span className={styles.btnText}>{t('topbar.save')}</span>
+          <span className={styles.btnIcon}>{'💾'}</span>
+        </button>
+        <button className={styles.btn} onClick={handleSaveAs} title={t('topbar.saveAsTip')}>
+          <span className={styles.btnText}>{t('topbar.saveAs')}</span>
           <span className={styles.btnIcon}>{'💾'}</span>
         </button>
         {loadedFileName && (
