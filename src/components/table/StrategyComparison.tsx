@@ -102,7 +102,7 @@ function calcStrategyStats(strategy: RasterStrategy, wings: WingData[]): Strateg
 
 export default function StrategyComparison({ ppm, reticle }: Props) {
   const { t } = useTranslation()
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(true)
 
   const LABELS: Record<RasterStrategy, string> = {
     independent: t('strategyComparison.stratLabels.independent'),
