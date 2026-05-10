@@ -2,7 +2,8 @@ import { useState, useCallback, useMemo, useEffect } from 'react'
 import type { ScopeProfile } from './types/scope'
 import type { Reticle } from './types/reticle'
 import { defaultScope, defaultReticle } from './defaults'
-import { saveToCurrentFile, saveAsJson } from './utils/fileIO'
+import { saveToCurrentFile, saveAsJson, loadFromJson } from './utils/fileIO'
+import { migrateReticle } from './utils/migrateReticle'
 import { calcPixelsPerMrad } from './math/optics'
 import { findBestStrategy } from './math/bestStrategy'
 import { useKeyboard } from './hooks/useKeyboard'
@@ -24,58 +25,9 @@ const loadState = () => {
     const saved = localStorage.getItem(STORAGE_KEY)
     if (saved) {
       const parsed = JSON.parse(saved)
-      const reticle = { ...defaultReticle, ...parsed.reticle } as Reticle
-      // Migrate to kind-based shape variants. Older states stored
-      // centerDot.radius / centerDot.diameter and wing.dotSize — those are
-      // dropped now; we keep the user's reticle layout and snap shapes to
-      // the supported variants ('square4'/'square2' for center, 'pair' for wings).
-      // customPixels — user-painted decoration on top of the parametric reticle.
-      const savedPixels = (reticle as { customPixels?: unknown }).customPixels
-      reticle.customPixels = Array.isArray(savedPixels)
-        ? savedPixels.filter((p): p is [number, number] => Array.isArray(p) && p.length === 2 && typeof p[0] === 'number' && typeof p[1] === 'number')
-        : []
-      // Drop the legacy `mode` field if present; pixels now coexist with parametric.
-      delete (reticle as { mode?: unknown }).mode
-      // Drop legacy focalPlane field — feature removed, behaviour now always
-      // matches the previous FFP semantics (reticle re-rendered per mag).
-      delete (reticle as { focalPlane?: unknown }).focalPlane
-      const rc = (reticle as { refCircle?: { enabled?: unknown; diameterMrad?: unknown } }).refCircle
-      const rcEnabled = typeof rc?.enabled === 'boolean' ? rc.enabled : false
-      const rcDiameter = typeof rc?.diameterMrad === 'number' && rc.diameterMrad > 0 ? rc.diameterMrad : 10
-      reticle.refCircle = { enabled: rcEnabled, diameterMrad: rcDiameter }
-      const cd = reticle.centerDot as { kind?: string; radius?: number; diameter?: number } | undefined
-      const knownCenterKinds = ['square4', 'square2', 'pixelBR', 'pixelTL'] as const
-      type KnownCenterKind = typeof knownCenterKinds[number]
-      if (cd?.kind && (knownCenterKinds as readonly string[]).includes(cd.kind)) {
-        reticle.centerDot = { kind: cd.kind as KnownCenterKind }
-      } else {
-        reticle.centerDot = { kind: 'square4' }
-      }
-      for (const k of ['up', 'down', 'left', 'right'] as const) {
-        const w = reticle.wings?.[k] as
-          | { dots?: { kind?: string; count?: number; maxDots?: number; enabled?: boolean; spacing?: number }
-              ; length?: number; dotSize?: number; lineThickness?: number }
-          | undefined
-        if (!w) continue
-        const dots = (w.dots ?? {}) as { kind?: string; count?: number; maxDots?: number; enabled?: boolean; spacing?: number }
-        const enabled = dots.enabled ?? true
-        const spacing = dots.spacing ?? 1
-        // count = explicit count, otherwise migrated from maxDots, otherwise from length/spacing.
-        let count = dots.count
-        if (count == null) {
-          if (dots.maxDots != null && dots.maxDots > 0) count = dots.maxDots
-          else if (w.length != null && w.length > 0 && spacing > 0) count = Math.floor(w.length / spacing)
-          else count = 0
-        }
-        const dotKind = dots.kind === 'single' ? 'single' : 'pair'
-        w.dots = { enabled, spacing, count, kind: dotKind }
-        if ('length' in w) delete (w as Record<string, unknown>).length
-        if ('dotSize' in w) delete (w as Record<string, unknown>).dotSize
-        if ('lineThickness' in w) delete (w as Record<string, unknown>).lineThickness
-      }
       return {
         scope: { ...defaultScope, ...parsed.scope },
-        reticle,
+        reticle: migrateReticle(parsed.reticle),
       }
     }
   } catch {}
@@ -106,6 +58,12 @@ export default function App() {
     } catch {}
   }, [scope, reticle])
 
+  const acceptFile = useCallback((file: File, handle?: FileSystemFileHandle | null) => {
+    loadFromJson(file, setScope, setReticle)
+    setLoadedFileName(file.name)
+    setLoadedFileHandle(handle ?? null)
+  }, [])
+
   const handleSaveAs = useCallback(async () => {
     const result = await saveAsJson(scope, reticle, loadedFileName ?? undefined)
     if (result.cancelled) return
@@ -124,30 +82,34 @@ export default function App() {
   useKeyboard({ onSave: handleSave })
   const isMobile = useIsMobile()
 
-  const fileLoaderProps = {
-    setScope, setReticle,
-    loadedFileName, setLoadedFileName,
-    loadedFileHandle, setLoadedFileHandle,
+  const fileProps = {
+    loadedFileName,
+    loadedFileHandle,
+    onAcceptFile: acceptFile,
+    onSave: handleSave,
+    onSaveAs: handleSaveAs,
   }
-  const saveProps = { onSave: handleSave, onSaveAs: handleSaveAs }
 
   if (isMobile) {
     return (
       <MobileLayout
-        scope={scope}
-        reticle={reticle}
+        scope={scope} setScope={setScope}
+        reticle={reticle} setReticle={setReticle}
         ppm={effectivePpm} bestStrategy={bestStrategy}
         activeWing={activeWing} setActiveWing={setActiveWing}
         magnification={magnification} setMagnification={setMagnification}
-        {...fileLoaderProps}
-        {...saveProps}
+        {...fileProps}
       />
     )
   }
 
   return (
     <div className="app">
-      <TopBar scope={scope} reticle={reticle} ppm={effectivePpm} magnification={magnification} {...fileLoaderProps} {...saveProps} />
+      <TopBar
+        scope={scope} reticle={reticle}
+        ppm={effectivePpm} magnification={magnification}
+        {...fileProps}
+      />
       <Toolbar scope={scope} setScope={setScope} reticle={reticle} setReticle={setReticle} ppm={effectivePpm} bestStrategy={bestStrategy} />
       <div className="app-body">
         <LeftPanel
@@ -156,10 +118,10 @@ export default function App() {
           activeWing={activeWing} setActiveWing={setActiveWing}
         />
         <Canvas
-          scope={scope} reticle={reticle}
+          scope={scope} reticle={reticle} setReticle={setReticle}
           ppm={effectivePpm}
           magnification={magnification} setMagnification={setMagnification}
-          {...fileLoaderProps}
+          onAcceptFile={acceptFile}
         />
         <RightPanel
           reticle={reticle}

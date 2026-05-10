@@ -4,6 +4,8 @@ import type { RasterMark } from '../types/rasterization'
 import { calcPixelsPerMrad } from '../math/optics'
 import { rasterize, effectiveDotCount } from '../math/rasterization'
 import { buildRenderManifest, RENDER_README, type RenderManifest } from './renderManifest'
+import { migrateReticle } from './migrateReticle'
+import { getSaveFilePicker } from '../types/fileSystemAccess'
 
 interface SaveData {
   _readme: string
@@ -19,6 +21,10 @@ interface SaveData {
   }
   renderManifest: RenderManifest
 }
+
+const JSON_FILE_TYPES = [
+  { description: 'Reticle JSON', accept: { 'application/json': ['.json'] } },
+]
 
 function buildSaveJson(scope: ScopeProfile, reticle: Reticle): string {
   const ppm = calcPixelsPerMrad(scope)
@@ -59,16 +65,9 @@ function downloadJson(json: string, fileName: string): void {
   URL.revokeObjectURL(url)
 }
 
-export function saveToJson(scope: ScopeProfile, reticle: Reticle): void {
-  downloadJson(buildSaveJson(scope, reticle), `сетка-${scope.name.replace(/\s+/g, '_')}.json`)
-}
-
-interface ShowSaveFilePicker {
-  (options?: {
-    suggestedName?: string
-    types?: { description?: string; accept: Record<string, string[]> }[]
-    excludeAcceptAllOption?: boolean
-  }): Promise<FileSystemFileHandle>
+/** Auto-generated filename used when the user hasn't picked one yet. */
+export function defaultReticleFileName(scope: ScopeProfile): string {
+  return `сетка-${scope.name.replace(/\s+/g, '_')}.json`
 }
 
 export interface SaveAsResult {
@@ -92,15 +91,12 @@ export async function saveAsJson(
   suggestedName?: string,
 ): Promise<SaveAsResult> {
   const json = buildSaveJson(scope, reticle)
-  const fallbackName = suggestedName ?? `сетка-${scope.name.replace(/\s+/g, '_')}.json`
+  const fallbackName = suggestedName ?? defaultReticleFileName(scope)
 
-  const picker = (window as unknown as { showSaveFilePicker?: ShowSaveFilePicker }).showSaveFilePicker
+  const picker = getSaveFilePicker()
   if (picker) {
     try {
-      const handle = await picker({
-        suggestedName: fallbackName,
-        types: [{ description: 'Reticle JSON', accept: { 'application/json': ['.json'] } }],
-      })
+      const handle = await picker({ suggestedName: fallbackName, types: JSON_FILE_TYPES })
       const writable = await handle.createWritable()
       await writable.write(json)
       await writable.close()
@@ -153,46 +149,9 @@ export function loadFromJson(
 ): void {
   const reader = new FileReader()
   reader.onload = () => {
-    const data = JSON.parse(reader.result as string) as any
+    const data = JSON.parse(reader.result as string) as { scopeProfile?: ScopeProfile; reticle?: unknown }
     if (data.scopeProfile) setScope(data.scopeProfile)
-    if (data.reticle) {
-      const r = data.reticle as any
-      const cdKind = (r.centerDot && (r.centerDot as { kind?: string }).kind) || 'square4'
-      const knownCenterKinds = ['square4', 'square2', 'pixelBR', 'pixelTL']
-      r.centerDot = { kind: knownCenterKinds.includes(cdKind) ? cdKind : 'square4' }
-      const rc = r.refCircle as { enabled?: unknown; diameterMrad?: unknown } | undefined
-      r.refCircle = {
-        enabled: typeof rc?.enabled === 'boolean' ? rc.enabled : false,
-        diameterMrad: typeof rc?.diameterMrad === 'number' && rc.diameterMrad > 0 ? rc.diameterMrad : 10,
-      }
-      r.customPixels = Array.isArray(r.customPixels)
-        ? r.customPixels.filter((p: unknown) => Array.isArray(p) && p.length === 2 && typeof p[0] === 'number' && typeof p[1] === 'number')
-        : []
-      delete r.mode
-      delete r.focalPlane
-      for (const key of ['up', 'down', 'left', 'right']) {
-        const w = r.wings?.[key]
-        if (!w) continue
-        const dots = w.dots ?? {}
-        const spacing = dots.spacing ?? 1
-        let count = dots.count
-        if (count == null) {
-          if (dots.maxDots != null && dots.maxDots > 0) count = dots.maxDots
-          else if (w.length != null && w.length > 0 && spacing > 0) count = Math.floor(w.length / spacing)
-          else count = 0
-        }
-        w.dots = {
-          enabled: dots.enabled ?? true,
-          spacing,
-          count,
-          kind: dots.kind === 'single' ? 'single' : 'pair',
-        }
-        if ('length' in w) delete w.length
-        if ('dotSize' in w) delete w.dotSize
-        if ('lineThickness' in w) delete w.lineThickness
-      }
-      setReticle(r as Reticle)
-    }
+    if (data.reticle) setReticle(migrateReticle(data.reticle))
   }
   reader.readAsText(file)
 }
