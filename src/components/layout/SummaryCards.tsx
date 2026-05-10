@@ -4,6 +4,7 @@ import type { Reticle } from '../../types/reticle'
 import type { PixelsPerMrad } from '../../math/optics'
 import type { WingKey } from '../../App'
 import { rasterize, effectiveDotCount } from '../../math/rasterization'
+import { STRATEGY_TRANS_KEYS } from '../../i18n/strategyKeys'
 import styles from './SummaryCards.module.css'
 
 interface Props {
@@ -14,11 +15,6 @@ interface Props {
 
 export default function SummaryCards({ ppm, reticle }: Props) {
   const { t } = useTranslation()
-
-  const strategyTransKeys: Record<string, string> = {
-    independent: 'strategies.independent',
-    fixed_step: 'strategies.fixedStep',
-  }
 
   const stats = useMemo(() => {
     let totalMarks = 0
@@ -66,7 +62,7 @@ export default function SummaryCards({ ppm, reticle }: Props) {
       </div>
       <div className={styles.card}>
         <div className={styles.cardLabel}>{t('summaryCards.strategy')}</div>
-        <div className={styles.cardValue}>{t(strategyTransKeys[reticle.rasterization])}</div>
+        <div className={styles.cardValue}>{t(STRATEGY_TRANS_KEYS[reticle.rasterization])}</div>
       </div>
     </div>
   )

@@ -1,6 +1,5 @@
-import { useEffect } from 'react'
-import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
+import Modal from './Modal'
 import styles from './IntervalPicker.module.css'
 
 interface Props {
@@ -24,12 +23,6 @@ export default function IntervalPicker({ axisPpm, axis, currentSpacing, onPick, 
   const { t } = useTranslation()
   const axisLabel = t(axis === 'h' ? 'intervalPicker.axisH' : 'intervalPicker.axisV')
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
-    document.addEventListener('keydown', onKey)
-    return () => document.removeEventListener('keydown', onKey)
-  }, [onClose])
-
   const candidates: Candidate[] = TARGETS.map(target => {
     const stepPx = Math.max(1, Math.round(target * axisPpm))
     const spacing = stepPx / axisPpm
@@ -37,50 +30,47 @@ export default function IntervalPicker({ axisPpm, axis, currentSpacing, onPick, 
     return { target, spacing, stepPx, deltaPct }
   })
 
-  return createPortal(
-    <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={e => e.stopPropagation()}>
-        <div className={styles.header}>
-          <div className={styles.title}>
-            {t('intervalPicker.title')} <span className={styles.axisChip}>{axisLabel}</span>
-          </div>
-          <div className={styles.hint}>{t('intervalPicker.hint', { ppm: axisPpm.toFixed(3) })}</div>
+  return (
+    <Modal onClose={onClose} className={styles.modal}>
+      <div className={styles.header}>
+        <div className={styles.title}>
+          {t('intervalPicker.title')} <span className={styles.axisChip}>{axisLabel}</span>
         </div>
-        <div className={styles.body}>
-          <div className={styles.head}>
-            <span title={t('intervalPicker.colTargetTip')}>{t('intervalPicker.colTarget')}</span>
-            <span title={t('intervalPicker.colExactTip')}>{t('intervalPicker.colExact')}</span>
-            <span title={t('intervalPicker.colStepTip')}>{t('intervalPicker.colStep')}</span>
-            <span title={t('intervalPicker.colDeltaTip')}>{t('intervalPicker.colDelta')}</span>
-          </div>
-          {candidates.map(c => {
-            const isCurrent = Math.abs(c.spacing - currentSpacing) < 0.0005
-            return (
-              <button
-                key={c.target}
-                className={`${styles.row} ${isCurrent ? styles.rowCurrent : ''}`}
-                onClick={() => { onPick(c.spacing); onClose() }}
-                title={t('intervalPicker.rowTooltip', {
-                  target: c.target,
-                  exact: c.spacing.toFixed(4),
-                  step: c.stepPx,
-                })}
-              >
-                <span className={styles.target}>~{c.target}</span>
-                <span className={styles.exact}>{c.spacing.toFixed(4)}</span>
-                <span className={styles.step}>{c.stepPx}</span>
-                <span className={styles.delta}>{c.deltaPct >= 0 ? '+' : ''}{c.deltaPct.toFixed(2)}%</span>
-              </button>
-            )
-          })}
-        </div>
-        <div className={styles.footer}>
-          <button className={styles.btn} onClick={onClose}>
-            {t('intervalPicker.cancel')}
-          </button>
-        </div>
+        <div className={styles.hint}>{t('intervalPicker.hint', { ppm: axisPpm.toFixed(3) })}</div>
       </div>
-    </div>,
-    document.body,
+      <div className={styles.body}>
+        <div className={styles.head}>
+          <span title={t('intervalPicker.colTargetTip')}>{t('intervalPicker.colTarget')}</span>
+          <span title={t('intervalPicker.colExactTip')}>{t('intervalPicker.colExact')}</span>
+          <span title={t('intervalPicker.colStepTip')}>{t('intervalPicker.colStep')}</span>
+          <span title={t('intervalPicker.colDeltaTip')}>{t('intervalPicker.colDelta')}</span>
+        </div>
+        {candidates.map(c => {
+          const isCurrent = Math.abs(c.spacing - currentSpacing) < 0.0005
+          return (
+            <button
+              key={c.target}
+              className={`${styles.row} ${isCurrent ? styles.rowCurrent : ''}`}
+              onClick={() => { onPick(c.spacing); onClose() }}
+              title={t('intervalPicker.rowTooltip', {
+                target: c.target,
+                exact: c.spacing.toFixed(4),
+                step: c.stepPx,
+              })}
+            >
+              <span className={styles.target}>~{c.target}</span>
+              <span className={styles.exact}>{c.spacing.toFixed(4)}</span>
+              <span className={styles.step}>{c.stepPx}</span>
+              <span className={styles.delta}>{c.deltaPct >= 0 ? '+' : ''}{c.deltaPct.toFixed(2)}%</span>
+            </button>
+          )
+        })}
+      </div>
+      <div className={styles.footer}>
+        <button className={styles.btn} onClick={onClose}>
+          {t('intervalPicker.cancel')}
+        </button>
+      </div>
+    </Modal>
   )
 }

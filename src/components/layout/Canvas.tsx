@@ -7,6 +7,7 @@ import type { PixelsPerMrad } from '../../math/optics'
 import { getFovMrad } from '../../math/optics'
 import { findBestStrategy } from '../../math/bestStrategy'
 import { useCanvasInteraction } from '../../hooks/useCanvasInteraction'
+import { STRATEGY_TRANS_KEYS } from '../../i18n/strategyKeys'
 import MradGrid from '../canvas/MradGrid'
 import PixelGrid from '../canvas/PixelGrid'
 import ReticleRenderer from '../canvas/ReticleRenderer'
@@ -24,11 +25,6 @@ interface Props {
   magnification: number
   setMagnification: (m: number) => void
   onAcceptFile: (file: File, handle?: FileSystemFileHandle | null) => void
-}
-
-const strategyTransKeys: Record<string, string> = {
-  independent: 'strategies.independent',
-  fixed_step: 'strategies.fixedStep',
 }
 
 const MAG_PRESETS = [1, 2, 3, 4, 5, 6, 7, 8]
@@ -324,11 +320,11 @@ export default function Canvas({
         <div>FOV: {effectiveFov.h.toFixed(0)} {'×'} {effectiveFov.v.toFixed(0)} MRAD</div>
         <div className={styles.unitNote}>{t('canvas.mradUnit')}</div>
         {isOptimal ? (
-          <div className={styles.roundingLine}>{t('toolbar.rounding')} {t(strategyTransKeys[reticle.rasterization])} <span className={styles.roundingCheck}>{'✓'}</span></div>
+          <div className={styles.roundingLine}>{t('toolbar.rounding')} {t(STRATEGY_TRANS_KEYS[reticle.rasterization])} <span className={styles.roundingCheck}>{'✓'}</span></div>
         ) : (
           <>
-            <div className={styles.roundingLine}>{t('toolbar.rounding')} {t(strategyTransKeys[reticle.rasterization])}</div>
-            <div className={styles.roundingOptimal}>{t('toolbar.recommended')}: {t(strategyTransKeys[bestStrategy.best])} ({'±'}{bestStrategy.bestMaxError.toFixed(2)} {t('units.px')})</div>
+            <div className={styles.roundingLine}>{t('toolbar.rounding')} {t(STRATEGY_TRANS_KEYS[reticle.rasterization])}</div>
+            <div className={styles.roundingOptimal}>{t('toolbar.recommended')}: {t(STRATEGY_TRANS_KEYS[bestStrategy.best])} ({'±'}{bestStrategy.bestMaxError.toFixed(2)} {t('units.px')})</div>
           </>
         )}
         <div className={styles.legendRow}>
