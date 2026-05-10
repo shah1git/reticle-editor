@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Reticle, Wing, WingDotKind } from '../../types/reticle'
 import type { PixelsPerMrad } from '../../math/optics'
@@ -6,6 +7,7 @@ import NumberInput from '../ui/NumberInput'
 import CheckboxInput from '../ui/CheckboxInput'
 import SelectInput from '../ui/SelectInput'
 import Section from '../ui/Section'
+import IntervalPicker from '../ui/IntervalPicker'
 import styles from './WingEditor.module.css'
 
 interface Props {
@@ -23,6 +25,7 @@ export default function WingEditor({ reticle, setReticle, ppm, activeWing, setAc
   const wing = reticle.wings[activeWing]
   const axisPpm = (activeWing === 'up' || activeWing === 'down') ? ppm.v : ppm.h
   const isHorizontal = activeWing === 'left' || activeWing === 'right'
+  const [pickerOpen, setPickerOpen] = useState(false)
 
   const wingLabels: Record<WingKey, string> = {
     up: t('wings.up'),
@@ -101,6 +104,23 @@ export default function WingEditor({ reticle, setReticle, ppm, activeWing, setAc
             unit="MRAD"
             hint={t('wings.intervalHint', { spacing: wing.dots.spacing.toFixed(1) })}
           />
+          <button
+            type="button"
+            className={styles.pickerBtn}
+            onClick={() => setPickerOpen(true)}
+            title={t('intervalPicker.btnTooltip')}
+          >
+            🎯 {t('intervalPicker.btn')}
+          </button>
+          {pickerOpen && (
+            <IntervalPicker
+              axisPpm={axisPpm}
+              axis={isHorizontal ? 'h' : 'v'}
+              currentSpacing={wing.dots.spacing}
+              onPick={v => updateDots({ spacing: v })}
+              onClose={() => setPickerOpen(false)}
+            />
+          )}
           <NumberInput
             label={t('wings.count')}
             value={wing.dots.count}

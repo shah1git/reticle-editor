@@ -49,6 +49,27 @@
   gap: 0;
 }
 
+.pickerBtn {
+  align-self: flex-start;
+  background: transparent;
+  border: 1px dashed var(--accent-border);
+  color: var(--accent);
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.15s;
+  font-family: var(--font);
+  margin: -4px 0 8px;
+}
+
+.pickerBtn:hover {
+  background: var(--accent-bg);
+  border-style: solid;
+}
+
 .dotSizeField {
   margin-bottom: 12px;
 }

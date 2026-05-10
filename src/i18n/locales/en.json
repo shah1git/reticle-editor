@@ -18,6 +18,20 @@
     "hint": "The reticle manufacturer typically needs a separate BMP per magnification level. Pick a scale to download that image.",
     "cancel": "Cancel"
   },
+  "intervalPicker": {
+    "btn": "Pick zero-error interval",
+    "btnTooltip": "Suggest spacings that map to a whole pixel step (no rasterization error) for this scope and axis.",
+    "title": "Pick interval",
+    "axisH": "horizontal",
+    "axisV": "vertical",
+    "hint": "Each row gives a spacing that quantizes to an exact integer pixel step at {{ppm}} px/MRAD. Click a row to apply it to the active wing.",
+    "colTarget": "Target",
+    "colExact": "Exact MRAD",
+    "colStep": "Step (px)",
+    "colDelta": "\u0394",
+    "rowTooltip": "Closest exact spacing to {{target}} MRAD: {{exact}} MRAD = {{step}} px (zero rasterization error).",
+    "cancel": "Cancel"
+  },
   "describe": {
     "title": "Reticle description",
     "copy": "Copy",
