@@ -63,6 +63,61 @@ export function saveToJson(scope: ScopeProfile, reticle: Reticle): void {
   downloadJson(buildSaveJson(scope, reticle), `сетка-${scope.name.replace(/\s+/g, '_')}.json`)
 }
 
+interface ShowSaveFilePicker {
+  (options?: {
+    suggestedName?: string
+    types?: { description?: string; accept: Record<string, string[]> }[]
+    excludeAcceptAllOption?: boolean
+  }): Promise<FileSystemFileHandle>
+}
+
+export interface SaveAsResult {
+  /** Filename the user picked (may differ from suggested). */
+  fileName: string
+  /** File handle for in-place overwrite, when the browser supports it. */
+  handle: FileSystemFileHandle | null
+  /** True if user cancelled the dialog (nothing was saved). */
+  cancelled: boolean
+}
+
+/**
+ * Show a save-file dialog and write the JSON to the user-picked location.
+ * Falls back to a regular download with an auto-generated name in browsers
+ * without File System Access API (Firefox/Safari) — which means the result's
+ * `handle` will be null and `fileName` will be the suggested name.
+ */
+export async function saveAsJson(
+  scope: ScopeProfile,
+  reticle: Reticle,
+  suggestedName?: string,
+): Promise<SaveAsResult> {
+  const json = buildSaveJson(scope, reticle)
+  const fallbackName = suggestedName ?? `сетка-${scope.name.replace(/\s+/g, '_')}.json`
+
+  const picker = (window as unknown as { showSaveFilePicker?: ShowSaveFilePicker }).showSaveFilePicker
+  if (picker) {
+    try {
+      const handle = await picker({
+        suggestedName: fallbackName,
+        types: [{ description: 'Reticle JSON', accept: { 'application/json': ['.json'] } }],
+      })
+      const writable = await handle.createWritable()
+      await writable.write(json)
+      await writable.close()
+      const file = await handle.getFile()
+      return { fileName: file.name, handle, cancelled: false }
+    } catch (err) {
+      if ((err as DOMException).name === 'AbortError') {
+        return { fileName: fallbackName, handle: null, cancelled: true }
+      }
+      console.warn('Falling back to download — showSaveFilePicker failed', err)
+    }
+  }
+
+  downloadJson(json, fallbackName)
+  return { fileName: fallbackName, handle: null, cancelled: false }
+}
+
 /**
  * Save under the originally-loaded filename. If a FileSystemFileHandle is
  * available (Chromium browsers via showOpenFilePicker / DnD), writes back to
