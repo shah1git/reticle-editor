@@ -169,6 +169,7 @@ export function loadFromJson(
         ? r.customPixels.filter((p: unknown) => Array.isArray(p) && p.length === 2 && typeof p[0] === 'number' && typeof p[1] === 'number')
         : []
       delete r.mode
+      delete r.focalPlane
       for (const key of ['up', 'down', 'left', 'right']) {
         const w = r.wings?.[key]
         if (!w) continue

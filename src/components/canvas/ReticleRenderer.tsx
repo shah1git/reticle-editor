@@ -9,7 +9,7 @@ import { errorToColor } from '../../math/errorColor'
 
 interface Props {
   reticle: Reticle
-  /** Effective pixels per MRAD (already includes FFP magnification if applicable). */
+  /** Effective pixels per MRAD (already includes magnification). */
   ppm: PixelsPerMrad
   /** Center on screen, integer screen-px (caller should round). */
   cx: number
@@ -22,7 +22,6 @@ interface Props {
   pixelScale: number
   onDotHover?: (info: DotHoverInfo | null) => void
   magnification?: number
-  focalPlane?: 'ffp' | 'sfp'
 }
 
 type Dir = 'up' | 'down' | 'left' | 'right'
@@ -37,11 +36,10 @@ interface WingRenderData {
   dy: number
 }
 
-export default function ReticleRenderer({ reticle, ppm, cx, cy, pixelScale, onDotHover, magnification = 1, focalPlane = 'ffp' }: Props) {
-  const visualMag = focalPlane === 'ffp' ? magnification : 1
+export default function ReticleRenderer({ reticle, ppm, cx, cy, pixelScale, onDotHover, magnification = 1 }: Props) {
   // screenScale: screen-px per firmware-image-px. Always integer when both
-  // pixelScale and visualMag are integers (we ensure this in Canvas.tsx).
-  const screenScale = pixelScale * visualMag
+  // pixelScale and magnification are integers (we ensure this in Canvas.tsx).
+  const screenScale = pixelScale * magnification
 
   const { rects, wings } = useMemo(() => {
     const rects: React.JSX.Element[] = []
@@ -121,7 +119,7 @@ export default function ReticleRenderer({ reticle, ppm, cx, cy, pixelScale, onDo
     }
 
     return { rects, wings }
-  }, [reticle, ppm, cx, cy, screenScale, visualMag])
+  }, [reticle, ppm, cx, cy, screenScale])
 
   const handleDotEnter = useCallback((
     e: React.MouseEvent,

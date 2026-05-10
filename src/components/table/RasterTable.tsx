@@ -11,14 +11,13 @@ interface Props {
   reticle: Reticle
   ppm: PixelsPerMrad
   magnification: number
-  focalPlane: 'ffp' | 'sfp'
   activeWing: WingKey
   setActiveWing: (w: WingKey) => void
 }
 
 const MAG_PRESETS = [1, 2, 3, 4, 5, 6, 7, 8]
 
-export default function RasterTable({ reticle, ppm, magnification, focalPlane, activeWing, setActiveWing }: Props) {
+export default function RasterTable({ reticle, ppm, magnification, activeWing, setActiveWing }: Props) {
   const { t } = useTranslation()
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
@@ -38,7 +37,7 @@ export default function RasterTable({ reticle, ppm, magnification, focalPlane, a
 
   const wing = reticle.wings[activeWing]
   const axisPpm = (activeWing === 'down' || activeWing === 'up') ? ppm.v : ppm.h
-  const baseAxisPpm = focalPlane === 'ffp' && magnification > 0 ? axisPpm / magnification : axisPpm
+  const baseAxisPpm = magnification > 0 ? axisPpm / magnification : axisPpm
 
   const marks = useMemo(() => {
     const count = effectiveDotCount(wing)
@@ -65,13 +64,13 @@ export default function RasterTable({ reticle, ppm, magnification, focalPlane, a
     if (count <= 0) return null
 
     return MAG_PRESETS.map(m => {
-      const magPpm = focalPlane === 'ffp' ? baseAxisPpm * m : baseAxisPpm
+      const magPpm = baseAxisPpm * m
       const allMarks = rasterize(reticle.rasterization, wing.dots.spacing, magPpm, count)
       const mark = allMarks.find(mk => mk.index === hoveredIndex)
       if (!mark) return null
       return { mag: m, ppmVal: magPpm, mark }
     }).filter(Boolean) as { mag: number; ppmVal: number; mark: (typeof marks)[number] }[]
-  }, [hoveredIndex, wing, reticle.rasterization, focalPlane, baseAxisPpm])
+  }, [hoveredIndex, wing, reticle.rasterization, baseAxisPpm])
 
   const modalStep = marks.length > 0 ? marks[0].stepPx : 0
   const disabled = !wing.enabled || effectiveDotCount(wing) === 0
@@ -81,7 +80,7 @@ export default function RasterTable({ reticle, ppm, magnification, focalPlane, a
     : t('rasterTable.summaryStepsRange', { min: steps.min, max: steps.max })
 
   const magInfo = magnification > 1
-    ? ` \u00b7 [${magnification}\u00d7 ${focalPlane.toUpperCase()} \u00b7 ${axisPpm.toFixed(1)} ${t('toolbar.pixPerMrad')}]`
+    ? ` \u00b7 [${magnification}\u00d7 \u00b7 ${axisPpm.toFixed(1)} ${t('toolbar.pixPerMrad')}]`
     : ''
 
   return (

@@ -156,7 +156,6 @@ function drawInfoPanel(
     label(t('export.pxPerMradV'), y); value(`${ppm.v.toFixed(3)}`, valX, y, COL_ACCENT); y += LINE_H
   }
   label(t('export.fov'), y); value(`${fov.h.toFixed(1)} × ${fov.v.toFixed(1)} ${t('units.mrad')}`, valX, y); y += LINE_H
-  label(t('export.focalPlane'), y); value(reticle.focalPlane.toUpperCase(), valX, y); y += LINE_H
 
   y += 4
   y = separator(y)
@@ -310,7 +309,7 @@ function measureInfoHeight(scope: ScopeProfile, reticle: Reticle, ppm: PixelsPer
   lines += scope.type === 'digital' ? 4 : 3
   lines += 1 // magnification line
   lines += sqPx ? 1 : 2
-  lines += 2 + 1 // fov + focalPlane + separator
+  lines += 1 + 1 // fov + separator
   lines += 1 + 3 // reticle header + dot/color/strategy
   if (!best || best.best !== reticle.rasterization) lines += 1
   lines += 1 + 1 // maxError + separator

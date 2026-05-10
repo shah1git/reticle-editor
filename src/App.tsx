@@ -36,6 +36,9 @@ const loadState = () => {
         : []
       // Drop the legacy `mode` field if present; pixels now coexist with parametric.
       delete (reticle as { mode?: unknown }).mode
+      // Drop legacy focalPlane field — feature removed, behaviour now always
+      // matches the previous FFP semantics (reticle re-rendered per mag).
+      delete (reticle as { focalPlane?: unknown }).focalPlane
       const rc = (reticle as { refCircle?: { enabled?: unknown; diameterMrad?: unknown } }).refCircle
       const rcEnabled = typeof rc?.enabled === 'boolean' ? rc.enabled : false
       const rcDiameter = typeof rc?.diameterMrad === 'number' && rc.diameterMrad > 0 ? rc.diameterMrad : 10
@@ -90,12 +93,10 @@ export default function App() {
   const [loadedFileHandle, setLoadedFileHandle] = useState<FileSystemFileHandle | null>(null)
   const ppm = useMemo(() => calcPixelsPerMrad(scope), [scope])
 
-  const effectivePpm = useMemo(() => {
-    if (reticle.focalPlane === 'ffp') {
-      return { h: ppm.h * magnification, v: ppm.v * magnification }
-    }
-    return ppm
-  }, [ppm, magnification, reticle.focalPlane])
+  const effectivePpm = useMemo(
+    () => ({ h: ppm.h * magnification, v: ppm.v * magnification }),
+    [ppm, magnification],
+  )
 
   const bestStrategy = useMemo(() => findBestStrategy(reticle, effectivePpm), [reticle, effectivePpm])
 
