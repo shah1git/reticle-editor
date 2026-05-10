@@ -72,6 +72,12 @@
   text-transform: uppercase;
 }
 
+.head > span {
+  cursor: help;
+  border-bottom: 1px dotted var(--text-secondary);
+  width: fit-content;
+}
+
 .row {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
