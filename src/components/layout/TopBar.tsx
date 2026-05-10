@@ -27,12 +27,14 @@ export default function TopBar({ scope, reticle, setScope, setReticle, ppm, magn
   const fileRef = useRef<HTMLInputElement>(null)
   const [describeOpen, setDescribeOpen] = useState(false)
   const [bmpPickerOpen, setBmpPickerOpen] = useState(false)
+  const [loadedFileName, setLoadedFileName] = useState<string | null>(null)
 
   const handleLoad = () => fileRef.current?.click()
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
       loadFromJson(file, setScope, setReticle)
+      setLoadedFileName(file.name)
       e.target.value = ''
     }
   }
@@ -44,6 +46,9 @@ export default function TopBar({ scope, reticle, setScope, setReticle, ppm, magn
         <span className={styles.title}>{t('topbar.title')}</span>
         <span className={styles.version}>v{__APP_VERSION__}</span>
         <LanguageSwitcher />
+        {loadedFileName && (
+          <span className={styles.fileName} title={loadedFileName}>{loadedFileName}</span>
+        )}
       </div>
       <div className={styles.right}>
         <button className={styles.btn} onClick={handleLoad}>

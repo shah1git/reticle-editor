@@ -103,6 +103,9 @@ export default function ReticleRenderer({ reticle, ppm, cx, cy, pixelScale, onDo
     }
 
     // User-painted pixels — drawn after the parametric layer so they're on top.
+    // Rendered in a contrasting hue purely for on-canvas distinction; exports
+    // use the single reticle colour (see utils/reticleRects.ts).
+    const paintColor = '#00bfff'
     for (const [i, [px, py]] of reticle.customPixels.entries()) {
       rects.push(
         <rect
@@ -111,7 +114,7 @@ export default function ReticleRenderer({ reticle, ppm, cx, cy, pixelScale, onDo
           y={cy + py * screenScale}
           width={screenScale}
           height={screenScale}
-          fill={color}
+          fill={paintColor}
           shapeRendering="crispEdges"
         />
       )
