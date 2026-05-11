@@ -33,7 +33,8 @@
       "addLine": "+ \u7ebf",
       "addDot": "+ \u70b9",
       "exportJson": "\u2b07 \u5bfc\u51fa JSON",
-      "importJson": "\u2b06 \u5bfc\u5165 JSON"
+      "importJson": "\u2b06 \u5bfc\u5165 JSON",
+      "exportDxf": "\u2b07 \u5bfc\u51fa DXF"
     },
     "list": {
       "title": "\u56fe\u5143",

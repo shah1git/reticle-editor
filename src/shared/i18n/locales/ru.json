@@ -33,7 +33,8 @@
       "addLine": "+ \u041b\u0438\u043d\u0438\u044f",
       "addDot": "+ \u0422\u043e\u0447\u043a\u0430",
       "exportJson": "\u2b07 \u042d\u043a\u0441\u043f\u043e\u0440\u0442 JSON",
-      "importJson": "\u2b06 \u0418\u043c\u043f\u043e\u0440\u0442 JSON"
+      "importJson": "\u2b06 \u0418\u043c\u043f\u043e\u0440\u0442 JSON",
+      "exportDxf": "\u2b07 \u042d\u043a\u0441\u043f\u043e\u0440\u0442 DXF"
     },
     "list": {
       "title": "\u041f\u0440\u0438\u043c\u0438\u0442\u0438\u0432\u044b",
