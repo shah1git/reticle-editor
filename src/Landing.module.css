@@ -90,6 +90,16 @@
   transform: translateY(-2px);
 }
 
+.cardIllustration {
+  width: 100%;
+  max-width: 240px;
+  height: auto;
+  margin: 0 auto 8px;
+  color: var(--text-primary);
+  opacity: 0.85;
+  display: block;
+}
+
 .cardTitle {
   font-family: var(--font);
   font-size: 20px;
