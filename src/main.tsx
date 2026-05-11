@@ -5,7 +5,7 @@ import './shared/i18n'
 import './global.css'
 import Landing from './Landing'
 import ThermalApp from './thermal/ThermalApp'
-import OpticalPlaceholder from './optical/OpticalPlaceholder'
+import OpticalApp from './optical/OpticalApp'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -13,7 +13,7 @@ createRoot(document.getElementById('root')!).render(
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/thermal/*" element={<ThermalApp />} />
-        <Route path="/optical/*" element={<OpticalPlaceholder />} />
+        <Route path="/optical/*" element={<OpticalApp />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
