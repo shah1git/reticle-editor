@@ -58,7 +58,7 @@ export default function Toolbar({ scope, setScope, reticle, setReticle, ppm, bes
       </div>
 
       {scopeOpen && (
-        <Modal onClose={() => setScopeOpen(false)} className={styles.scopeModal}>
+        <Modal onClose={() => setScopeOpen(false)} className={styles.scopeModal} closeOnBackdropClick={false}>
           <ScopeProfilePanel scope={scope} setScope={setScope} />
           <div className={styles.modalFooter}>
             <button className={styles.modalClose} onClick={() => setScopeOpen(false)}>{t('toolbar.done')}</button>
