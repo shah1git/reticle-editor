@@ -3,9 +3,9 @@
     "title": "RIKA Reticle Tools",
     "subtitle": "Pick a tool to design a reticle for your scope",
     "thermalTitle": "Reticle Editor",
-    "thermalDescription": "Thermal & digital scopes \u2014 pixel-perfect reticles with rasterization analysis, BMP/PNG export.",
+    "thermalDescription": "Reticles for digital scopes",
     "opticalTitle": "Reticle Designer",
-    "opticalDescription": "Vector reticle designer for optical scopes with etched-glass reticles."
+    "opticalDescription": "Reticles for optical scopes"
   },
   "optical": {
     "title": "Optical Reticle Editor",
