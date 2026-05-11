@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Reticle, Primitive } from '../../types/reticle'
 import { serializeReticle, deserializeReticle } from '../../export/json'
+import { serializeDxf } from '../../export/dxf'
 import { nextLineEndpoints, nextDotPosition } from '../../defaults'
 import styles from './Toolbar.module.css'
 
@@ -49,6 +50,17 @@ export default function Toolbar({ reticle, onNameChange, onAddPrimitive, onRepla
     URL.revokeObjectURL(url)
   }
 
+  const exportDxf = () => {
+    const blob = new Blob([serializeDxf(reticle)], { type: 'application/dxf' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    const safeName = (reticle.name || 'reticle').replace(/[^\w.-]+/g, '_')
+    a.href = url
+    a.download = `${safeName}.dxf`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
   const importJson = (file: File) => {
     const reader = new FileReader()
     reader.onload = () => {
@@ -73,6 +85,7 @@ export default function Toolbar({ reticle, onNameChange, onAddPrimitive, onRepla
       <button type="button" className={styles.btn} onClick={addDot}>{t('optical.toolbar.addDot')}</button>
       <span className={styles.sep} />
       <button type="button" className={styles.btn} onClick={exportJson}>{t('optical.toolbar.exportJson')}</button>
+      <button type="button" className={styles.btn} onClick={exportDxf}>{t('optical.toolbar.exportDxf')}</button>
       <button type="button" className={styles.btn} onClick={() => importRef.current?.click()}>
         {t('optical.toolbar.importJson')}
       </button>

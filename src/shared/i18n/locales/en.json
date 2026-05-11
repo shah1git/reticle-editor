@@ -33,7 +33,8 @@
       "addLine": "+ Line",
       "addDot": "+ Dot",
       "exportJson": "\u2b07 Export JSON",
-      "importJson": "\u2b06 Import JSON"
+      "importJson": "\u2b06 Import JSON",
+      "exportDxf": "\u2b07 Export DXF"
     },
     "list": {
       "title": "Primitives",
