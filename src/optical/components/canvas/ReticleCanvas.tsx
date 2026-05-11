@@ -5,6 +5,14 @@ import styles from './ReticleCanvas.module.css'
 /** Half-width of the visible mrad window (viewBox is -V..+V on each axis). */
 const VIEW_HALF = 20
 
+/** Minimum stroke-width of the invisible hitbox around a line, in mrad. Real
+ *  reticle lines are ~0.05 mrad wide — below 1 screen px at typical zoom — so
+ *  a fattened hitbox is what actually catches the mouse. */
+const HITBOX_MIN_LINE_WIDTH = 0.5
+
+/** Same idea for dots: hitbox grows the click target to at least this radius. */
+const HITBOX_MIN_DOT_RADIUS = 0.3
+
 interface Props {
   primitives: Primitive[]
   selectedId: string | null
@@ -72,7 +80,10 @@ export default function ReticleCanvas({ primitives, selectedId, onSelect }: Prop
         <line x1={0} y1={-VIEW_HALF} x2={0} y2={VIEW_HALF} vectorEffect="non-scaling-stroke" />
       </g>
 
-      {/* Reticle primitives — y is flipped (data +y up, SVG +y down). */}
+      {/* Reticle primitives — y is flipped (data +y up, SVG +y down).
+       *  Each primitive is a <g> with an invisible fattened hitbox + the
+       *  visible geometry. Clicks land on the hitbox so thin lines/dots are
+       *  still selectable. */}
       <g>
         {primitives.map(p => {
           const selected = p.id === selectedId
@@ -81,29 +92,47 @@ export default function ReticleCanvas({ primitives, selectedId, onSelect }: Prop
             onSelect(p.id)
           }
           if (p.type === 'line') {
+            const hitboxStroke = Math.max(p.thickness, HITBOX_MIN_LINE_WIDTH)
             return (
-              <line
-                key={p.id}
-                x1={p.x1}
-                y1={-p.y1}
-                x2={p.x2}
-                y2={-p.y2}
-                strokeWidth={p.thickness}
-                strokeLinecap="butt"
-                className={selected ? styles.primitiveSelected : styles.primitive}
-                onClick={handleClick}
-              />
+              <g key={p.id} onClick={handleClick}>
+                <line
+                  x1={p.x1}
+                  y1={-p.y1}
+                  x2={p.x2}
+                  y2={-p.y2}
+                  stroke="transparent"
+                  strokeWidth={hitboxStroke}
+                  className={styles.hitboxLine}
+                />
+                <line
+                  x1={p.x1}
+                  y1={-p.y1}
+                  x2={p.x2}
+                  y2={-p.y2}
+                  strokeWidth={p.thickness}
+                  strokeLinecap="butt"
+                  className={selected ? styles.primitiveSelected : styles.primitive}
+                />
+              </g>
             )
           }
+          const hitboxR = Math.max(p.size / 2, HITBOX_MIN_DOT_RADIUS)
           return (
-            <circle
-              key={p.id}
-              cx={p.x}
-              cy={-p.y}
-              r={p.size / 2}
-              className={selected ? styles.primitiveSelected : styles.primitive}
-              onClick={handleClick}
-            />
+            <g key={p.id} onClick={handleClick}>
+              <circle
+                cx={p.x}
+                cy={-p.y}
+                r={hitboxR}
+                fill="transparent"
+                className={styles.hitboxDot}
+              />
+              <circle
+                cx={p.x}
+                cy={-p.y}
+                r={p.size / 2}
+                className={selected ? styles.primitiveSelected : styles.primitive}
+              />
+            </g>
           )
         })}
       </g>

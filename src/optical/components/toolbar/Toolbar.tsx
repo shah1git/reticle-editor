@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Reticle, Primitive } from '../../types/reticle'
 import { serializeReticle, deserializeReticle } from '../../export/json'
+import { nextLineEndpoints, nextDotPosition } from '../../defaults'
 import styles from './Toolbar.module.css'
 
 interface Props {
@@ -24,13 +25,15 @@ export default function Toolbar({ reticle, onNameChange, onAddPrimitive, onRepla
   const importRef = useRef<HTMLInputElement>(null)
 
   const addLine = () => {
-    const p: Primitive = { id: makeId(), type: 'line', x1: -1, y1: 0, x2: 1, y2: 0, thickness: 0.05 }
+    const pos = nextLineEndpoints(reticle.primitives)
+    const p: Primitive = { id: makeId(), type: 'line', ...pos, thickness: 0.05 }
     onAddPrimitive(p)
     onSelect(p.id)
   }
 
   const addDot = () => {
-    const p: Primitive = { id: makeId(), type: 'dot', x: 0, y: 0, size: 0.2 }
+    const pos = nextDotPosition(reticle.primitives)
+    const p: Primitive = { id: makeId(), type: 'dot', ...pos, size: 0.2 }
     onAddPrimitive(p)
     onSelect(p.id)
   }
