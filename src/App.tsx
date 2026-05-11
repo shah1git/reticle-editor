@@ -3,7 +3,7 @@ import type { ScopeProfile } from './types/scope'
 import type { Reticle } from './types/reticle'
 import { defaultScope, defaultReticle } from './defaults'
 import { saveToCurrentFile, saveAsJson, loadFromJson } from './utils/fileIO'
-import { migrateReticle } from './utils/migrateReticle'
+import { migrateReticle, migrateScope } from './utils/migrateReticle'
 import { calcPixelsPerMrad } from './math/optics'
 import { findBestStrategy } from './math/bestStrategy'
 import { useKeyboard } from './hooks/useKeyboard'
@@ -26,7 +26,7 @@ const loadState = () => {
     if (saved) {
       const parsed = JSON.parse(saved)
       return {
-        scope: { ...defaultScope, ...parsed.scope },
+        scope: migrateScope(parsed.scope),
         reticle: migrateReticle(parsed.reticle),
       }
     }

@@ -133,17 +133,10 @@ function drawInfoPanel(
 
   label(t('export.name'), y); value(scope.name, valX, y); y += LINE_H
 
-  if (scope.type === 'digital') {
-    label(t('export.type'), y); value(t('export.typeDigital'), valX, y); y += LINE_H
-    label(t('export.focalLength'), y); value(`${scope.lensFL} ${t('units.mm')}`, valX, y); y += LINE_H
-    label(t('export.sensor'), y); value(`${scope.sensorResX}×${scope.sensorResY} ${t('units.px')}`, valX, y); y += LINE_H
-    label(t('export.display'), y); value(`${scope.displayResX}×${scope.displayResY} ${t('units.px')}`, valX, y); y += LINE_H
-    label(t('export.pixelPitch'), y); value(`${scope.pixelPitch} ${t('units.um')}`, valX, y); y += LINE_H
-  } else {
-    label(t('export.type'), y); value(t('export.typeOptical'), valX, y); y += LINE_H
-    label(t('export.fov'), y); value(`${scope.fovDegrees}${t('units.deg')}`, valX, y); y += LINE_H
-    label(t('export.display'), y); value(`${scope.displayResX}×${scope.displayResY} ${t('units.px')}`, valX, y); y += LINE_H
-  }
+  label(t('export.focalLength'), y); value(`${scope.lensFL} ${t('units.mm')}`, valX, y); y += LINE_H
+  label(t('export.sensor'), y); value(`${scope.sensorResX}×${scope.sensorResY} ${t('units.px')}`, valX, y); y += LINE_H
+  label(t('export.display'), y); value(`${scope.displayResX}×${scope.displayResY} ${t('units.px')}`, valX, y); y += LINE_H
+  label(t('export.pixelPitch'), y); value(`${scope.pixelPitch} ${t('units.um')}`, valX, y); y += LINE_H
 
   label(t('export.magnification'), y); value(`×${magnification}`, valX, y, COL_ACCENT); y += LINE_H
 
@@ -296,7 +289,7 @@ function errColor(errorPx: number): string {
   return COL_WARN
 }
 
-function measureInfoHeight(scope: ScopeProfile, reticle: Reticle, ppm: PixelsPerMrad): number {
+function measureInfoHeight(reticle: Reticle, ppm: PixelsPerMrad): number {
   const sqPx = isSquarePixelRatio(ppm)
   const best = findBestStrategy(reticle, ppm)
   const wingStats = getWingStats(reticle, ppm)
@@ -304,7 +297,7 @@ function measureInfoHeight(scope: ScopeProfile, reticle: Reticle, ppm: PixelsPer
   let lines = 0
   lines += 2 // title
   lines += 1 + 1 // scope header + name
-  lines += scope.type === 'digital' ? 4 : 3
+  lines += 4 // focal length, sensor, display, pixel pitch
   lines += 1 // magnification line
   lines += sqPx ? 1 : 2
   lines += 1 + 1 // fov + separator
@@ -364,7 +357,7 @@ export async function exportPng(scope: ScopeProfile, reticle: Reticle): Promise<
 
   const tiles = MAG_LEVELS.map(k => {
     const ppm = { h: basePpm.h * k, v: basePpm.v * k }
-    const infoH = measureInfoHeight(scope, reticle, ppm)
+    const infoH = measureInfoHeight(reticle, ppm)
     const bodyH = Math.max(reticleH, infoH)
     return { k, ppm, infoH, bodyH }
   })
