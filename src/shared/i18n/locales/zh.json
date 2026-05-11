@@ -5,13 +5,57 @@
     "thermalTitle": "\u5206\u5212\u677f\u7f16\u8f91\u5668",
     "thermalDescription": "\u70ed\u6210\u50cf\u4e0e\u6570\u5b57\u7784\u51c6\u955c \u2014 \u50cf\u7d20\u7ea7\u5206\u5212\u677f\uff0c\u542b\u5149\u6805\u5316\u5206\u6790\u3001BMP/PNG \u5bfc\u51fa\u3002",
     "opticalTitle": "\u5206\u5212\u677f\u8bbe\u8ba1\u5668",
-    "opticalDescription": "\u5149\u5b66\u7784\u51c6\u955c\uff0c\u73bb\u7483\u8680\u523b\u5206\u5212\u677f\u3002\u5373\u5c06\u4f5c\u4e3a\u72ec\u7acb\u4ea7\u54c1\u63a8\u51fa\u3002",
-    "comingSoon": "\u5373\u5c06\u63a8\u51fa"
+    "opticalDescription": "\u7528\u4e8e\u5e26\u73bb\u7483\u8680\u523b\u5206\u5212\u677f\u7684\u5149\u5b66\u7784\u51c6\u955c\u7684\u77e2\u91cf\u5206\u5212\u677f\u8bbe\u8ba1\u5668\u3002"
   },
   "optical": {
-    "title": "\u5373\u5c06\u63a8\u51fa",
-    "teaser": "\u7528\u4e8e\u5e26\u73bb\u7483\u8680\u523b\u5206\u5212\u677f\u7684\u5149\u5b66\u7784\u51c6\u955c\u7684\u5206\u5212\u677f\u8bbe\u8ba1\u5668\u3002\u5f00\u53d1\u4e2d\u3002",
-    "backToLanding": "\u2190 \u8fd4\u56de\u9996\u9875"
+    "title": "\u5149\u5b66\u7784\u51c6\u955c\u5206\u5212\u677f\u7f16\u8f91\u5668",
+    "backToLanding": "\u2190 \u8fd4\u56de\u9996\u9875",
+    "units": {
+      "mm": "\u6beb\u7c73",
+      "mrad": "\u5bc6\u4f4d",
+      "x": "\u00d7"
+    },
+    "scope": {
+      "title": "\u73bb\u7483\u53c2\u6570",
+      "type": "\u7126\u5e73\u9762",
+      "ffp": "FFP",
+      "sfp": "SFP",
+      "referenceMag": "\u53c2\u8003\u500d\u7387",
+      "eyepieceFL": "\u76ee\u955c\u7126\u8ddd",
+      "glassDiameter": "\u73bb\u7483\u76f4\u5f84",
+      "glassThickness": "\u73bb\u7483\u539a\u5ea6",
+      "minLineWidth": "\u6700\u5c0f\u7ebf\u5bbd",
+      "minGap": "\u6700\u5c0f\u95f4\u9699"
+    },
+    "toolbar": {
+      "name": "\u5206\u5212\u677f\u540d\u79f0",
+      "namePlaceholder": "\u5206\u5212\u677f\u540d\u79f0",
+      "addLine": "+ \u7ebf",
+      "addDot": "+ \u70b9",
+      "exportJson": "\u2b07 \u5bfc\u51fa JSON",
+      "importJson": "\u2b06 \u5bfc\u5165 JSON"
+    },
+    "list": {
+      "title": "\u56fe\u5143",
+      "empty": "\u8fd8\u6ca1\u6709\u56fe\u5143\u3002\u4f7f\u7528\u5de5\u5177\u680f\u6dfb\u52a0\u3002",
+      "remove": "\u5220\u9664"
+    },
+    "editor": {
+      "title": "\u7f16\u8f91",
+      "empty": "\u9009\u62e9\u4e00\u4e2a\u56fe\u5143\u8fdb\u884c\u7f16\u8f91\u3002",
+      "type": {
+        "line": "\u7ebf",
+        "dot": "\u70b9"
+      },
+      "x1": "x1",
+      "y1": "y1",
+      "x2": "x2",
+      "y2": "y2",
+      "x": "x",
+      "y": "y",
+      "thickness": "\u7c97\u7ec6",
+      "size": "\u5c3a\u5bf8"
+    }
   },
   "canvas": {
     "pixelGrid": "\u50cf\u7d20\u6805\u683c",

@@ -27,7 +27,6 @@ export default function Landing() {
           </Link>
 
           <Link to="/optical" className={styles.card}>
-            <span className={styles.badge}>{t('landing.comingSoon')}</span>
             <div className={styles.cardTitle}>{t('landing.opticalTitle')}</div>
             <div className={styles.cardDescription}>{t('landing.opticalDescription')}</div>
           </Link>
