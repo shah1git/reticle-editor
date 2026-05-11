@@ -1,10 +1,21 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './i18n'
-import App from './App'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import './shared/i18n'
+import './global.css'
+import Landing from './Landing'
+import ThermalApp from './thermal/ThermalApp'
+import OpticalPlaceholder from './optical/OpticalPlaceholder'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/thermal/*" element={<ThermalApp />} />
+        <Route path="/optical/*" element={<OpticalPlaceholder />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   </StrictMode>,
 )

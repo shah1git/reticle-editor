@@ -4,6 +4,23 @@
 
 **Демо:** https://shah1git.github.io/reticle-editor/
 
+## Architecture
+
+Multi-tool под общей крышей, роутинг через `react-router-dom`:
+
+- `/` — landing с выбором инструмента (`src/Landing.tsx`)
+- `/thermal` — редактор сеток для тепловизионных и цифровых прицелов, реализован (`src/thermal/`)
+- `/optical` — placeholder «Coming Soon» для оптических прицелов с травлёным стеклом, в разработке (`src/optical/`)
+
+Структура `src/`:
+
+- `shared/` — i18n (включая `LanguageSwitcher`) и theme tokens, общие для всех инструментов
+- `thermal/` — весь thermal-редактор (компоненты, math, types, utils, hooks, presets)
+- `optical/` — placeholder, расширится в полноценный редактор позже
+- `Landing.tsx`, `main.tsx`, `global.css` — корневой уровень
+
+Правило изоляции: `thermal/` и `optical/` не импортируют друг друга, только через `shared/`. GitHub Pages SPA fallback (`public/404.html` + восстановление пути в `index.html`) обеспечивает работу deep-link'ов под `BrowserRouter`.
+
 ## Правила разработки
 
 1. **Каждое изменение должно быть задокументировано.** При добавлении, удалении или изменении компонентов, API, layout, моделей данных или поведения — обновить соответствующий раздел этого README. Коммит без обновления документации не считается завершённым.
@@ -28,66 +45,28 @@ npm run preview   # preview production-сборки
 
 ```
 src/
-├── App.tsx                    # Корневой компонент, state: scope, reticle, activeWing, magnification
-├── defaults.ts                # ScopeProfile по умолчанию; defaultReticle = PRESETS[0]
-├── presets.ts                 # Каталог готовых конфигураций сетки + reticleMatchesPreset
+├── main.tsx                   # Точка входа: BrowserRouter, маршруты /, /thermal, /optical
+├── Landing.tsx                # Лендинг с выбором инструмента
 ├── global.css                 # CSS-переменные, сброс, скроллбары
-├── main.tsx                   # Точка входа React
 │
-├── types/
-│   ├── reticle.ts             # Wing, Reticle — модель данных сетки
-│   ├── scope.ts               # ScopeProfile — параметры прицела (digital/optical)
-│   └── rasterization.ts       # RasterMark, RasterStrategy — результат растеризации
+├── shared/                    # Общая инфраструктура для всех инструментов
+│   ├── i18n/                  # i18next setup, локали, LanguageSwitcher
+│   └── theme/tokens.ts        # Палитра и шрифтовые токены
 │
-├── math/
-│   ├── optics.ts              # calcPixelsPerMrad, snapToPixel, getFovMrad
-│   ├── rasterization.ts       # 3 алгоритма: independent, fixed_step, bresenham
-│   ��── __tests__/             # Юнит-тесты математики
+├── optical/
+│   └── OpticalPlaceholder.tsx # Placeholder «Coming Soon»
 │
-├── theme/
-│   └── tokens.ts              # Цветовая палитра и шрифтовые токены
-│
-├── hooks/
-│   ├── useCanvasInteraction.ts # Zoom (scroll) и pan (Alt+drag) для canvas
-│   └── useKeyboard.ts         # Глобальные хоткеи (Ctrl+S)
-│
-├── utils/
-│   ├── fileIO.ts              # Сохранение/загрузка JSON (с обратной совместимостью)
-│   ├── exportPng.ts           # Экспорт сетки как PNG с точными пиксельными координатами
-│   └── describeReticle.ts     # Локализованное текстовое описание текущей сетки и прицела
-│
-└── components/
-    ├── layout/
-    │   ├── TopBar.tsx          # Шапка: логотип, кнопки Открыть/Сохранить/Описание/Экспорт
-    │   ├── LeftPanel.tsx       # Левая колонка (300px, scroll): настройки сетки
-    │   ├── Canvas.tsx          # Центр (flex:1): SVG-canvas с zoom/pan, grid, reticle, кнопки кратности
-    │   ├── RightPanel.tsx      # Правая колонка (380px): таблица растеризации + сводка
-    │   └── SummaryCards.tsx    # 2×2 сводка: метки, ошибка, шаги, стратегия
+└── thermal/                   # Thermal-редактор (всё, что было в src/ до рефакторинга)
+    ├── ThermalApp.tsx         # Корневой компонент: state scope, reticle, activeWing, magnification
+    ├── defaults.ts            # ScopeProfile по умолчанию; defaultReticle = PRESETS[0]
+    ├── presets.ts             # Каталог готовых конфигураций сетки
+    ├── i18n/strategyKeys.ts   # Ключи переводов стратегий растеризации (thermal-specific)
     │
-    ├── scope/
-    │   └── ScopeProfilePanel.tsx  # Параметры прицела (тип, фокус, сенсор, дисплей)
-    │
-    ├── reticle/
-    │   ├── PresetPicker.tsx    # 6 кнопок-пресетов сверху LeftPanel; подсветка активного
-    │   ├── WingEditor.tsx      # Табы крыльев + параметры (длина, толщина, точки)
-    │   ├── CenterDotConfig.tsx # Радиус центральной точки (MRAD, snap к пикселям)
-    │   └── RasterStrategySelector.tsx # Выбор А/Б/В + сворачиваемое описание
-    │
-    ├── table/
-    │   └── RasterTable.tsx     # Таблица растеризации + детейл по кратностям при hover
-    │
-    ├── canvas/
-    │   ├── ReticleRenderer.tsx # SVG-рендеринг сетки (центр. точка, крылья, метки, FFP-масштаб точек)
-    │   └── MradGrid.tsx        # Фоновая MRAD-сетка с подписями
-    │
-    └── ui/
-        ├── NumberInput.tsx     # Числовое поле с пиксельным эквивалентом и подсказкой
-        ├── ColorInput.tsx      # Цветовой пикер + hex-поле
-        ├── CheckboxInput.tsx   # Чекбокс
-        ├── SelectInput.tsx     # Выпадающий список
-        ├── Section.tsx         # Сворачиваемая секция с заголовком и тултипом
-        ├── Tooltip.tsx         # Тултип «?» — portal в body, position:fixed
-        └── DescribeModal.tsx   # Модал «Описание сетки» с кнопкой «Скопировать»
+    ├── types/                 # ScopeProfile, Reticle, RasterStrategy, …
+    ├── math/                  # optics + 3 алгоритма растеризации + тесты
+    ├── hooks/                 # useCanvasInteraction, useKeyboard, useIsMobile, useEscapeKey
+    ├── utils/                 # fileIO, migrateReticle, exportPng/Bmp, describeReticle, …
+    └── components/            # layout, scope, reticle, table, canvas, ui
 ```
 
 ## Модель данных
@@ -127,7 +106,7 @@ interface Reticle {
 
 ## Пресеты сетки
 
-`src/presets.ts` хранит каталог готовых конфигураций — массив `PRESETS: ReticlePreset[]`. Каждый пресет содержит `id` и полный объект `Reticle` (центральная точка, 4 крыла, цвет, фокальная плоскость, стратегия растеризации).
+`src/thermal/presets.ts` хранит каталог готовых конфигураций — массив `PRESETS: ReticlePreset[]`. Каждый пресет содержит `id` и полный объект `Reticle` (центральная точка, 4 крыла, цвет, фокальная плоскость, стратегия растеризации).
 
 Кнопки пресетов отрисовываются в `PresetPicker.tsx` сверху `LeftPanel`. Применение пресета — `setReticle(preset.reticle)`, то есть **полная замена** текущей сетки. Сравнение `reticleMatchesPreset(reticle, preset.reticle)` подсвечивает активный пресет.
 
@@ -144,7 +123,7 @@ interface Reticle {
 
 `defaultReticle` (стартовое состояние при первом запуске) равен `PRESETS[0].reticle` — то есть `hunting`.
 
-Локализация — ключи `presets.<id>.name` и `presets.<id>.desc` в `src/i18n/locales/{en,ru,zh}.json`. Описание используется как нативный `title`-tooltip кнопки.
+Локализация — ключи `presets.<id>.name` и `presets.<id>.desc` в `src/shared/i18n/locales/{en,ru,zh}.json`. Описание используется как нативный `title`-tooltip кнопки.
 
 Добавление нового пресета: расширить юнион `PresetId`, добавить элемент в `PRESETS` (`presets.ts`), добавить `name`/`desc` во все 3 локали — больше ничего трогать не нужно.
 
@@ -157,7 +136,7 @@ interface Reticle {
 
 Кнопки кратности (1×–8×) расположены на Canvas в блоке контролов. `magnification` — состояние предпросмотра, НЕ сохраняется в JSON.
 
-`effectivePpm` вычисляется в `App.tsx` и передаётся во все компоненты вместо basePpm. `calcPixelsPerMrad` в `src/math/optics.ts` по-прежнему вычисляет только basePpm.
+`effectivePpm` вычисляется в `ThermalApp.tsx` и передаётся во все компоненты вместо basePpm. `calcPixelsPerMrad` в `src/thermal/math/optics.ts` по-прежнему вычисляет только basePpm.
 
 ## Canvas — индикатор FOV
 
@@ -165,7 +144,7 @@ interface Reticle {
 - Масштаб (пикс/MRAD)
 - Видимую область в MRAD и процент от полного FOV прицела (с учётом кратности)
 
-Кнопка **«FOV»** (правый нижний угол) — подгоняет zoom так, чтобы effectiveFov (`fov / magnification`) поместился в canvas. Использует `getFovMrad()` из `src/math/optics.ts`.
+Кнопка **«FOV»** (правый нижний угол) — подгоняет zoom так, чтобы effectiveFov (`fov / magnification`) поместился в canvas. Использует `getFovMrad()` из `src/thermal/math/optics.ts`.
 
 В блоке scopeInfo (верхний правый угол) отображаются: параметры прицела, effectivePpm, режим фокальной плоскости, текущая кратность, effectiveFov.
 

@@ -10,7 +10,7 @@ import { exportBmp } from '../../utils/exportBmp'
 import { getOpenFilePicker } from '../../types/fileSystemAccess'
 import DescribeModal from '../ui/DescribeModal'
 import BmpScalePicker from '../ui/BmpScalePicker'
-import LanguageSwitcher from './LanguageSwitcher'
+import LanguageSwitcher from '../../../shared/i18n/LanguageSwitcher'
 import styles from './TopBar.module.css'
 
 interface Props {

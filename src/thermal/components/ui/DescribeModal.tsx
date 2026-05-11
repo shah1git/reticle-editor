@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
-import i18n from '../../i18n'
+import i18n from '../../../shared/i18n'
 import type { ScopeProfile } from '../../types/scope'
 import type { Reticle } from '../../types/reticle'
 import type { PixelsPerMrad } from '../../math/optics'

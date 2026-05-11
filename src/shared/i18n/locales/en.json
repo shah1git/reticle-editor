@@ -1,4 +1,18 @@
 {
+  "landing": {
+    "title": "RIKA Reticle Tools",
+    "subtitle": "Pick a tool to design a reticle for your scope",
+    "thermalTitle": "Reticle Editor",
+    "thermalDescription": "Thermal & digital scopes \u2014 pixel-perfect reticles with rasterization analysis, BMP/PNG export.",
+    "opticalTitle": "Reticle Designer",
+    "opticalDescription": "Optical scopes with etched-glass reticles. Coming soon as a separate product.",
+    "comingSoon": "Coming Soon"
+  },
+  "optical": {
+    "title": "Coming Soon",
+    "teaser": "A reticle designer for optical scopes with etched-glass reticles. In development.",
+    "backToLanding": "\u2190 Back to home"
+  },
   "canvas": {
     "pixelGrid": "Pixel grid",
     "pixelScaleSuffix": "({{ppm}} px/MRAD)",
