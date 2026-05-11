@@ -31,12 +31,22 @@
 .primitive {
   stroke: #ffffff;
   fill: #ffffff;
-  cursor: pointer;
+  pointer-events: none;
 }
 
 .primitiveSelected {
   stroke: var(--accent-orange);
   fill: var(--accent-orange);
-  cursor: pointer;
+  pointer-events: none;
   filter: drop-shadow(0 0 2px var(--accent-orange));
+}
+
+.hitboxLine {
+  pointer-events: stroke;
+  cursor: pointer;
+}
+
+.hitboxDot {
+  pointer-events: all;
+  cursor: pointer;
 }
