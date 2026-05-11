@@ -23,7 +23,7 @@ export default function Landing() {
         <div className={styles.cards}>
           <Link to="/thermal" className={styles.card}>
             <img
-              src={import.meta.env.BASE_URL + 'landing-thermal.png'}
+              src={import.meta.env.BASE_URL + 'landing-thermal.webp'}
               alt=""
               className={styles.cardIllustration}
               aria-hidden="true"
@@ -34,7 +34,7 @@ export default function Landing() {
 
           <Link to="/optical" className={styles.card}>
             <img
-              src={import.meta.env.BASE_URL + 'landing-optical.png'}
+              src={import.meta.env.BASE_URL + 'landing-optical.webp'}
               alt=""
               className={styles.cardIllustration}
               aria-hidden="true"
