@@ -92,12 +92,13 @@
 
 .cardIllustration {
   width: 100%;
-  max-width: 240px;
   height: auto;
-  margin: 0 auto 8px;
-  color: var(--text-primary);
-  opacity: 0.85;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  margin: 0 0 4px;
   display: block;
+  border-radius: 8px;
+  background: #000;
 }
 
 .cardTitle {
