@@ -1,6 +1,6 @@
 import type { ScopeProfile } from '../types/scope'
 import type { Reticle } from '../types/reticle'
-import i18n from '../i18n'
+import i18n from '../../shared/i18n'
 import { calcPixelsPerMrad, getFovMrad, isSquarePixelRatio, type PixelsPerMrad } from '../math/optics'
 import { rasterize, effectiveDotCount } from '../math/rasterization'
 import { loadLogo } from './logoLoader'

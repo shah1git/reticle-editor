@@ -5,7 +5,7 @@ import type { PixelsPerMrad } from '../math/optics'
 import { getFovMrad, isSquarePixelRatio } from '../math/optics'
 import { rasterize, effectiveDotCount } from '../math/rasterization'
 import { referenceCirclePixels } from '../math/shapes'
-import type { WingKey } from '../App'
+import type { WingKey } from '../ThermalApp'
 
 declare const __APP_VERSION__: string
 

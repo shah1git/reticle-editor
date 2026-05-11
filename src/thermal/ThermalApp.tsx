@@ -14,15 +14,28 @@ import LeftPanel from './components/layout/LeftPanel'
 import Canvas from './components/layout/Canvas'
 import RightPanel from './components/layout/RightPanel'
 import MobileLayout from './components/layout/MobileLayout'
-import './global.css'
 
 export type WingKey = 'up' | 'down' | 'left' | 'right'
 
-const STORAGE_KEY = 'reticle-editor-state'
+const STORAGE_KEY = 'reticle-editor-thermal-state'
+const LEGACY_STORAGE_KEY = 'reticle-editor-state'
 
+/**
+ * One-shot migration from the pre-multi-tool localStorage key. If the new
+ * key is empty but the legacy one exists, move the data over and drop the
+ * legacy entry so we never re-read it.
+ */
 const loadState = () => {
   try {
-    const saved = localStorage.getItem(STORAGE_KEY)
+    let saved = localStorage.getItem(STORAGE_KEY)
+    if (!saved) {
+      const legacy = localStorage.getItem(LEGACY_STORAGE_KEY)
+      if (legacy) {
+        localStorage.setItem(STORAGE_KEY, legacy)
+        localStorage.removeItem(LEGACY_STORAGE_KEY)
+        saved = legacy
+      }
+    }
     if (saved) {
       const parsed = JSON.parse(saved)
       return {
@@ -36,7 +49,7 @@ const loadState = () => {
 
 const initial = loadState()
 
-export default function App() {
+export default function ThermalApp() {
   const [scope, setScope] = useState<ScopeProfile>(initial.scope)
   const [reticle, setReticle] = useState<Reticle>(initial.reticle)
   const [activeWing, setActiveWing] = useState<WingKey>('down')

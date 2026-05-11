@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import type { Reticle } from '../../types/reticle'
 import type { PixelsPerMrad } from '../../math/optics'
-import type { WingKey } from '../../App'
+import type { WingKey } from '../../ThermalApp'
 import CenterDotConfig from '../reticle/CenterDotConfig'
 
 import WingEditor from '../reticle/WingEditor'
