@@ -3,7 +3,6 @@ import { calcPixelsPerMrad, getFovMrad, snapToPixel, isSquarePixelRatio } from '
 import type { ScopeProfile } from '../../types/scope'
 
 const digitalScope: ScopeProfile = {
-  type: 'digital',
   name: 'Test Thermal',
   lensFL: 35,
   sensorResX: 384,
@@ -11,21 +10,6 @@ const digitalScope: ScopeProfile = {
   displayResX: 1024,
   displayResY: 768,
   pixelPitch: 12,
-  fovDegrees: 7.5,
-  tubeDiameter: 30,
-}
-
-const opticalScope: ScopeProfile = {
-  type: 'optical',
-  name: 'Test Optical',
-  lensFL: 35,
-  sensorResX: 384,
-  sensorResY: 288,
-  displayResX: 1024,
-  displayResY: 768,
-  pixelPitch: 12,
-  fovDegrees: 7.5,
-  tubeDiameter: 30,
 }
 
 describe('calcPixelsPerMrad', () => {
@@ -69,14 +53,6 @@ describe('calcPixelsPerMrad', () => {
     // 640/1024 = 0.625, 480/600 = 0.8 → not square
     expect(isSquarePixelRatio(ppm)).toBe(false)
   })
-
-  it('calculates correctly for optical scope', () => {
-    const ppm = calcPixelsPerMrad(opticalScope)
-    const expectedFovMrad = 7.5 * 17.4533
-    const expectedPpm = 1024 / expectedFovMrad
-    expect(ppm.h).toBeCloseTo(expectedPpm, 2)
-    expect(ppm.v).toBeCloseTo(expectedPpm, 2)
-  })
 })
 
 describe('getFovMrad', () => {
@@ -85,11 +61,6 @@ describe('getFovMrad', () => {
     const ppm = calcPixelsPerMrad(digitalScope)
     expect(fov.h).toBeCloseTo(digitalScope.displayResX / ppm.h, 2)
     expect(fov.v).toBeCloseTo(digitalScope.displayResY / ppm.v, 2)
-  })
-
-  it('returns correct FOV for optical scope', () => {
-    const fov = getFovMrad(opticalScope)
-    expect(fov.h).toBeCloseTo(7.5 * 17.4533, 2)
   })
 })
 

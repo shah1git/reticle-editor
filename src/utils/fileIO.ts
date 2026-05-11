@@ -4,7 +4,7 @@ import type { RasterMark } from '../types/rasterization'
 import { calcPixelsPerMrad } from '../math/optics'
 import { rasterize, effectiveDotCount } from '../math/rasterization'
 import { buildRenderManifest, RENDER_README, type RenderManifest } from './renderManifest'
-import { migrateReticle } from './migrateReticle'
+import { migrateReticle, migrateScope } from './migrateReticle'
 import { getSaveFilePicker } from '../types/fileSystemAccess'
 
 interface SaveData {
@@ -149,8 +149,8 @@ export function loadFromJson(
 ): void {
   const reader = new FileReader()
   reader.onload = () => {
-    const data = JSON.parse(reader.result as string) as { scopeProfile?: ScopeProfile; reticle?: unknown }
-    if (data.scopeProfile) setScope(data.scopeProfile)
+    const data = JSON.parse(reader.result as string) as { scopeProfile?: unknown; reticle?: unknown }
+    if (data.scopeProfile) setScope(migrateScope(data.scopeProfile))
     if (data.reticle) setReticle(migrateReticle(data.reticle))
   }
   reader.readAsText(file)

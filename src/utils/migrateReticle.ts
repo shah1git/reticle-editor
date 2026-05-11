@@ -1,5 +1,20 @@
 import type { Reticle, CenterMarkKind, WingDotKind } from '../types/reticle'
-import { defaultReticle } from '../defaults'
+import type { ScopeProfile } from '../types/scope'
+import { defaultReticle, defaultScope } from '../defaults'
+
+/**
+ * Drop legacy fields from a saved scope profile so it matches the current
+ * schema. Currently strips `type`, `fovDegrees`, `tubeDiameter` — leftovers
+ * from the optical/digital switch that existed before the thermal-only split.
+ */
+export function migrateScope(raw: unknown): ScopeProfile {
+  const merged = { ...defaultScope, ...(raw as object | null ?? {}) } as ScopeProfile & Record<string, unknown>
+  delete merged.type
+  delete merged.fovDegrees
+  delete merged.tubeDiameter
+  return merged as ScopeProfile
+}
+
 
 const KNOWN_CENTER_KINDS: readonly CenterMarkKind[] = ['square4', 'square2', 'pixelBR', 'pixelTL']
 

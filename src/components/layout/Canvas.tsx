@@ -311,11 +311,7 @@ export default function Canvas({
 
       <div className={styles.scopeInfo}>
         <div className={styles.scopeName}>{scope.name}</div>
-        {scope.type === 'digital' ? (
-          <div>{scope.sensorResX}{'×'}{scope.sensorResY} {'→'} {scope.displayResX}{'×'}{scope.displayResY} | F{scope.lensFL} | {scope.pixelPitch}{'μ'}m</div>
-        ) : (
-          <div>{scope.displayResX}{'×'}{scope.displayResY} | FOV {scope.fovDegrees}{'°'}</div>
-        )}
+        <div>{scope.sensorResX}{'×'}{scope.sensorResY} {'→'} {scope.displayResX}{'×'}{scope.displayResY} | F{scope.lensFL} | {scope.pixelPitch}{'μ'}m</div>
         <div>{t('scopePanel.oneMrad', { value: ppm.h.toFixed(1) })} {magnification > 1 ? `${magnification}×` : ''}</div>
         <div>FOV: {effectiveFov.h.toFixed(0)} {'×'} {effectiveFov.v.toFixed(0)} MRAD</div>
         <div className={styles.unitNote}>{t('canvas.mradUnit')}</div>

@@ -90,14 +90,9 @@ export function describeReticle(
   // Scope section
   lines.push(t('describe.scope.header'))
   lines.push('  ' + t('describe.scope.name', { name: scope.name }))
-  lines.push('  ' + t(scope.type === 'digital' ? 'describe.scope.typeDigital' : 'describe.scope.typeOptical'))
-  if (scope.type === 'digital') {
-    lines.push('  ' + t('describe.scope.lensFL', { value: fmt(scope.lensFL) }))
-    lines.push('  ' + t('describe.scope.sensor', { w: scope.sensorResX, h: scope.sensorResY }))
-    lines.push('  ' + t('describe.scope.pixelPitch', { value: fmt(scope.pixelPitch) }))
-  } else {
-    lines.push('  ' + t('describe.scope.fovDegrees', { value: fmt(scope.fovDegrees) }))
-  }
+  lines.push('  ' + t('describe.scope.lensFL', { value: fmt(scope.lensFL) }))
+  lines.push('  ' + t('describe.scope.sensor', { w: scope.sensorResX, h: scope.sensorResY }))
+  lines.push('  ' + t('describe.scope.pixelPitch', { value: fmt(scope.pixelPitch) }))
   lines.push('  ' + t('describe.scope.display', { w: scope.displayResX, h: scope.displayResY }))
   lines.push('  ' + t('describe.scope.ppm', { h: fmt(ppm.h, 3), v: fmt(ppm.v, 3) }))
   // 1 пиксель в MRAD и в миллиметрах на 100 м (1 MRAD ≈ 100 мм / 100 м).
